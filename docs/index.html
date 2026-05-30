@@ -484,44 +484,76 @@
         const ctx = canvas.getContext('2d');
         const hero = canvas.parentElement;
 
-        // 二十八宿星座图案 — 敦煌星图风格：每个星座由若干星点+连线组成
+        // 二十八宿 — 参考中国星官图实际形状
+        // 坐标 (x,y) 表示相对位置，x 向右，y 向下
         const constellations = [
-            // 东方青龙七宿
-            { name:'角', stars:[[0,0],[12,8],[5,-10],[-8,-5]], color:'#4a9b8e' },
-            { name:'亢', stars:[[0,0],[10,12],[-10,5],[0,-8],[15,0]], color:'#4a9b8e' },
-            { name:'氐', stars:[[0,0],[8,10],[-8,4],[15,-6],[-15,-4]], color:'#4a9b8e' },
-            { name:'房', stars:[[0,0],[6,8],[-6,8],[0,-10]], color:'#4a9b8e' },
-            { name:'心', stars:[[0,0],[8,-5],[-8,-5],[0,-15],[5,5]], color:'#4a9b8e' },
-            { name:'尾', stars:[[0,0],[5,7],[10,14],[15,21],[20,28],[8,18]], color:'#4a9b8e' },
-            { name:'箕', stars:[[0,0],[10,8],[20,0],[10,-8]], color:'#4a9b8e' },
-            // 北方玄武七宿
-            { name:'斗', stars:[[0,0],[8,5],[16,10],[8,-8],[16,-3],[24,5]], color:'#6b8db5' },
-            { name:'牛', stars:[[0,0],[8,10],[-8,5],[12,-4]], color:'#6b8db5' },
-            { name:'女', stars:[[0,0],[6,8],[-6,5],[0,-8],[-10,-3]], color:'#6b8db5' },
-            { name:'虚', stars:[[0,0],[8,0],[-8,0],[0,-10]], color:'#6b8db5' },
-            { name:'危', stars:[[0,0],[5,8],[10,5],[5,-6],[15,-2]], color:'#6b8db5' },
-            { name:'室', stars:[[0,0],[8,5],[16,0],[8,-8],[0,-5],[-8,-3]], color:'#6b8db5' },
-            { name:'壁', stars:[[0,0],[7,7],[-7,4],[14,0]], color:'#6b8db5' },
-            // 西方白虎七宿
-            { name:'奎', stars:[[0,0],[5,8],[12,10],[18,5],[10,-5],[3,-8]], color:'#c4a35a' },
-            { name:'娄', stars:[[0,0],[8,5],[-8,5],[0,-8]], color:'#c4a35a' },
-            { name:'胃', stars:[[0,0],[6,8],[-6,8],[12,0],[-12,0]], color:'#c4a35a' },
-            { name:'昴', stars:[[0,0],[5,5],[10,0],[5,-5],[0,8],[-5,-3],[12,2]], color:'#c4a35a' },
-            { name:'毕', stars:[[0,0],[5,5],[12,3],[8,-5],[3,-10],[-3,-5]], color:'#c4a35a' },
-            { name:'觜', stars:[[0,0],[6,6],[-6,4],[0,-8]], color:'#c4a35a' },
-            { name:'参', stars:[[0,0],[6,6],[0,12],[-6,6],[-6,-6],[0,-12],[6,-6]], color:'#c4a35a' },
-            // 南方朱雀七宿
-            { name:'井', stars:[[0,0],[5,5],[12,3],[16,8],[8,-5],[15,-2],[3,-8],[20,0]], color:'#c46b5a' },
-            { name:'鬼', stars:[[0,0],[6,5],[-6,5],[0,-8],[8,-2]], color:'#c46b5a' },
-            { name:'柳', stars:[[0,0],[5,6],[10,10],[5,-5],[12,-2]], color:'#c46b5a' },
-            { name:'星', stars:[[0,0],[6,6],[12,0],[6,-6],[0,8]], color:'#c46b5a' },
-            { name:'张', stars:[[0,0],[5,5],[10,8],[5,-4],[12,-8],[18,0]], color:'#c46b5a' },
-            { name:'翼', stars:[[0,0],[4,6],[10,5],[6,-5],[14,-3],[20,2],[8,10],[16,6]], color:'#c46b5a' },
-            { name:'轸', stars:[[0,0],[6,4],[12,0],[6,-6],[0,-3]], color:'#c46b5a' },
+            // ===== 东方青龙七宿 ===== 玉色 #4a9b8e
+            // 角：二星南北直列，如角
+            { name:'角宿', stars:[[0,-12],[0,12]], color:'#4a9b8e', group:'青龙' },
+            // 亢：四星弯弧如颈
+            { name:'亢宿', stars:[[0,0],[10,-8],[18,-4],[22,6]], color:'#4a9b8e', group:'青龙' },
+            // 氐：四星方形如根
+            { name:'氐宿', stars:[[0,0],[14,-2],[12,14],[-2,12]], color:'#4a9b8e', group:'青龙' },
+            // 房：四星横列如房
+            { name:'房宿', stars:[[0,-4],[8,-2],[16,2],[24,4]], color:'#4a9b8e', group:'青龙' },
+            // 心：三星，中大星（心宿二/大火）最亮
+            { name:'心宿', stars:[[0,4],[0,-8],[0,-18]], color:'#4a9b8e', group:'青龙', bright:[1] },
+            // 尾：九星弯如龙尾
+            { name:'尾宿', stars:[[0,0],[6,8],[14,14],[22,18],[30,20],[38,18],[44,12],[48,4],[50,-6]], color:'#4a9b8e', group:'青龙' },
+            // 箕：四星如簸箕
+            { name:'箕宿', stars:[[0,0],[14,-6],[22,2],[12,12]], color:'#4a9b8e', group:'青龙' },
+
+            // ===== 北方玄武七宿 ===== 钢蓝 #6b8db5
+            // 斗：六星如斗（南斗六星）
+            { name:'斗宿', stars:[[0,10],[10,0],[10,-14],[0,-20],[-10,-14],[-10,0]], color:'#6b8db5', group:'玄武' },
+            // 牛：六星
+            { name:'牛宿', stars:[[0,0],[8,10],[16,6],[14,-4],[6,-10],[-4,-4]], color:'#6b8db5', group:'玄武' },
+            // 女：四星
+            { name:'女宿', stars:[[0,-8],[12,-4],[8,8],[0,14]], color:'#6b8db5', group:'玄武' },
+            // 虚：二星
+            { name:'虚宿', stars:[[-6,0],[6,0]], color:'#6b8db5', group:'玄武' },
+            // 危：三星如屋顶
+            { name:'危宿', stars:[[0,-14],[14,6],[-14,6]], color:'#6b8db5', group:'玄武' },
+            // 室：二星（营室），南北相望
+            { name:'室宿', stars:[[0,-16],[0,16]], color:'#6b8db5', group:'玄武' },
+            // 壁：二星（东壁）
+            { name:'壁宿', stars:[[-8,0],[8,0]], color:'#6b8db5', group:'玄武' },
+
+            // ===== 西方白虎七宿 ===== 暖金 #c4a35a
+            // 奎：十六星，主形如弯弓
+            { name:'奎宿', stars:[[0,0],[4,6],[10,10],[18,10],[24,6],[26,-2],[22,-10],[14,-14],[4,-14],[-4,-8]], color:'#c4a35a', group:'白虎' },
+            // 娄：三星
+            { name:'娄宿', stars:[[0,-8],[12,6],[-12,6]], color:'#c4a35a', group:'白虎' },
+            // 胃：三星
+            { name:'胃宿', stars:[[-10,0],[0,-10],[10,0]], color:'#c4a35a', group:'白虎' },
+            // 昴：七星聚簇（昴星团/Pleiades）
+            { name:'昴宿', stars:[[0,0],[4,5],[8,2],[5,-4],[2,-8],[-3,-3],[-6,3]], color:'#c4a35a', group:'白虎', cluster:true },
+            // 毕：八星如Y形猎网（毕宿五/Aldebaran为最亮）
+            { name:'毕宿', stars:[[0,0],[6,6],[4,14],[-4,18],[-10,12],[-2,8],[2,10]], color:'#c4a35a', group:'白虎', bright:[3] },
+            // 觜：三星（觜宿），在参之右肩
+            { name:'觜宿', stars:[[-10,6],[0,-6],[10,6]], color:'#c4a35a', group:'白虎' },
+            // 参：七星 — 猎户座腰带三星居中，上下各二
+            { name:'参宿', stars:[[0,-18],[0,-8],[0,0],[0,8],[12,-16],[-12,-16],[0,18]], color:'#c4a35a', group:'白虎', bright:[2] },
+
+            // ===== 南方朱雀七宿 ===== 珊瑚 #c46b5a
+            // 井：八星如水井
+            { name:'井宿', stars:[[0,0],[10,4],[20,0],[18,-10],[8,-14],[0,-8],[-8,-14],[-18,-10]], color:'#c46b5a', group:'朱雀' },
+            // 鬼：四星如方框（鬼宿/积尸气）
+            { name:'鬼宿', stars:[[-8,-8],[8,-8],[8,8],[-8,8]], color:'#c46b5a', group:'朱雀' },
+            // 柳：八星如柳叶
+            { name:'柳宿', stars:[[0,0],[6,-4],[14,-2],[20,4],[18,12],[10,16],[2,14],[-6,8]], color:'#c46b5a', group:'朱雀' },
+            // 星：七星（星宿/七星），如北斗形
+            { name:'星宿', stars:[[0,10],[8,4],[8,-6],[0,-12],[-8,-6],[-8,4],[0,0]], color:'#c46b5a', group:'朱雀' },
+            // 张：六星如张弓
+            { name:'张宿', stars:[[0,0],[6,6],[4,14],[-4,14],[-6,6],[0,4]], color:'#c46b5a', group:'朱雀' },
+            // 翼：二十二星如鸟翼展开
+            { name:'翼宿', stars:[[0,0],[4,6],[10,10],[16,12],[22,10],[26,6],[28,0],[26,-6],[22,-10],[16,-12],[10,-10],[4,-6]], color:'#c46b5a', group:'朱雀' },
+            // 轸：四星如车轸
+            { name:'轸宿', stars:[[-8,-6],[8,-6],[10,8],[-10,8]], color:'#c46b5a', group:'朱雀' },
         ];
 
         let scrollOffset = 0;
-        const SCROLL_SPEED = 0.15; // pixels per frame — slow drift
+        const TOTAL = constellations.length; // 28
 
         function resize() {
             const rect = hero.getBoundingClientRect();
@@ -533,35 +565,43 @@
             ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
         }
 
-        function drawConstellation(cx, cy, scale, stars, color) {
+        function drawConstellation(cx, cy, scale, c) {
+            const { stars, color, bright, cluster } = c;
             if (stars.length < 2) return;
-            const alpha = 0.7;
-            ctx.strokeStyle = color + '66';
-            ctx.lineWidth = 0.8 * scale;
-            ctx.beginPath();
-            for (let i = 0; i < stars.length - 1; i++) {
-                const [x1, y1] = stars[i];
-                const [x2, y2] = stars[i + 1];
-                ctx.moveTo(cx + x1 * scale, cy + y1 * scale);
-                ctx.lineTo(cx + x2 * scale, cy + y2 * scale);
-            }
-            ctx.stroke();
 
-            for (const [sx, sy] of stars) {
+            // Connecting lines — skip if cluster type (昴宿 Pleiades)
+            if (!cluster) {
+                ctx.strokeStyle = color + '55';
+                ctx.lineWidth = 0.7 * scale;
+                ctx.beginPath();
+                ctx.moveTo(cx + stars[0][0] * scale, cy + stars[0][1] * scale);
+                for (let i = 1; i < stars.length; i++) {
+                    ctx.lineTo(cx + stars[i][0] * scale, cy + stars[i][1] * scale);
+                }
+                ctx.stroke();
+            }
+
+            // Stars
+            const brightSet = new Set(bright || []);
+            for (let i = 0; i < stars.length; i++) {
+                const [sx, sy] = stars[i];
                 const x = cx + sx * scale;
                 const y = cy + sy * scale;
-                const r = 1.5 * scale;
+                const isBright = brightSet.has(i);
+                const r = isBright ? 2.0 * scale : (cluster ? 0.9 * scale : 1.2 * scale);
                 // Glow
-                const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 2.5);
-                grad.addColorStop(0, color);
-                grad.addColorStop(0.4, color + '88');
+                const glowR = r * 3;
+                const grad = ctx.createRadialGradient(x, y, 0, x, y, glowR);
+                grad.addColorStop(0, isBright ? '#ffffff' : color);
+                grad.addColorStop(0.3, color + 'aa');
+                grad.addColorStop(0.7, color + '22');
                 grad.addColorStop(1, 'transparent');
                 ctx.fillStyle = grad;
                 ctx.beginPath();
-                ctx.arc(x, y, r * 2.5, 0, Math.PI * 2);
+                ctx.arc(x, y, glowR, 0, Math.PI * 2);
                 ctx.fill();
                 // Core
-                ctx.fillStyle = color;
+                ctx.fillStyle = isBright ? '#ffffff' : color;
                 ctx.beginPath();
                 ctx.arc(x, y, r, 0, Math.PI * 2);
                 ctx.fill();
@@ -569,8 +609,8 @@
         }
 
         function drawLabel(cx, cy, text, color) {
-            ctx.fillStyle = color + '99';
-            ctx.font = '11px "Noto Serif SC", "SimSun", serif';
+            ctx.fillStyle = color + 'aa';
+            ctx.font = '13px "Noto Serif SC", "SimSun", serif';
             ctx.textAlign = 'center';
             ctx.fillText(text, cx, cy);
         }
@@ -581,35 +621,34 @@
             const H = canvas.height / (window.devicePixelRatio || 1);
             ctx.clearRect(0, 0, W, H);
 
-            scrollOffset += SCROLL_SPEED;
+            scrollOffset += 0.12; // slow drift
 
-            // Draw constellations in a repeating scroll
-            const spacing = W / 7; // 7 constellations visible at a time
-            const scale = Math.min(W, H) / 80;
+            // Each constellation appears exactly once — all 28 span the full scroll cycle
+            const spacing = W / 6; // show ~6 at a time
+            const scale = Math.min(W, H) / 40; // doubled from /80
+            const patternWidth = TOTAL * spacing;
 
-            // Total pattern width
-            const totalConst = constellations.length;
-            const patternWidth = totalConst * spacing;
-
-            for (let i = 0; i < totalConst + 8; i++) {
-                const ci = i % totalConst;
-                const c = constellations[ci];
-                // Position: start from right edge, scroll left
-                let x = W + spacing * 1.5 + i * spacing - (scrollOffset % patternWidth);
+            for (let i = 0; i < TOTAL; i++) {
+                const c = constellations[i];
+                // Position: each constellation gets one unique slot in the pattern
+                let x = W - 20 + i * spacing - (scrollOffset % patternWidth);
+                // Wrap around — exactly one complete set
                 if (x < -spacing) x += patternWidth;
-                if (x > W + spacing * 2) x -= patternWidth;
 
-                // Vertical: distribute into 3 rows
+                // Vertical distribution: 3 rows
                 const row = i % 3;
-                const baseY = H * 0.15;
-                const rowH = H * 0.35;
+                const baseY = H * 0.12;
+                const rowH = H * 0.38;
                 const y = baseY + row * rowH;
 
-                // Slight vertical wave
-                const waveY = y + Math.sin(scrollOffset * 0.02 + i * 0.5) * 15;
+                // Gentle vertical oscillation
+                const waveY = y + Math.sin(scrollOffset * 0.015 + i * 0.45) * 12;
 
-                drawConstellation(x, waveY, scale * 0.65, c.stars, c.color);
-                drawLabel(x, waveY - 20 * scale * 0.65, c.name, c.color);
+                drawConstellation(x, waveY, scale * 0.7, c);
+
+                // Label below constellation
+                const labelY = waveY + 28 * scale * 0.7;
+                drawLabel(x, labelY, c.name, c.color);
             }
 
             requestAnimationFrame(animate);
