@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索 — 古天文知识库</title>
+    <meta name="description" content="全文搜索十七部天文志/天官书，跨越西汉至清代的天象记录。">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ============================================================
+           SEARCH PAGE: ADDITIONAL STYLES
+           ============================================================ */
+        .search-page-title {
+            text-align: center;
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+        }
+
+        .search-page-subtitle {
+            text-align: center;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 36px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 36px;
+        }
+
+        .search-form input {
+            flex: 1;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-body);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-form input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+        }
+
+        .search-form input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .search-form button {
+            background: var(--accent-gold);
+            color: var(--bg-deepest);
+            border: none;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .search-form button:hover {
+            background: var(--accent-warm);
+        }
+
+        .search-form button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- Search Info Bar --- */
+        .search-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .search-info .hit-count {
+            color: var(--accent-gold);
+        }
+
+        .search-info .search-time {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* --- Dynasty Badge (in search results) --- */
+        .result-dynasty {
+            display: inline-block;
+            font-family: var(--font-sans);
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent-warm);
+            background: rgba(212, 165, 116, 0.1);
+            border: 1px solid rgba(212, 165, 116, 0.2);
+            padding: 2px 10px;
+            border-radius: 14px;
+            margin-left: 8px;
+            vertical-align: middle;
+            letter-spacing: 0.05em;
+        }
+
+        /* --- Result Link --- */
+        .result-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .result-link:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.08);
+            color: inherit;
+        }
+
+        .result-link .result-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+        }
+
+        .result-link .result-title:hover {
+            color: var(--accent-warm);
+        }
+
+        .result-link .result-chapter {
+            font-family: var(--font-sans);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 6px;
+        }
+
+        .result-link .result-snippet {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .result-link .result-snippet mark {
+            background: rgba(201, 169, 110, 0.25);
+            color: var(--accent-gold);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* --- Initial / Empty / Error States --- */
+        .search-placeholder,
+        .search-empty,
+        .search-error {
+            text-align: center;
+            padding: 64px 0;
+            font-family: var(--font-sans);
+            color: var(--text-dim);
+        }
+
+        .search-placeholder .placeholder-icon,
+        .search-empty .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .search-placeholder p {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .search-placeholder .hint {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .search-empty p {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+        }
+
+        .search-error p {
+            font-size: 0.95rem;
+            color: #d4756e;
+        }
+
+        /* --- Loading Spinner --- */
+        .search-loading {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--text-dim);
+            font-family: var(--font-sans);
+        }
+
+        .search-loading .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 768px) {
+            .search-page-title {
+                font-size: 1.5rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-form button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .result-link {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         TOP NAVIGATION
+         ============================================================ -->
+    <nav class="top-nav" aria-label="主导航">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo" aria-label="古天文知识库首页">&#9737; 古天文知识库</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="search.html">搜索</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         SEARCH CONTAINER
+         ============================================================ -->
+    <div class="search-container">
+        <h1 class="search-page-title">全文搜索</h1>
+        <p class="search-page-subtitle">搜索书名、篇名、朝代、作者与内容描述 — 共 17 部史志</p>
+
+        <!-- Search Form -->
+        <form class="search-form" id="search-form" role="search" autocomplete="off">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="输入关键词，如：超新星、浑天仪、分野、星官…"
+                aria-label="搜索天文知识"
+                autofocus
+            >
+            <button type="submit" id="search-button">&#128269; 搜索</button>
+        </form>
+
+        <!-- Search Info Bar (hidden initially) -->
+        <div class="search-info" id="search-info" style="display:none;">
+            <span>找到 <span class="hit-count" id="hit-count">0</span> 条结果</span>
+            <span class="search-time" id="search-time"></span>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results-area">
+            <!-- Initial placeholder -->
+            <div class="search-placeholder" id="search-placeholder">
+                <div class="placeholder-icon">&#9737;</div>
+                <p>在上方输入关键词开始搜索</p>
+                <p class="hint">支持搜索：书名、篇名、朝代、作者、天文术语、星官名称等</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer role="contentinfo">
+        <p>古天文知识库 &copy; 2026 · 汇历代天文志，承千古观星学</p>
+    </footer>
+
+    <!-- ============================================================
+         LUNR.JS from CDN
+         ============================================================ -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // DOM References
+        // ============================================================
+        var searchForm   = document.getElementById('search-form');
+        var searchInput  = document.getElementById('search-input');
+        var searchButton = document.getElementById('search-button');
+        var resultsArea  = document.getElementById('results-area');
+        var placeholder  = document.getElementById('search-placeholder');
+        var searchInfo   = document.getElementById('search-info');
+        var hitCount     = document.getElementById('hit-count');
+        var searchTime   = document.getElementById('search-time');
+
+        // ============================================================
+        // Application State
+        // ============================================================
+        var idx      = null;   // Lunr index
+        var docs     = [];     // array of chapter objects
+        var ready    = false;  // index built?
+
+        // ============================================================
+        // Build Lunr Index
+        // ============================================================
+        function buildIndex(chapters) {
+            docs = chapters;
+
+            idx = lunr(function() {
+                // Configure for Chinese text: no stemmer, position data for snippets
+                this.pipeline.remove(lunr.stemmer);
+                this.pipeline.remove(lunr.stopWordFilter);
+
+                this.ref('id');
+                this.field('book',       { boost: 10 });
+                this.field('chapter',    { boost: 10 });
+                this.field('dynasty',    { boost: 5 });
+                this.field('author',     { boost: 3 });
+                this.field('description');
+                this.field('year');
+
+                this.metadataWhitelist = ['position'];
+
+                chapters.forEach(function(ch) {
+                    this.add(ch);
+                }, this);
+            });
+
+            ready = true;
+        }
+
+        // ============================================================
+        // Fetch chapters.json
+        // ============================================================
+        function loadData() {
+            return fetch('data/chapters.json')
+                .then(function(resp) {
+                    if (!resp.ok) {
+                        throw new Error('无法加载章节数据 (HTTP ' + resp.status + ')');
+                    }
+                    return resp.json();
+                })
+                .then(function(data) {
+                    buildIndex(data);
+                });
+        }
+
+        // ============================================================
+        // Generate Snippet
+        // ============================================================
+        function generateSnippet(doc, terms) {
+            var desc = doc.description;
+
+            if (!terms || terms.length === 0) {
+                return desc.length > 150 ? desc.substring(0, 150) + '…' : desc;
+            }
+
+            // Find the first position of any search term in description
+            var bestPos = -1;
+            var foundTerm = '';
+
+            for (var i = 0; i < terms.length; i++) {
+                var pos = desc.indexOf(terms[i]);
+                if (pos !== -1 && (bestPos === -1 || pos < bestPos)) {
+                    bestPos = pos;
+                    foundTerm = terms[i];
+                }
+            }
+
+            if (bestPos === -1) {
+                return desc.length > 150 ? desc.substring(0, 150) + '…' : desc;
+            }
+
+            // Extract a snippet centered around the match
+            var snipLen = 120;
+            var start = Math.max(0, bestPos - 20);
+            var end = Math.min(desc.length, bestPos + foundTerm.length + snipLen);
+
+            // Adjust start to not break mid-character (Chinese chars)
+            var snippet = desc.substring(start, end);
+
+            if (start > 0) {
+                snippet = '…' + snippet;
+            }
+            if (end < desc.length) {
+                snippet = snippet + '…';
+            }
+
+            // Highlight matching terms in the snippet
+            var highlighted = escapeHTML(snippet);
+            terms.forEach(function(term) {
+                var escapedTerm = escapeRegex(term);
+                highlighted = highlighted.replace(
+                    new RegExp('(' + escapedTerm + ')', 'gi'),
+                    '<mark>$1</mark>'
+                );
+            });
+
+            return highlighted;
+        }
+
+        // ============================================================
+        // Perform Search
+        // ============================================================
+        function doSearch(query) {
+            if (!ready) {
+                return;
+            }
+
+            var q = query.trim();
+
+            // Empty query -> show placeholder
+            if (!q) {
+                showPlaceholder();
+                return;
+            }
+
+            var startTime = performance.now();
+
+            // Lunr search
+            var results = idx.search(q);
+
+            var elapsed = (performance.now() - startTime).toFixed(1);
+
+            // Show info bar
+            searchInfo.style.display = 'flex';
+            hitCount.textContent = results.length;
+            searchTime.textContent = elapsed + ' ms';
+
+            // No results
+            if (results.length === 0) {
+                resultsArea.innerHTML =
+                    '<div class="search-empty">' +
+                        '<div class="empty-icon">&#9789;</div>' +
+                        '<p>未找到匹配「<strong>' + escapeHTML(q) + '</strong>」的结果</p>' +
+                        '<p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim);">请尝试其他关键词，如：超新星、分野、浑天仪、星官、日食</p>' +
+                    '</div>';
+                return;
+            }
+
+            // Extract unique terms from results for highlighting
+            var terms = [];
+            var seen = {};
+            results.forEach(function(r) {
+                Object.keys(r.matchData.metadata).forEach(function(field) {
+                    Object.keys(r.matchData.metadata[field]).forEach(function(term) {
+                        if (!seen[term]) {
+                            seen[term] = true;
+                            terms.push(term);
+                        }
+                    });
+                });
+            });
+
+            // Build results HTML
+            var html = '';
+            results.forEach(function(result) {
+                var doc = docs.find(function(d) { return d.id === result.ref; });
+                if (!doc) return;
+
+                var snippet = generateSnippet(doc, terms);
+
+                html +=
+                    '<a href="' + escapeHTML(doc.url) + '" class="result-link">' +
+                        '<div class="result-title">' + escapeHTML(doc.book) + ' · ' + escapeHTML(doc.chapter) +
+                            '<span class="result-dynasty">' + escapeHTML(doc.dynasty) + '</span>' +
+                        '</div>' +
+                        '<div class="result-chapter">' +
+                            escapeHTML(doc.author) + ' · ' + escapeHTML(doc.year) + ' · ' + doc.volumes + '卷' +
+                        '</div>' +
+                        '<div class="result-snippet">' + snippet + '</div>' +
+                    '</a>';
+            });
+
+            resultsArea.innerHTML = html;
+        }
+
+        // ============================================================
+        // Show Placeholder
+        // ============================================================
+        function showPlaceholder() {
+            searchInfo.style.display = 'none';
+            resultsArea.innerHTML =
+                '<div class="search-placeholder">' +
+                    '<div class="placeholder-icon">&#9737;</div>' +
+                    '<p>在上方输入关键词开始搜索</p>' +
+                    '<p class="hint">支持搜索：书名、篇名、朝代、作者、天文术语、星官名称等</p>' +
+                '</div>';
+        }
+
+        // ============================================================
+        // Show Error
+        // ============================================================
+        function showError(msg) {
+            searchInfo.style.display = 'none';
+            resultsArea.innerHTML =
+                '<div class="search-error">' +
+                    '<p>&#9888; ' + escapeHTML(msg) + '</p>' +
+                '</div>';
+        }
+
+        // ============================================================
+        // Utilities
+        // ============================================================
+        function escapeHTML(str) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(str));
+            return div.innerHTML;
+        }
+
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // ============================================================
+        // Event Handlers
+        // ============================================================
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            doSearch(searchInput.value);
+        });
+
+        // Debounced search-as-you-type
+        var typeTimer = null;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(typeTimer);
+            typeTimer = setTimeout(function() {
+                doSearch(searchInput.value);
+            }, 300);
+        });
+
+        // ============================================================
+        // Handle URL query parameter (from homepage search box)
+        // ============================================================
+        function getQueryParam() {
+            var params = new URLSearchParams(window.location.search);
+            return params.get('q') || '';
+        }
+
+        // ============================================================
+        // Initialize
+        // ============================================================
+        function init() {
+            // Show loading state
+            resultsArea.innerHTML =
+                '<div class="search-loading">' +
+                    '<div class="spinner"></div>' +
+                    '<p>正在准备搜索索引…</p>' +
+                '</div>';
+            searchButton.disabled = true;
+
+            loadData()
+                .then(function() {
+                    searchButton.disabled = false;
+
+                    // Check if there's a q param from homepage
+                    var q = getQueryParam();
+                    if (q) {
+                        searchInput.value = q;
+                        doSearch(q);
+                    } else {
+                        showPlaceholder();
+                    }
+                })
+                .catch(function(err) {
+                    searchButton.disabled = false;
+                    showError('数据加载失败：' + err.message);
+                });
+        }
+
+        // Kick off
+        init();
+
+    })();
+    </script>
+
+</body>
+</html>

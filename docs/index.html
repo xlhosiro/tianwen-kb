@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>古天文知识库 — 历代天文志汇览</title>
+    <meta name="description" content="汇集二十四史中17部天文志/天官书，涵盖西汉至清代51卷天象记录，跨越1800余年。探索古代中国的星空、星官、历法与天象观测。">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* ============================================================
+           HOMEPAGE: STATS ROW
+           ============================================================ */
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-top: 36px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            display: block;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            letter-spacing: 0.06em;
+        }
+
+        /* ============================================================
+           HOMEPAGE: DYNASTY TIMELINE STRIP
+           ============================================================ */
+        .hero-timeline {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 24px 0;
+            position: relative;
+        }
+
+        .timeline-strip {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            overflow-x: auto;
+            padding: 16px 0 24px;
+            gap: 4px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-light) transparent;
+        }
+
+        .timeline-strip::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .timeline-strip::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .timeline-strip::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            min-width: 80px;
+            position: relative;
+        }
+
+        .timeline-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-dynasty {
+            font-family: var(--font-serif);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            white-space: nowrap;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
+        }
+
+        .timeline-year {
+            font-family: var(--font-sans);
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        /* ============================================================
+           HOMEPAGE: RESPONSIVE OVERRIDES
+           ============================================================ */
+        @media (max-width: 768px) {
+            .hero-stats {
+                gap: 28px;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .stat-label {
+                font-size: 0.75rem;
+            }
+
+            .timeline-item {
+                min-width: 64px;
+            }
+
+            .timeline-dynasty {
+                font-size: 0.78rem;
+            }
+
+            .timeline-year {
+                font-size: 0.68rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .timeline-item {
+                min-width: 56px;
+            }
+
+            .timeline-dynasty {
+                font-size: 0.7rem;
+            }
+
+            .timeline-year {
+                font-size: 0.62rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         TOP NAVIGATION
+         ============================================================ -->
+    <nav class="top-nav" aria-label="主导航">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo" aria-label="古天文知识库首页">&#9737; 古天文知识库</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="search.html">搜索</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <section class="hero-section" aria-label="首页标题区">
+        <h1>古天文知识库</h1>
+        <p class="hero-subtitle">
+            汇集二十四史中天文志、天官书、历象志、司天考等天文专篇，
+            跨越两千年，追寻古人仰望星空的智慧。
+        </p>
+
+        <!-- Search Box -->
+        <form class="hero-search" action="search.html" method="get" role="search">
+            <input type="text" name="q" placeholder="搜索星官、天象、历法…" aria-label="搜索天文知识">
+            <button type="submit">检索</button>
+        </form>
+
+        <!-- Stats Row -->
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">17</span>
+                <span class="stat-label">部史志</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">51</span>
+                <span class="stat-label">卷</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">1800+</span>
+                <span class="stat-label">年记录</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         DYNASTY TIMELINE STRIP
+         ============================================================ -->
+    <div class="hero-timeline" aria-label="编撰朝代时间线">
+        <div class="timeline-strip">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">西汉</span>
+                <span class="timeline-year">约前91年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">东汉</span>
+                <span class="timeline-year">82年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">南朝宋</span>
+                <span class="timeline-year">445年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">南朝梁</span>
+                <span class="timeline-year">488年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">北齐</span>
+                <span class="timeline-year">554年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">唐</span>
+                <span class="timeline-year">636年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">后晋</span>
+                <span class="timeline-year">945年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">宋</span>
+                <span class="timeline-year">974年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">元</span>
+                <span class="timeline-year">1344年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">明</span>
+                <span class="timeline-year">1370年</span>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <span class="timeline-dynasty">清</span>
+                <span class="timeline-year">1739年</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         CHAPTERS GRID
+         ============================================================ -->
+    <h2 class="chapters-grid-title">全部章节</h2>
+
+    <div class="chapters-grid">
+        <!-- 01 - 史记·天官书 -->
+        <a href="chapters/01_史记_天官书第五.html" class="chapter-card">
+            <span class="card-dynasty">西汉</span>
+            <h3>史记 · 天官书第五</h3>
+            <div class="card-meta">司马迁 · 约前91年 · 1卷</div>
+            <p class="card-desc">中国现存最早的系统性天文学著作。将全天星官分为五宫（中东南西北），记录约90多个星官、500余颗恒星，叙述五星运行规律。</p>
+        </a>
+
+        <!-- 02 - 汉书·天文志 -->
+        <a href="chapters/02_汉书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">东汉</span>
+            <h3>汉书 · 天文志</h3>
+            <div class="card-meta">班固 · 82年 · 1卷</div>
+            <p class="card-desc">沿用史记天官书体系，补充汉代天象记录，含太阳黑子早期观测、分野学说。</p>
+        </a>
+
+        <!-- 03 - 后汉书·天文志 -->
+        <a href="chapters/03_后汉书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">南朝宋</span>
+            <h3>后汉书 · 天文志</h3>
+            <div class="card-meta">范晔/司马彪 · 445年 · 3卷</div>
+            <p class="card-desc">司马彪续汉书八志之一。记载东汉天象，含著名的公元185年超新星记录（SN 185）。</p>
+        </a>
+
+        <!-- 04 - 晋书·天文志 -->
+        <a href="chapters/04_晋书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">唐</span>
+            <h3>晋书 · 天文志</h3>
+            <div class="card-meta">房玄龄等/李淳风 · 648年 · 3卷</div>
+            <p class="card-desc">李淳风撰写，体系完整。介绍盖天说、浑天说、宣夜说，详述浑天仪，载283官1464星。</p>
+        </a>
+
+        <!-- 05 - 宋书·天文志 -->
+        <a href="chapters/05_宋书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">南朝梁</span>
+            <h3>宋书 · 天文志</h3>
+            <div class="card-meta">沈约 · 488年 · 4卷</div>
+            <p class="card-desc">记录南朝刘宋天象，追述三国西晋天象以补前史之缺。</p>
+        </a>
+
+        <!-- 06 - 南齐书·天文志 -->
+        <a href="chapters/06_南齐书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">南朝梁</span>
+            <h3>南齐书 · 天文志</h3>
+            <div class="card-meta">萧子显 · 537年 · 2卷</div>
+            <p class="card-desc">记录南齐（479-502年）天象，含日食、星变、分野占验。</p>
+        </a>
+
+        <!-- 07 - 魏书·天象志 -->
+        <a href="chapters/07_魏书_天象志.html" class="chapter-card">
+            <span class="card-dynasty">北齐</span>
+            <h3>魏书 · 天象志</h3>
+            <div class="card-meta">魏收 · 554年 · 4卷</div>
+            <p class="card-desc">记录北魏时期（386-550年）天象，含日食、月食、五星、彗星、流星，按年月日排序。</p>
+        </a>
+
+        <!-- 08 - 隋书·天文志 -->
+        <a href="chapters/08_隋书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">唐</span>
+            <h3>隋书 · 天文志</h3>
+            <div class="card-meta">魏徵等/李淳风 · 636年 · 3卷</div>
+            <p class="card-desc">李淳风续作。天文学理论和仪器部分极为详尽，记载浑天仪、浑象、漏刻，三分法宇宙理论。</p>
+        </a>
+
+        <!-- 09 - 旧唐书·天文志 -->
+        <a href="chapters/09_旧唐书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">后晋</span>
+            <h3>旧唐书 · 天文志</h3>
+            <div class="card-meta">刘昫等 · 945年 · 2卷</div>
+            <p class="card-desc">记录唐代天象，含僧一行的天文学贡献、浑天仪、黄道游仪等仪器。</p>
+        </a>
+
+        <!-- 10 - 新唐书·天文志 -->
+        <a href="chapters/10_新唐书_天文志.html" class="chapter-card">
+            <span class="card-dynasty">宋</span>
+            <h3>新唐书 · 天文志</h3>
+            <div class="card-meta">欧阳修、宋祁等 · 1060年 · 3卷</div>
+            <p class="card-desc">与旧唐书互补，更重天文学理论。记录一行的大地测量工作，详载天文仪器和历法。</p>
+        </a>
+
+        <!-- 11 - 旧五代史·天文志 -->
+        <a href="chapters/11_旧五代史_天文志.html" class="chapter-card">
+            <span class="card-dynasty">宋</span>
+            <h3>旧五代史 · 天文志</h3>
+            <div class="card-meta">薛居正等 · 974年 · 1卷</div>
+            <p class="card-desc">记录五代时期（907-960年）天象，以日食、彗星、星变为主要内容。</p>
+        </a>
+
+        <!-- 12 - 新五代史·司天考 -->
+        <a href="chapters/12_新五代史_司天考.html" class="chapter-card">
+            <span class="card-dynasty">宋</span>
+            <h3>新五代史 · 司天考</h3>
+            <div class="card-meta">欧阳修 · 1053年 · 2卷</div>
+            <p class="card-desc">偏重天文学理论探讨，讨论天人关系、灾异学说，记录五代天象。</p>
+        </a>
+
+        <!-- 13 - 宋史·天文志 -->
+        <a href="chapters/13_宋史_天文志.html" class="chapter-card">
+            <span class="card-dynasty">元</span>
+            <h3>宋史 · 天文志</h3>
+            <div class="card-meta">脱脱等 · 1345年 · 13卷</div>
+            <p class="card-desc">二十四史中篇幅最大的天文志（13卷）。记录北宋南宋320年天象，含1054年超新星（蟹状星云），记载苏颂水运仪象台。</p>
+        </a>
+
+        <!-- 14 - 辽史·历象志 -->
+        <a href="chapters/14_辽史_历象志.html" class="chapter-card">
+            <span class="card-dynasty">元</span>
+            <h3>辽史 · 历象志</h3>
+            <div class="card-meta">脱脱等 · 1344年 · 3卷</div>
+            <p class="card-desc">记录辽代（907-1125年）天文历法，含日食等天象。</p>
+        </a>
+
+        <!-- 15 - 金史·天文志 -->
+        <a href="chapters/15_金史_天文志.html" class="chapter-card">
+            <span class="card-dynasty">元</span>
+            <h3>金史 · 天文志</h3>
+            <div class="card-meta">脱脱等 · 1345年 · 1卷</div>
+            <p class="card-desc">记录金代（1115-1234年）天象，含日食、月食、星变等。</p>
+        </a>
+
+        <!-- 16 - 元史·天文志 -->
+        <a href="chapters/16_元史_天文志.html" class="chapter-card">
+            <span class="card-dynasty">明</span>
+            <h3>元史 · 天文志</h3>
+            <div class="card-meta">宋濂等 · 1370年 · 2卷</div>
+            <p class="card-desc">记载郭守敬的天文仪器（简仪、仰仪等），介绍西域天文学传入，记载札马鲁丁的西域天文仪器。</p>
+        </a>
+
+        <!-- 17 - 明史·天文志 -->
+        <a href="chapters/17_明史_天文志.html" class="chapter-card">
+            <span class="card-dynasty">清</span>
+            <h3>明史 · 天文志</h3>
+            <div class="card-meta">张廷玉等 · 1739年 · 3卷</div>
+            <p class="card-desc">二十四史最后一部天文志。介绍利玛窦带来的西方天文学，记载徐光启与崇祯历书，反映中西天文学融合。</p>
+        </a>
+    </div>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer role="contentinfo">
+        <p>古天文知识库 &copy; 2026 · 汇历代天文志，承千古观星学</p>
+    </footer>
+
+</body>
+</html>

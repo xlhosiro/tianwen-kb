@@ -1,0 +1,871 @@
+/* ============================================================
+   tianwen-kb — 古天文知识库 Stylesheet
+   Classical Chinese Astronomy Knowledge Base
+   Theme: Dark night-sky · Ancient star chart aesthetic
+   ============================================================ */
+
+/* --- CSS Variables (Color Palette) --- */
+:root {
+    --bg-deepest:    #0a0e1a;
+    --bg-card:       #111827;
+    --bg-sidebar:    #1a1f35;
+    --bg-nav:        rgba(10, 14, 26, 0.92);
+    --bg-hover:      #1e2540;
+
+    --text-body:     #c8d0dc;
+    --text-heading:  #e8ecf2;
+    --text-muted:    #8b95a8;
+    --text-dim:      #6b7490;
+
+    --accent-gold:   #c9a96e;
+    --accent-warm:   #d4a574;
+    --accent-jade:   #4a9b8e;
+
+    --border:        #2a3045;
+    --border-light:  #3a4058;
+
+    --font-serif:    'Noto Serif SC', 'Source Han Serif SC', 'SimSun', 'STSong', serif;
+    --font-sans:     'Noto Sans SC', 'Source Han Sans SC', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+
+    --sidebar-width: 280px;
+    --nav-height:    56px;
+    --max-readable:  720px;
+    --radius:        6px;
+    --radius-sm:     4px;
+    --radius-lg:     10px;
+}
+
+/* --- Reset & Base --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: var(--font-serif);
+    background: var(--bg-deepest);
+    color: var(--text-body);
+    line-height: 1.8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Links --- */
+a {
+    color: var(--accent-gold);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent-warm);
+}
+
+/* --- Headings --- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    color: var(--text-heading);
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5em;
+    letter-spacing: 0.02em;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin: 1.6em 0 0.6em;
+    padding-bottom: 0.35em;
+    border-bottom: 1px solid var(--border);
+    color: var(--accent-gold);
+}
+
+h3 {
+    font-size: 1.2rem;
+    margin: 1.2em 0 0.5em;
+    color: var(--accent-warm);
+}
+
+/* --- Paragraphs --- */
+p {
+    margin-bottom: 1em;
+    text-align: justify;
+    text-justify: inter-character;
+}
+
+/* ============================================================
+   TOP NAVIGATION
+   ============================================================ */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+}
+
+.nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    font-family: var(--font-sans);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.nav-logo:hover {
+    color: var(--accent-warm);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-links a {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    padding: 6px 14px;
+    border-radius: var(--radius-sm);
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nav-links a:hover {
+    color: var(--accent-gold);
+    background: rgba(201, 169, 110, 0.08);
+}
+
+.nav-links a.nav-gh {
+    font-weight: 300;
+    opacity: 0.7;
+}
+
+.nav-links a.nav-gh:hover {
+    opacity: 1;
+}
+
+/* ============================================================
+   CHAPTER CONTAINER (Sidebar + Content Layout)
+   ============================================================ */
+.chapter-container {
+    display: flex;
+    flex: 1;
+    margin-top: var(--nav-height);
+    min-height: calc(100vh - var(--nav-height));
+}
+
+/* --- Chapter Sidebar --- */
+.chapter-sidebar {
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    overflow-y: auto;
+    position: sticky;
+    top: var(--nav-height);
+    height: calc(100vh - var(--nav-height));
+    flex-shrink: 0;
+}
+
+.chapter-sidebar h3 {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0 20px 16px;
+    margin: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+/* --- Chapter List (Sidebar) --- */
+.chapter-list {
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+}
+
+.chapter-list li {
+    margin: 0;
+}
+
+.chapter-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 9px 20px;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    transition: color 0.15s ease, background 0.15s ease;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+}
+
+.chapter-list a:hover {
+    color: var(--text-heading);
+    background: var(--bg-hover);
+    border-left-color: var(--accent-gold);
+}
+
+.chapter-list li.active a {
+    color: var(--accent-gold);
+    background: rgba(201, 169, 110, 0.06);
+    border-left-color: var(--accent-gold);
+    font-weight: 600;
+}
+
+.chapter-list .ch-num {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+    min-width: 22px;
+    opacity: 0.7;
+}
+
+.chapter-list .ch-book {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chapter-list .ch-name {
+    font-weight: 300;
+    color: var(--text-dim);
+    white-space: nowrap;
+}
+
+/* --- Chapter Content (Reading Area) --- */
+.chapter-content {
+    flex: 1;
+    padding: 40px 48px 60px;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* --- Chapter Header --- */
+.chapter-header {
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.chapter-dynasty {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+    background: rgba(201, 169, 110, 0.1);
+    border: 1px solid rgba(201, 169, 110, 0.25);
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+}
+
+.chapter-header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.chapter-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.chapter-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.chapter-desc {
+    margin-top: 14px;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+}
+
+/* --- Chapter Body (Reading Area) --- */
+.chapter-body {
+    max-width: var(--max-readable);
+    line-height: 2.1;
+    font-size: 1.05rem;
+    color: var(--text-body);
+}
+
+.chapter-body p {
+    text-indent: 2em;
+    margin-bottom: 0.6em;
+}
+
+/* Drop text-indent on the first p after h2 to avoid odd spacing */
+.chapter-body h2 + p {
+    text-indent: 2em;
+}
+
+/* ============================================================
+   ASTRO-ENTITY (Inline Star/Constellation Highlights)
+   ============================================================ */
+.astro-entity {
+    cursor: help;
+    font-weight: 500;
+    transition: filter 0.2s ease, text-shadow 0.2s ease;
+}
+
+.astro-entity:hover {
+    filter: brightness(1.25);
+    text-shadow: 0 0 8px currentColor;
+}
+
+/* ============================================================
+   ANNOTATION LABELS (索隱 / 正義 / 集解)
+   ============================================================ */
+.annotation-label {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-jade);
+    opacity: 0.75;
+    margin-right: 2px;
+}
+
+/* ============================================================
+   HOMEPAGE: HERO SECTION
+   ============================================================ */
+.hero-section {
+    margin-top: var(--nav-height);
+    padding: 80px 24px 64px;
+    text-align: center;
+    background:
+        radial-gradient(ellipse at 50% 20%, rgba(201, 169, 110, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse at 20% 80%, rgba(74, 155, 142, 0.05) 0%, transparent 60%),
+        var(--bg-deepest);
+    border-bottom: 1px solid var(--border);
+}
+
+.hero-section h1 {
+    font-size: 2.6rem;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+    letter-spacing: 0.06em;
+}
+
+.hero-section .hero-subtitle {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto 32px;
+    line-height: 1.7;
+}
+
+.hero-section .hero-search {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 6px 6px 6px 20px;
+}
+
+.hero-section .hero-search input {
+    background: transparent;
+    border: none;
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    width: 300px;
+    outline: none;
+}
+
+.hero-section .hero-search input::placeholder {
+    color: var(--text-dim);
+}
+
+.hero-section .hero-search button {
+    background: var(--accent-gold);
+    color: var(--bg-deepest);
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.hero-section .hero-search button:hover {
+    background: var(--accent-warm);
+}
+
+/* ============================================================
+   HOMEPAGE: CHAPTERS GRID
+   ============================================================ */
+.chapters-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Section title above the grid */
+.chapters-grid-title {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--accent-gold);
+    text-align: center;
+    margin-top: 48px;
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+}
+
+/* --- Chapter Card --- */
+.chapter-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+
+.chapter-card:hover {
+    border-color: var(--accent-gold);
+    box-shadow: 0 4px 24px rgba(201, 169, 110, 0.08);
+    transform: translateY(-2px);
+    color: inherit;
+}
+
+.chapter-card .card-dynasty {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent-warm);
+    background: rgba(212, 165, 116, 0.1);
+    border: 1px solid rgba(212, 165, 116, 0.2);
+    padding: 2px 10px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+}
+
+.chapter-card h3 {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--text-heading);
+    margin: 0 0 8px;
+    line-height: 1.4;
+}
+
+.chapter-card .card-meta {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+}
+
+.chapter-card .card-desc {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============================================================
+   SEARCH PAGE
+   ============================================================ */
+.search-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    margin-top: var(--nav-height);
+}
+
+.search-container h1 {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding: 14px 48px 14px 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    color: var(--text-body);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.search-input-wrapper input:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
+}
+
+.search-input-wrapper input::placeholder {
+    color: var(--text-dim);
+}
+
+.search-input-wrapper .search-icon {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
+.search-results {
+    list-style: none;
+}
+
+.search-result-item {
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.search-result-item:hover {
+    border-color: var(--accent-gold);
+}
+
+.search-result-item .result-title {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    color: var(--accent-gold);
+    margin-bottom: 4px;
+}
+
+.search-result-item .result-chapter {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+}
+
+.search-result-item .result-snippet {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.search-result-item mark {
+    background: rgba(201, 169, 110, 0.2);
+    color: var(--accent-gold);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* No results */
+.search-empty {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--text-dim);
+    font-family: var(--font-sans);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+    margin-top: auto;
+    padding: 28px 24px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+footer p {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    margin: 0;
+    text-align: center;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING (Dark Theme)
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-deepest);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dim);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--bg-deepest);
+}
+
+/* ============================================================
+   UTILITY / MISC
+   ============================================================ */
+
+/* Smooth transitions (global where useful) */
+a, button, .chapter-card, .astro-entity, .top-nav, .search-result-item {
+    transition: all 0.2s ease;
+}
+
+/* Selection highlight */
+::selection {
+    background: rgba(201, 169, 110, 0.25);
+    color: var(--text-heading);
+}
+
+/* ============================================================
+   KNOWLEDGE GRAPH / VISUALIZATION PAGES (kg/*)
+   ============================================================ */
+.kg-container {
+    margin-top: var(--nav-height);
+    padding: 40px 24px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.kg-container h1 {
+    text-align: center;
+    color: var(--accent-gold);
+    margin-bottom: 32px;
+}
+
+.kg-frame {
+    width: 100%;
+    height: calc(100vh - 200px);
+    min-height: 500px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+/* ============================================================
+   RESPONSIVE BREAKPOINTS
+   ============================================================ */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 240px;
+        --max-readable: 100%;
+    }
+
+    /* --- Top Nav --- */
+    .nav-inner {
+        padding: 0 12px;
+    }
+
+    .nav-logo {
+        font-size: 1rem;
+    }
+
+    .nav-links {
+        gap: 0;
+    }
+
+    .nav-links a {
+        font-size: 0.8rem;
+        padding: 6px 8px;
+    }
+
+    /* --- Chapter Layout: stack sidebar above content --- */
+    .chapter-container {
+        flex-direction: column;
+    }
+
+    .chapter-sidebar {
+        position: relative;
+        top: 0;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 16px 0;
+    }
+
+    .chapter-sidebar h3 {
+        padding: 0 16px 12px;
+    }
+
+    .chapter-list a {
+        padding: 7px 16px;
+        font-size: 0.8rem;
+    }
+
+    /* --- Chapter Content --- */
+    .chapter-content {
+        padding: 24px 16px 40px;
+    }
+
+    .chapter-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .chapter-body {
+        font-size: 1rem;
+        line-height: 1.9;
+    }
+
+    .chapter-body p {
+        text-indent: 1.5em;
+    }
+
+    /* --- Homepage --- */
+    .hero-section {
+        padding: 48px 16px 40px;
+    }
+
+    .hero-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .hero-section .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .hero-section .hero-search input {
+        width: 180px;
+    }
+
+    .chapters-grid {
+        grid-template-columns: 1fr;
+        padding: 32px 16px;
+    }
+
+    .chapters-grid-title {
+        font-size: 1.25rem;
+        margin-top: 32px;
+    }
+
+    /* --- Search --- */
+    .search-container {
+        padding: 32px 16px;
+    }
+
+    /* --- Footer --- */
+    footer {
+        padding: 20px 16px;
+    }
+
+    footer p {
+        font-size: 0.75rem;
+    }
+}
+
+/* Extra-small screens */
+@media (max-width: 480px) {
+    .nav-links a {
+        font-size: 0.72rem;
+        padding: 4px 6px;
+    }
+
+    .chapter-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .chapter-body {
+        font-size: 0.95rem;
+    }
+
+    .hero-section h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-section .hero-search {
+        flex-direction: column;
+        background: transparent;
+        border: none;
+        padding: 0;
+        gap: 12px;
+    }
+
+    .hero-section .hero-search input {
+        width: 100%;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+    }
+
+    .hero-section .hero-search button {
+        width: 100%;
+        border-radius: var(--radius);
+    }
+}

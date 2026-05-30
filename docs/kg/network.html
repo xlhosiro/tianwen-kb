@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关系网络 · 古天文知识图谱</title>
+<style>
+:root {
+  --bg: #06080f;
+  --surface: #0d1117;
+  --text: #c8c0a8;
+  --gold: #c4a35a;
+  --gold-bright: #e0c878;
+  --jade: #4a9b8e;
+  --steel: #6b8db5;
+  --coral: #c46b5a;
+  --purple: #8b6baf;
+  --star-glow: #e8dcc8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% 50%, #0d1520 0%, #06080f 60%),
+    radial-gradient(1px 1px at 15% 20%, rgba(255,255,255,0.12), transparent),
+    radial-gradient(1px 1px at 75% 15%, rgba(255,255,255,0.09), transparent),
+    radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.11), transparent),
+    radial-gradient(1px 1px at 85% 70%, rgba(255,255,255,0.07), transparent),
+    radial-gradient(1px 1px at 25% 80%, rgba(255,255,255,0.08), transparent),
+    radial-gradient(1px 1px at 60% 35%, rgba(255,255,255,0.06), transparent);
+  color: var(--text);
+  font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', 'KaiTi', serif;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  background: rgba(6,8,15,0.94);
+  border-bottom: 1px solid rgba(196,163,90,0.18);
+  padding: 12px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(12px);
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--gold);
+  letter-spacing: 4px;
+}
+.header h1 span { color: #8a8070; font-size: 14px; letter-spacing: 2px; }
+.header nav { display:flex; gap:24px; }
+.header nav a {
+  color: var(--text); text-decoration: none;
+  font-size: 14px; letter-spacing: 2px;
+  transition: color 0.3s;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+.header nav a:hover { color: var(--gold); }
+
+/* Main SVG container */
+.graph-container {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+svg {
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  max-height: 1000px;
+}
+
+/* Edge lines */
+.edge-line {
+  stroke: rgba(196,163,90,0.18);
+  stroke-width: 1.2;
+  fill: none;
+  transition: stroke 0.4s, stroke-width 0.4s;
+  pointer-events: none;
+}
+.edge-line.highlight {
+  stroke: rgba(196,163,90,0.7);
+  stroke-width: 2;
+}
+
+/* Node groups */
+.node-group { cursor: pointer; }
+.node-group .node-bg {
+  transition: fill 0.3s, opacity 0.3s;
+}
+.node-group .node-ring {
+  fill: none;
+  stroke-width: 1.2;
+  transition: all 0.4s;
+}
+.node-group:hover .node-ring {
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+.node-group:hover .node-label {
+  fill: var(--star-glow);
+  font-weight: 500;
+}
+
+.node-label {
+  font-size: 13px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: var(--text);
+  transition: fill 0.3s;
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 2px;
+}
+
+.node-sub {
+  font-size: 9px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  fill: #6b7490;
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 1.5px;
+}
+
+/* Center node */
+.center-node .center-ring-outer {
+  fill: none;
+  stroke: rgba(196,163,90,0.3);
+  stroke-width: 1;
+}
+.center-node .center-ring-inner {
+  fill: none;
+  stroke: rgba(196,163,90,0.5);
+  stroke-width: 1.5;
+}
+.center-node .center-text {
+  font-size: 22px;
+  fill: var(--gold);
+  text-anchor: middle;
+  dominant-baseline: central;
+  letter-spacing: 6px;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+}
+
+/* Edge label */
+.edge-label {
+  font-size: 10px;
+  fill: #6b7490;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 1.5px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+.highlight-group .edge-label { opacity: 1; fill: var(--gold); }
+
+/* Info panel */
+.info-panel {
+  position: fixed;
+  right: 24px;
+  top: 100px;
+  width: 280px;
+  background: rgba(13,17,23,0.94);
+  border: 1px solid rgba(196,163,90,0.2);
+  border-radius: 10px;
+  padding: 20px;
+  z-index: 90;
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.4s;
+  pointer-events: none;
+}
+.info-panel.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+.info-panel h3 {
+  font-size: 18px;
+  color: var(--gold);
+  margin-bottom: 4px;
+  font-weight: 400;
+  letter-spacing: 2px;
+}
+.info-panel .info-type {
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.info-panel .info-desc {
+  font-size: 13px;
+  color: #8a8070;
+  line-height: 1.7;
+}
+.info-panel .info-close {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: none; border: none;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+.info-panel .info-close:hover { color: var(--gold); }
+
+/* Legend */
+.legend {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 90;
+  background: rgba(6,8,15,0.88);
+  padding: 10px 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.06);
+  backdrop-filter: blur(8px);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #8a8070;
+  letter-spacing: 1px;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+}
+.legend-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* Tooltip highlight arcs */
+.highlight-arc {
+  fill: none;
+  stroke: rgba(196,163,90,0.25);
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
+}
+
+/* Pulse animation on center */
+@keyframes centerPulse {
+  0%,100% { r: 40; opacity: 0.3; }
+  50% { r: 52; opacity: 0.05; }
+}
+.center-pulse {
+  fill: none;
+  stroke: rgba(196,163,90,0.5);
+  stroke-width: 0.8;
+  animation: centerPulse 4s ease-in-out infinite;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header { padding: 10px 16px; }
+  .header h1 { font-size: 16px; letter-spacing: 2px; }
+  .info-panel { right: 8px; width: 240px; }
+  .legend { bottom: 12px; gap: 8px; padding: 8px 14px; }
+  .legend-item { font-size: 10px; gap: 3px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>关系网络<span> · 古天文知识图谱</span></h1>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="starmap.html">星图</a>
+    <a href="timeline.html">时间线</a>
+    <a href="../search.html">检索</a>
+  </nav>
+</header>
+
+<div class="graph-container">
+  <svg viewBox="0 0 1400 1000" xmlns="http://www.w3.org/2000/svg" id="graph">
+
+    <defs>
+      <!-- Glow filters -->
+      <filter id="glowCoral" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glowJade" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glowGold" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glowSteel" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <filter id="glowPurple" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+
+      <!-- Radial gradients for background -->
+      <radialGradient id="bgGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(196,163,90,0.04)"/>
+        <stop offset="50%" stop-color="rgba(196,163,90,0.01)"/>
+        <stop offset="100%" stop-color="transparent"/>
+      </radialGradient>
+
+      <!-- Arrow marker -->
+      <marker id="arrowGold" viewBox="0 0 8 6" refX="8" refY="3" markerWidth="6" markerHeight="4" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="rgba(196,163,90,0.5)"/>
+      </marker>
+    </defs>
+
+    <!-- Background circles -->
+    <circle cx="700" cy="500" r="420" fill="url(#bgGlow)"/>
+    <circle cx="700" cy="500" r="300" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    <circle cx="700" cy="500" r="200" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    <circle cx="700" cy="500" r="100" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="0.5" stroke-dasharray="4 8"/>
+
+    <!-- ==================== EDGES ==================== -->
+    <g id="edges">
+      <!-- From center 古天文 to category hubs -->
+      <line x1="700" y1="500" x2="320" y2="360" class="edge-line" id="edge-center-phenomena"/>
+      <line x1="700" y1="500" x2="1080" y2="360" class="edge-line" id="edge-center-stars"/>
+      <line x1="700" y1="500" x2="700" y2="220" class="edge-line" id="edge-center-people"/>
+      <line x1="700" y1="500" x2="1080" y2="680" class="edge-line" id="edge-center-instruments"/>
+      <line x1="700" y1="500" x2="320" y2="720" class="edge-line" id="edge-center-theories"/>
+      <line x1="700" y1="500" x2="700" y2="800" class="edge-line" id="edge-center-books"/>
+
+      <!-- Phenomena connections -->
+      <line x1="320" y1="360" x2="180" y2="280" class="edge-line" id="edge-eclipse"/>
+      <line x1="320" y1="360" x2="240" y2="240" class="edge-line"/>
+      <line x1="320" y1="360" x2="440" y2="240" class="edge-line"/>
+      <line x1="320" y1="360" x2="480" y2="320" class="edge-line"/>
+      <line x1="320" y1="360" x2="200" y2="380" class="edge-line"/>
+      <line x1="320" y1="360" x2="280" y2="460" class="edge-line"/>
+
+      <!-- Star officials connections -->
+      <line x1="1080" y1="360" x2="960" y2="260" class="edge-line"/>
+      <line x1="1080" y1="360" x2="1100" y2="250" class="edge-line"/>
+      <line x1="1080" y1="360" x2="1180" y2="300" class="edge-line"/>
+      <line x1="1080" y1="360" x2="1020" y2="440" class="edge-line"/>
+      <line x1="1080" y1="360" x2="1140" y2="440" class="edge-line"/>
+
+      <!-- People connections -->
+      <line x1="700" y1="220" x2="560" y2="120" class="edge-line"/>
+      <line x1="700" y1="220" x2="680" y2="110" class="edge-line"/>
+      <line x1="700" y1="220" x2="800" y2="110" class="edge-line"/>
+      <line x1="700" y1="220" x2="840" y2="160" class="edge-line"/>
+      <line x1="700" y1="220" x2="560" y2="180" class="edge-line"/>
+      <line x1="700" y1="220" x2="580" y2="280" class="edge-line"/>
+
+      <!-- Instruments connections -->
+      <line x1="1080" y1="680" x2="980" y2="600" class="edge-line"/>
+      <line x1="1080" y1="680" x2="1120" y2="600" class="edge-line"/>
+      <line x1="1080" y1="680" x2="1180" y2="680" class="edge-line"/>
+      <line x1="1080" y1="680" x2="1020" y2="760" class="edge-line"/>
+      <line x1="1080" y1="680" x2="1140" y2="770" class="edge-line"/>
+
+      <!-- Theories connections -->
+      <line x1="320" y1="720" x2="200" y2="660" class="edge-line"/>
+      <line x1="320" y1="720" x2="240" y2="780" class="edge-line"/>
+      <line x1="320" y1="720" x2="380" y2="810" class="edge-line"/>
+      <line x1="320" y1="720" x2="440" y2="760" class="edge-line"/>
+
+      <!-- Books connections -->
+      <line x1="700" y1="800" x2="600" y2="900" class="edge-line"/>
+      <line x1="700" y1="800" x2="740" y2="900" class="edge-line"/>
+      <line x1="700" y1="800" x2="830" y2="880" class="edge-line"/>
+      <line x1="700" y1="800" x2="570" y2="880" class="edge-line"/>
+      <line x1="700" y1="800" x2="680" y2="940" class="edge-line"/>
+
+      <!-- Cross-category edges -->
+      <!-- 张衡 -> 浑天仪 -->
+      <line x1="680" y1="110" x2="1120" y2="600" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 张衡 -> 浑天说 -->
+      <line x1="680" y1="110" x2="240" y2="780" class="edge-line" stroke="rgba(139,107,175,0.12)" stroke-dasharray="4 4"/>
+      <!-- 郭守敬 -> 简仪 -->
+      <line x1="800" y1="110" x2="1180" y2="680" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 郭守敬 -> 授时历 -->
+      <line x1="800" y1="110" x2="830" y2="880" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 苏颂 -> 水运仪象台 -->
+      <line x1="560" y1="180" x2="980" y2="600" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 司马迁 -> 史记天官书 -->
+      <line x1="840" y1="160" x2="600" y2="900" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 祖冲之 -> 岁差 -->
+      <line x1="580" y1="280" x2="200" y2="660" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 僧一行 -> 大衍历 -->
+      <line x1="560" y1="120" x2="570" y2="880" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 利玛窦/徐光启 -> 崇祯历书 -->
+      <line x1="700" y1="300" x2="740" y2="900" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 甘德/石申 -> 甘石星经 -->
+      <line x1="620" y1="260" x2="680" y2="940" class="edge-line" stroke="rgba(196,163,90,0.1)" stroke-dasharray="4 4"/>
+      <!-- 沈括 -> 梦溪笔谈(through books) -->
+      <line x1="620" y1="260" x2="740" y2="900" class="edge-line" stroke="rgba(196,163,90,0.08)" stroke-dasharray="4 4"/>
+
+      <!-- Phenomena -> Books 日食 -> 汉书天文志 -->
+      <line x1="180" y1="280" x2="600" y2="900" class="edge-line" stroke="rgba(196,107,90,0.08)" stroke-dasharray="4 6"/>
+      <!-- 客星 -> 宋史天文志 -->
+      <line x1="480" y1="320" x2="740" y2="900" class="edge-line" stroke="rgba(196,107,90,0.08)" stroke-dasharray="4 6"/>
+    </g>
+
+    <!-- ==================== EDGE LABELS ==================== -->
+    <g id="edge-labels" opacity="0.5">
+      <text x="510" y="420" class="edge-label">包含</text>
+      <text x="900" y="420" class="edge-label">构成</text>
+      <text x="700" y="360" class="edge-label">研究</text>
+      <text x="900" y="590" class="edge-label">制造</text>
+      <text x="500" y="620" class="edge-label">奠基</text>
+      <text x="700" y="660" class="edge-label">记录</text>
+    </g>
+
+    <!-- ==================== CATEGORY HUBS (ring 1) ==================== -->
+    <!-- 天象 Hub -->
+    <g class="node-group" data-id="phenomena" data-cat="phenomena" onclick="showInfo('phenomena')">
+      <circle cx="320" cy="360" r="32" fill="rgba(196,107,90,0.1)"/>
+      <circle cx="320" cy="360" r="32" fill="none" stroke="#c46b5a" stroke-width="1.5" class="node-ring"/>
+      <text x="320" y="354" class="node-label" fill="#e8a090">天象</text>
+      <text x="320" y="374" class="node-sub">Phenomena</text>
+    </g>
+
+    <!-- 星官 Hub -->
+    <g class="node-group" data-id="stars" data-cat="stars" onclick="showInfo('stars')">
+      <circle cx="1080" cy="360" r="32" fill="rgba(74,155,142,0.1)"/>
+      <circle cx="1080" cy="360" r="32" fill="none" stroke="#4a9b8e" stroke-width="1.5" class="node-ring"/>
+      <text x="1080" y="354" class="node-label" fill="#80c8bc">星官</text>
+      <text x="1080" y="374" class="node-sub">Stars</text>
+    </g>
+
+    <!-- 人物 Hub -->
+    <g class="node-group" data-id="people" data-cat="people" onclick="showInfo('people')">
+      <circle cx="700" cy="220" r="34" fill="rgba(196,163,90,0.1)"/>
+      <circle cx="700" cy="220" r="34" fill="none" stroke="#c4a35a" stroke-width="1.5" class="node-ring"/>
+      <text x="700" y="214" class="node-label" fill="#e0c878">人物</text>
+      <text x="700" y="234" class="node-sub">Astronomers</text>
+    </g>
+
+    <!-- 仪器 Hub -->
+    <g class="node-group" data-id="instruments" data-cat="instruments" onclick="showInfo('instruments')">
+      <circle cx="1080" cy="680" r="30" fill="rgba(107,141,181,0.1)"/>
+      <circle cx="1080" cy="680" r="30" fill="none" stroke="#6b8db5" stroke-width="1.5" class="node-ring"/>
+      <text x="1080" y="674" class="node-label" fill="#a0c0e0">仪器</text>
+      <text x="1080" y="694" class="node-sub">Instruments</text>
+    </g>
+
+    <!-- 理论 Hub -->
+    <g class="node-group" data-id="theories" data-cat="theories" onclick="showInfo('theories')">
+      <circle cx="320" cy="720" r="30" fill="rgba(139,107,175,0.1)"/>
+      <circle cx="320" cy="720" r="30" fill="none" stroke="#8b6baf" stroke-width="1.5" class="node-ring"/>
+      <text x="320" y="714" class="node-label" fill="#b898d8">理论</text>
+      <text x="320" y="734" class="node-sub">Theories</text>
+    </g>
+
+    <!-- 文献 Hub -->
+    <g class="node-group" data-id="books" data-cat="books" onclick="showInfo('books')">
+      <circle cx="700" cy="800" r="30" fill="rgba(200,168,130,0.1)"/>
+      <circle cx="700" cy="800" r="30" fill="none" stroke="#c8a882" stroke-width="1.5" class="node-ring"/>
+      <text x="700" y="794" class="node-label" fill="#dcc8a8">文献</text>
+      <text x="700" y="814" class="node-sub">Books</text>
+    </g>
+
+    <!-- ==================== LEAF NODES (ring 2) ==================== -->
+    <!-- Phenomena leaves -->
+    <g class="node-group" data-id="solar_eclipse" data-cat="phenomena" onclick="showInfo('solar_eclipse')">
+      <circle cx="180" cy="280" r="18" fill="rgba(196,107,90,0.15)" class="node-bg"/>
+      <circle cx="180" cy="280" r="18" fill="none" stroke="#c46b5a" stroke-width="1.2" class="node-ring"/>
+      <text x="180" y="280" class="node-label" style="font-size:11px">日食</text>
+    </g>
+    <g class="node-group" data-id="lunar_eclipse" data-cat="phenomena" onclick="showInfo('lunar_eclipse')">
+      <circle cx="240" cy="240" r="16" fill="rgba(196,107,90,0.15)" class="node-bg"/>
+      <circle cx="240" cy="240" r="16" fill="none" stroke="#c46b5a" stroke-width="1.2" class="node-ring"/>
+      <text x="240" y="240" class="node-label" style="font-size:11px">月食</text>
+    </g>
+    <g class="node-group" data-id="comet" data-cat="phenomena" onclick="showInfo('comet')">
+      <circle cx="440" cy="240" r="17" fill="rgba(196,107,90,0.15)" class="node-bg"/>
+      <circle cx="440" cy="240" r="17" fill="none" stroke="#c46b5a" stroke-width="1.2" class="node-ring"/>
+      <text x="440" y="240" class="node-label" style="font-size:11px">彗星</text>
+    </g>
+    <g class="node-group" data-id="guest_star" data-cat="phenomena" onclick="showInfo('guest_star')">
+      <circle cx="480" cy="320" r="20" fill="rgba(196,107,90,0.2)" class="node-bg"/>
+      <circle cx="480" cy="320" r="20" fill="none" stroke="#c8a050" stroke-width="1.5" class="node-ring"/>
+      <text x="480" y="316" class="node-label" style="font-size:11px">客星</text>
+      <text x="480" y="332" class="node-sub">Supernova</text>
+    </g>
+    <g class="node-group" data-id="five_planets" data-cat="phenomena" onclick="showInfo('five_planets')">
+      <circle cx="200" cy="380" r="16" fill="rgba(196,107,90,0.15)" class="node-bg"/>
+      <circle cx="200" cy="380" r="16" fill="none" stroke="#c46b5a" stroke-width="1.2" class="node-ring"/>
+      <text x="200" y="380" class="node-label" style="font-size:11px">五星连珠</text>
+    </g>
+    <g class="node-group" data-id="meteor" data-cat="phenomena" onclick="showInfo('meteor')">
+      <circle cx="280" cy="460" r="14" fill="rgba(196,107,90,0.12)" class="node-bg"/>
+      <circle cx="280" cy="460" r="14" fill="none" stroke="#c46b5a" stroke-width="1.2" class="node-ring"/>
+      <text x="280" y="460" class="node-label" style="font-size:11px">流星</text>
+    </g>
+
+    <!-- Star officials leaves -->
+    <g class="node-group" data-id="three_enclosures" data-cat="stars" onclick="showInfo('three_enclosures')">
+      <circle cx="960" cy="260" r="18" fill="rgba(74,155,142,0.15)" class="node-bg"/>
+      <circle cx="960" cy="260" r="18" fill="none" stroke="#4a9b8e" stroke-width="1.2" class="node-ring"/>
+      <text x="960" y="260" class="node-label" style="font-size:11px">三垣</text>
+    </g>
+    <g class="node-group" data-id="28_mansions" data-cat="stars" onclick="showInfo('28_mansions')">
+      <circle cx="1100" cy="250" r="19" fill="rgba(74,155,142,0.15)" class="node-bg"/>
+      <circle cx="1100" cy="250" r="19" fill="none" stroke="#4a9b8e" stroke-width="1.2" class="node-ring"/>
+      <text x="1100" y="250" class="node-label" style="font-size:11px">二十八宿</text>
+    </g>
+    <g class="node-group" data-id="big_dipper" data-cat="stars" onclick="showInfo('big_dipper')">
+      <circle cx="1180" cy="300" r="17" fill="rgba(74,155,142,0.15)" class="node-bg"/>
+      <circle cx="1180" cy="300" r="17" fill="none" stroke="#4a9b8e" stroke-width="1.2" class="node-ring"/>
+      <text x="1180" y="300" class="node-label" style="font-size:11px">北斗七星</text>
+    </g>
+    <g class="node-group" data-id="ziwei" data-cat="stars" onclick="showInfo('ziwei')">
+      <circle cx="1020" cy="440" r="14" fill="rgba(74,155,142,0.12)" class="node-bg"/>
+      <circle cx="1020" cy="440" r="14" fill="none" stroke="#8b6baf" stroke-width="1.2" class="node-ring"/>
+      <text x="1020" y="440" class="node-label" style="font-size:11px">紫微垣</text>
+    </g>
+    <g class="node-group" data-id="four_symbols" data-cat="stars" onclick="showInfo('four_symbols')">
+      <circle cx="1140" cy="440" r="15" fill="rgba(74,155,142,0.12)" class="node-bg"/>
+      <circle cx="1140" cy="440" r="15" fill="none" stroke="#4a9b8e" stroke-width="1.2" class="node-ring"/>
+      <text x="1140" y="440" class="node-label" style="font-size:11px">四象</text>
+    </g>
+
+    <!-- People leaves row 1 -->
+    <g class="node-group" data-id="zhang_heng" data-cat="people" onclick="showInfo('zhang_heng')">
+      <circle cx="680" cy="110" r="20" fill="rgba(196,163,90,0.18)" class="node-bg"/>
+      <circle cx="680" cy="110" r="20" fill="none" stroke="#c4a35a" stroke-width="1.8" class="node-ring"/>
+      <text x="680" y="110" class="node-label" style="font-size:13px">张衡</text>
+    </g>
+    <g class="node-group" data-id="guo_shoujing" data-cat="people" onclick="showInfo('guo_shoujing')">
+      <circle cx="800" cy="110" r="19" fill="rgba(196,163,90,0.18)" class="node-bg"/>
+      <circle cx="800" cy="110" r="19" fill="none" stroke="#c4a35a" stroke-width="1.8" class="node-ring"/>
+      <text x="800" y="110" class="node-label" style="font-size:13px">郭守敬</text>
+    </g>
+    <g class="node-group" data-id="sima_qian" data-cat="people" onclick="showInfo('sima_qian')">
+      <circle cx="840" cy="160" r="17" fill="rgba(196,163,90,0.15)" class="node-bg"/>
+      <circle cx="840" cy="160" r="17" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="840" y="160" class="node-label" style="font-size:12px">司马迁</text>
+    </g>
+    <g class="node-group" data-id="su_song" data-cat="people" onclick="showInfo('su_song')">
+      <circle cx="560" cy="180" r="16" fill="rgba(196,163,90,0.15)" class="node-bg"/>
+      <circle cx="560" cy="180" r="16" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="560" y="180" class="node-label" style="font-size:12px">苏颂</text>
+    </g>
+    <g class="node-group" data-id="yi_xing" data-cat="people" onclick="showInfo('yi_xing')">
+      <circle cx="560" cy="120" r="16" fill="rgba(196,163,90,0.15)" class="node-bg"/>
+      <circle cx="560" cy="120" r="16" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="560" y="120" class="node-label" style="font-size:12px">僧一行</text>
+    </g>
+
+    <!-- People leaves row 2 -->
+    <g class="node-group" data-id="zu_chongzhi" data-cat="people" onclick="showInfo('zu_chongzhi')">
+      <circle cx="580" cy="280" r="15" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="580" cy="280" r="15" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="580" y="280" class="node-label" style="font-size:12px">祖冲之</text>
+    </g>
+    <g class="node-group" data-id="shen_kuo" data-cat="people" onclick="showInfo('shen_kuo')">
+      <circle cx="620" cy="260" r="15" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="620" cy="260" r="15" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="620" y="260" class="node-label" style="font-size:12px">沈括</text>
+    </g>
+    <g class="node-group" data-id="matteo_ricci" data-cat="people" onclick="showInfo('matteo_ricci')">
+      <circle cx="700" cy="300" r="16" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="700" cy="300" r="16" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring" stroke-dasharray="3 2"/>
+      <text x="700" y="295" class="node-label" style="font-size:11px">利玛窦</text>
+      <text x="700" y="308" class="node-sub">Matteo Ricci</text>
+    </g>
+    <g class="node-group" data-id="xu_guangqi" data-cat="people" onclick="showInfo('xu_guangqi')">
+      <circle cx="740" cy="280" r="14" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="740" cy="280" r="14" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="740" y="280" class="node-label" style="font-size:11px">徐光启</text>
+    </g>
+    <g class="node-group" data-id="gan_de" data-cat="people" onclick="showInfo('gan_de')">
+      <circle cx="600" cy="320" r="14" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="600" cy="320" r="14" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="600" y="320" class="node-label" style="font-size:11px">甘德</text>
+    </g>
+    <g class="node-group" data-id="shi_shen" data-cat="people" onclick="showInfo('shi_shen')">
+      <circle cx="650" cy="340" r="14" fill="rgba(196,163,90,0.12)" class="node-bg"/>
+      <circle cx="650" cy="340" r="14" fill="none" stroke="#c4a35a" stroke-width="1.2" class="node-ring"/>
+      <text x="650" y="340" class="node-label" style="font-size:11px">石申</text>
+    </g>
+
+    <!-- Instruments leaves -->
+    <g class="node-group" data-id="armillary" data-cat="instruments" onclick="showInfo('armillary')">
+      <circle cx="980" cy="600" r="20" fill="rgba(107,141,181,0.18)" class="node-bg"/>
+      <circle cx="980" cy="600" r="20" fill="none" stroke="#6b8db5" stroke-width="1.8" class="node-ring"/>
+      <text x="980" y="596" class="node-label" style="font-size:12px">浑天仪</text>
+      <text x="980" y="612" class="node-sub">Armillary</text>
+    </g>
+    <g class="node-group" data-id="jianyi" data-cat="instruments" onclick="showInfo('jianyi')">
+      <circle cx="1180" cy="680" r="17" fill="rgba(107,141,181,0.15)" class="node-bg"/>
+      <circle cx="1180" cy="680" r="17" fill="none" stroke="#6b8db5" stroke-width="1.5" class="node-ring"/>
+      <text x="1180" y="680" class="node-label" style="font-size:12px">简仪</text>
+    </g>
+    <g class="node-group" data-id="water_clock_tower" data-cat="instruments" onclick="showInfo('water_clock_tower')">
+      <circle cx="1020" cy="760" r="19" fill="rgba(107,141,181,0.18)" class="node-bg"/>
+      <circle cx="1020" cy="760" r="19" fill="none" stroke="#6b8db5" stroke-width="1.8" class="node-ring"/>
+      <text x="1020" y="754" class="node-label" style="font-size:11px">水运仪象台</text>
+      <text x="1020" y="770" class="node-sub">Clock Tower</text>
+    </g>
+    <g class="node-group" data-id="guibiao" data-cat="instruments" onclick="showInfo('guibiao')">
+      <circle cx="1120" cy="600" r="14" fill="rgba(107,141,181,0.12)" class="node-bg"/>
+      <circle cx="1120" cy="600" r="14" fill="none" stroke="#6b8db5" stroke-width="1.2" class="node-ring"/>
+      <text x="1120" y="600" class="node-label" style="font-size:11px">圭表</text>
+    </g>
+    <g class="node-group" data-id="clepsydra" data-cat="instruments" onclick="showInfo('clepsydra')">
+      <circle cx="1140" cy="770" r="14" fill="rgba(107,141,181,0.12)" class="node-bg"/>
+      <circle cx="1140" cy="770" r="14" fill="none" stroke="#6b8db5" stroke-width="1.2" class="node-ring"/>
+      <text x="1140" y="770" class="node-label" style="font-size:11px">漏刻</text>
+    </g>
+
+    <!-- Theories leaves -->
+    <g class="node-group" data-id="huntian_theory" data-cat="theories" onclick="showInfo('huntian_theory')">
+      <circle cx="200" cy="660" r="18" fill="rgba(139,107,175,0.18)" class="node-bg"/>
+      <circle cx="200" cy="660" r="18" fill="none" stroke="#8b6baf" stroke-width="1.8" class="node-ring"/>
+      <text x="200" y="660" class="node-label" style="font-size:13px">浑天说</text>
+    </g>
+    <g class="node-group" data-id="gaitian_theory" data-cat="theories" onclick="showInfo('gaitian_theory')">
+      <circle cx="240" cy="780" r="15" fill="rgba(139,107,175,0.12)" class="node-bg"/>
+      <circle cx="240" cy="780" r="15" fill="none" stroke="#8b6baf" stroke-width="1.2" class="node-ring"/>
+      <text x="240" y="780" class="node-label" style="font-size:12px">盖天说</text>
+    </g>
+    <g class="node-group" data-id="xuanye_theory" data-cat="theories" onclick="showInfo('xuanye_theory')">
+      <circle cx="380" cy="810" r="14" fill="rgba(139,107,175,0.12)" class="node-bg"/>
+      <circle cx="380" cy="810" r="14" fill="none" stroke="#8b6baf" stroke-width="1.2" class="node-ring"/>
+      <text x="380" y="810" class="node-label" style="font-size:12px">宣夜说</text>
+    </g>
+    <g class="node-group" data-id="precession" data-cat="theories" onclick="showInfo('precession')">
+      <circle cx="440" cy="760" r="16" fill="rgba(139,107,175,0.15)" class="node-bg"/>
+      <circle cx="440" cy="760" r="16" fill="none" stroke="#8b6baf" stroke-width="1.2" class="node-ring"/>
+      <text x="440" y="760" class="node-label" style="font-size:12px">岁差</text>
+    </g>
+
+    <!-- Books leaves -->
+    <g class="node-group" data-id="shiji" data-cat="books" onclick="showInfo('shiji')">
+      <circle cx="600" cy="900" r="18" fill="rgba(200,168,130,0.15)" class="node-bg"/>
+      <circle cx="600" cy="900" r="18" fill="none" stroke="#c8a882" stroke-width="1.5" class="node-ring"/>
+      <text x="600" y="896" class="node-label" style="font-size:11px">史记天官书</text>
+      <text x="600" y="912" class="node-sub">～90 BC</text>
+    </g>
+    <g class="node-group" data-id="gan_shi" data-cat="books" onclick="showInfo('gan_shi')">
+      <circle cx="680" cy="940" r="16" fill="rgba(200,168,130,0.15)" class="node-bg"/>
+      <circle cx="680" cy="940" r="16" fill="none" stroke="#c8a882" stroke-width="1.2" class="node-ring"/>
+      <text x="680" y="940" class="node-label" style="font-size:11px">甘石星经</text>
+    </g>
+    <g class="node-group" data-id="hanshu" data-cat="books" onclick="showInfo('hanshu')">
+      <circle cx="570" cy="880" r="15" fill="rgba(200,168,130,0.12)" class="node-bg"/>
+      <circle cx="570" cy="880" r="15" fill="none" stroke="#c8a882" stroke-width="1.2" class="node-ring"/>
+      <text x="570" y="880" class="node-label" style="font-size:11px">汉书天文志</text>
+    </g>
+    <g class="node-group" data-id="xin_yixiang" data-cat="books" onclick="showInfo('xin_yixiang')">
+      <circle cx="830" cy="880" r="15" fill="rgba(200,168,130,0.12)" class="node-bg"/>
+      <circle cx="830" cy="880" r="15" fill="none" stroke="#c8a882" stroke-width="1.2" class="node-ring"/>
+      <text x="830" y="880" class="node-label" style="font-size:11px">新仪象法要</text>
+    </g>
+    <g class="node-group" data-id="chongzhen" data-cat="books" onclick="showInfo('chongzhen')">
+      <circle cx="740" cy="900" r="18" fill="rgba(200,168,130,0.18)" class="node-bg"/>
+      <circle cx="740" cy="900" r="18" fill="none" stroke="#c8a882" stroke-width="1.5" class="node-ring"/>
+      <text x="740" y="896" class="node-label" style="font-size:11px">崇祯历书</text>
+      <text x="740" y="912" class="node-sub">1634</text>
+    </g>
+
+    <!-- ==================== CENTER NODE ==================== -->
+    <g id="center-node" class="center-node">
+      <!-- Pulses -->
+      <circle cx="700" cy="500" r="42" class="center-pulse" style="animation-delay:0s"/>
+      <circle cx="700" cy="500" r="42" class="center-pulse" style="animation-delay:1.5s"/>
+      <circle cx="700" cy="500" r="42" class="center-pulse" style="animation-delay:3s"/>
+      <!-- Outer decorative ring -->
+      <circle cx="700" cy="500" r="48" class="center-ring-outer"/>
+      <circle cx="700" cy="500" r="44" class="center-ring-outer" stroke-dasharray="6 12" opacity="0.5"/>
+      <!-- Main circle -->
+      <circle cx="700" cy="500" r="38" fill="rgba(196,163,90,0.08)" class="center-ring-inner"/>
+      <circle cx="700" cy="500" r="38" fill="none" stroke="#c4a35a" stroke-width="2" class="center-ring-inner"/>
+      <text x="700" y="495" class="center-text">古天文</text>
+      <text x="700" y="520" class="node-sub" style="font-size:9px;fill:#8a8070">Ancient Chinese Astronomy</text>
+    </g>
+
+    <!-- Decorative small stars scattered -->
+    <circle cx="500" cy="500" r="1.5" fill="rgba(255,255,255,0.15)" class="twinkle-slow"/>
+    <circle cx="900" cy="500" r="1.2" fill="rgba(255,255,255,0.12)"/>
+    <circle cx="700" cy="400" r="1" fill="rgba(255,255,255,0.1)"/>
+    <circle cx="500" cy="600" r="1.3" fill="rgba(255,255,255,0.12)"/>
+    <circle cx="900" cy="650" r="1" fill="rgba(255,255,255,0.08)"/>
+    <circle cx="620" cy="580" r="1.5" fill="rgba(255,255,255,0.14)"/>
+    <circle cx="780" cy="450" r="1.2" fill="rgba(255,255,255,0.1)"/>
+
+  </svg>
+</div>
+
+<!-- Info Panel -->
+<div class="info-panel" id="infoPanel">
+  <button class="info-close" onclick="closeInfo()">✕</button>
+  <h3 id="infoTitle"></h3>
+  <div class="info-type" id="infoType"></div>
+  <div class="info-desc" id="infoDesc"></div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><span class="legend-dot" style="background:#c46b5a;color:#c46b5a;"></span> 天象</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#4a9b8e;color:#4a9b8e;"></span> 星官</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#c4a35a;color:#c4a35a;"></span> 人物</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#6b8db5;color:#6b8db5;"></span> 仪器</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#8b6baf;color:#8b6baf;"></span> 理论</div>
+  <div class="legend-item"><span class="legend-dot" style="background:#c8a882;color:#c8a882;"></span> 文献</div>
+</div>
+
+<script>
+// Node information database
+const nodeInfo = {
+  'phenomena': {
+    title: '天象',
+    type: '观测现象 · 天文事件记录',
+    desc: '中国古代对日月食、彗星、客星(超新星)、五星运行、流星雨等天象进行了世界上最系统、最连续的记录。这些记录不仅是占星依据，更成为现代天体物理研究的珍贵历史数据。',
+    color: '#c46b5a'
+  },
+  'stars': {
+    title: '星官',
+    type: '恒星系统 · 星官与星宿',
+    desc: '中国古天文的恒星命名体系，以"星官"(星座)为基本单位，三垣二十八宿为核心框架。陈卓汇总的283星官1464星体系沿用千年，每个星官都有对应的人间官职或器物名称。',
+    color: '#4a9b8e'
+  },
+  'people': {
+    title: '天文学家',
+    type: '人物 · 历代天文家',
+    desc: '从甘德、石申到郭守敬、徐光启，中国古代天文学家创造了辉煌成就。张衡的浑天说与浑天仪、一行的大地测量、郭守敬的简仪与授时历，都是世界科学史上的丰碑。',
+    color: '#c4a35a'
+  },
+  'instruments': {
+    title: '天文仪器',
+    type: '观测工具 · 仪器制造',
+    desc: '中国天文仪器制作有着悠久传统。从简单的圭表、漏刻，到复杂的浑天仪、水运仪象台、简仪，代表了世界古代天文仪器制造的最高水平。苏颂的水运仪象台被誉为天文钟的祖先。',
+    color: '#6b8db5'
+  },
+  'theories': {
+    title: '天文理论',
+    type: '宇宙学说 · 理论体系',
+    desc: '中国古天文形成了盖天说、浑天说、宣夜说三大宇宙理论。浑天说以球形天地的观念最接近现代天文认知；宣夜说主张天体浮于无限虚空，在哲学深度上超越同时代。',
+    color: '#8b6baf'
+  },
+  'books': {
+    title: '天文文献',
+    type: '典籍 · 记录与传承',
+    desc: '从《史记·天官书》到《崇祯历书》，中国天文文献浩如烟海。历代正史中的天文志/律历志构成了世界上独一无二的连续天文记录体系，跨越两千余年未曾中断。',
+    color: '#c8a882'
+  },
+  'solar_eclipse': {
+    title: '日食',
+    type: '天象 · 太阳',
+    desc: '日食是古代最重要的天象之一。甲骨文中已有日食卜辞，《春秋》记载了37次日食。张衡在《灵宪》中正确解释日食为"月掩日"所致。历代正史天文志合计记载日食逾千次。',
+    color: '#c46b5a'
+  },
+  'lunar_eclipse': {
+    title: '月食',
+    type: '天象 · 月亮',
+    desc: '月食观测在中国有悠久历史。张衡指出"月光生于日之所照，魄生于日之所蔽"，正确认识到月食是地影遮月。历代对月食的时刻、方位、食分均有详细记录。',
+    color: '#c46b5a'
+  },
+  'comet': {
+    title: '彗星',
+    type: '天象 · 彗孛',
+    desc: '中国有世界上最丰富、最连续的彗星记录。《春秋》文公十四年(前613年)的哈雷彗星记录是最早的。马王堆帛书绘有29种彗星形态。历代记录彗星逾500次。',
+    color: '#c46b5a'
+  },
+  'guest_star': {
+    title: '客星',
+    type: '天象 · 超新星/新星',
+    desc: '"客星"是中国古代对新星和超新星的称呼。最著名的是SN 1054(天关客星)，其遗迹即蟹状星云。SN 185、SN 1006、SN 1181等均有明确记录，为现代天体物理学提供了关键数据。',
+    color: '#c8a050'
+  },
+  'five_planets': {
+    title: '五星连珠',
+    type: '天象 · 行星聚合',
+    desc: '五星连珠指金木水火土五行星在天空中聚于一宿或相邻区域。古代视为重大天象，《汉书》等记载了多次五星聚合。实际是多行星会合的罕见天文现象。',
+    color: '#c46b5a'
+  },
+  'meteor': {
+    title: '流星',
+    type: '天象 · 流星/陨石',
+    desc: '中国古代流星记录极为丰富，包括流星数量、颜色、声响、轨迹等。沈括在《梦溪笔谈》中科学地记录了陨石的成分和来源，否定了"天狗食日"等迷信说法。',
+    color: '#c46b5a'
+  },
+  'three_enclosures': {
+    title: '三垣',
+    type: '星官 · 紫微·太微·天市',
+    desc: '三垣是北天极附近三大星区：紫微垣(天帝居所)、太微垣(朝廷)、天市垣(市集)。三垣体系形成于战国至汉代，是中国天球坐标系统的核心框架之一。',
+    color: '#4a9b8e'
+  },
+  '28_mansions': {
+    title: '二十八宿',
+    type: '星官 · 月站系统',
+    desc: '二十八宿沿天赤道分布，分属四象(青龙、玄武、白虎、朱雀)，用于标定日月五星位置。体系在商周之际形成，是世界上最古老的恒星分区系统之一。',
+    color: '#4a9b8e'
+  },
+  'big_dipper': {
+    title: '北斗七星',
+    type: '星官 · 帝车',
+    desc: '北斗七星在古代天文中地位极高。《史记·天官书》称"斗为帝车，运于中央，临制四乡"。北斗七星用于指示方向、确定季节，北极星与北斗构成中国天文的核心参考系。',
+    color: '#4a9b8e'
+  },
+  'ziwei': {
+    title: '紫微垣',
+    type: '星官 · 中宫',
+    desc: '紫微垣是天帝所居的中宫，对应人间皇宫。以北极星为中心，包含帝星、太子、后宫、尚书等重要星官。"紫微"一词后来成为皇宫的代称。',
+    color: '#8b6baf'
+  },
+  'four_symbols': {
+    title: '四象',
+    type: '星官 · 四方神兽',
+    desc: '四象是划分二十八宿的四大星区：东方青龙(角亢氐房心尾箕)、北方玄武(斗牛女虚危室壁)、西方白虎(奎娄胃昴毕觜参)、南方朱雀(井鬼柳星张翼轸)。源自上古图腾崇拜。',
+    color: '#4a9b8e'
+  },
+  'zhang_heng': {
+    title: '张衡',
+    type: '人物 · 东汉 (78-139)',
+    desc: '东汉伟大科学家。创制漏水转浑天仪，著《灵宪》系统阐述浑天说宇宙论，正确解释月食成因。还发明了候风地动仪。被尊为"科圣"。',
+    color: '#c4a35a'
+  },
+  'guo_shoujing': {
+    title: '郭守敬',
+    type: '人物 · 元 (1231-1316)',
+    desc: '元代最杰出的天文学家。创制简仪、仰仪、高表等十余种仪器。主持编制《授时历》，回归年取365.2425日，为古代最精密历法。精通水利，兼治天文与工程。',
+    color: '#c4a35a'
+  },
+  'sima_qian': {
+    title: '司马迁',
+    type: '人物 · 西汉 (前145-前86)',
+    desc: '西汉史学家、天文学家。在《史记》中著《天官书》，系统记录汉代及之前的天文知识与星官体系，是中国第一篇天文学专论，奠定了后世天文志的传统。',
+    color: '#c4a35a'
+  },
+  'su_song': {
+    title: '苏颂',
+    type: '人物 · 北宋 (1020-1101)',
+    desc: '北宋宰相、科学家。组织建造水运仪象台——世界上最早的天文钟，集观测、演示、报时于一体。著有《新仪象法要》，详细记述了仪象台的结构与制作。',
+    color: '#c4a35a'
+  },
+  'yi_xing': {
+    title: '僧一行',
+    type: '人物 · 唐 (683-727)',
+    desc: '唐代高僧、天文学家。组织世界首次子午线弧度实测，编制《大衍历》。发明不等间距二次内插法，在天文计算数学方法上有突破性贡献。',
+    color: '#c4a35a'
+  },
+  'zu_chongzhi': {
+    title: '祖冲之',
+    type: '人物 · 南朝 (429-500)',
+    desc: '南朝数学家、天文学家。编制《大明历》，首次将岁差引入历法计算。精确计算回归年长度(365.2428日)与交点月(27.21223日)，达到当时世界最高精度。',
+    color: '#c4a35a'
+  },
+  'shen_kuo': {
+    title: '沈括',
+    type: '人物 · 北宋 (1031-1095)',
+    desc: '北宋通才科学家。《梦溪笔谈》中论及天文历法、数学、物理等领域。创议十二气历，改进圭表测影，科学记录陨石现象。被誉为"中国整部科学史中最卓越的人物"(李约瑟)。',
+    color: '#c4a35a'
+  },
+  'matteo_ricci': {
+    title: '利玛窦',
+    type: '人物 · 明·意大利 (1552-1610)',
+    desc: '意大利耶稣会传教士。向中国传播欧洲天文学、数学与地理学。与徐光启合译《几何原本》，绘制《坤舆万国全图》。是中西天文学交流的关键人物。',
+    color: '#c4a35a'
+  },
+  'xu_guangqi': {
+    title: '徐光启',
+    type: '人物 · 明 (1562-1633)',
+    desc: '明末大臣、科学家。主持编纂《崇祯历书》137卷，系统引入欧洲天文学。与利玛窦合作翻译西方科学著作。被尊为"中西会通第一人"。',
+    color: '#c4a35a'
+  },
+  'gan_de': {
+    title: '甘德',
+    type: '人物 · 战国 (约前5世纪)',
+    desc: '战国天文学家。著《天文星占》八卷，肉眼观测到木星卫星。与石申齐名，合称"甘石"。《甘石星经》为世界最早星表之一。',
+    color: '#c4a35a'
+  },
+  'shi_shen': {
+    title: '石申',
+    type: '人物 · 战国 (约前4世纪)',
+    desc: '战国天文学家。著《天文》八卷，测定121颗恒星坐标，为世界最古老恒星位置表。其星官体系为后世陈卓汇总三家星经的基础。',
+    color: '#c4a35a'
+  },
+  'armillary': {
+    title: '浑天仪',
+    type: '仪器 · 浑仪与浑象',
+    desc: '浑天仪分为浑仪(观测用)与浑象(演示用)。张衡创制漏水转浑天仪，以水力驱动与天球同步旋转。唐代李淳风、宋代沈括等均有改进。是古代最重要的天文观测仪器。',
+    color: '#6b8db5'
+  },
+  'jianyi': {
+    title: '简仪',
+    type: '仪器 · 元代郭守敬',
+    desc: '郭守敬将传统浑仪简化为赤道经纬仪与地平经纬仪两部分，拆除了繁复的环圈，提高了观测精度。设计极为先进，比西方同类仪器早数百年。现存于南京紫金山天文台。',
+    color: '#6b8db5'
+  },
+  'water_clock_tower': {
+    title: '水运仪象台',
+    type: '仪器 · 北宋苏颂',
+    desc: '苏颂于1088年建造，高约12米，分三层。使用擒纵机构控制水力运转，集浑仪观测、浑象演示、报时三大功能于一体。被誉为现代天文钟的直接祖先。',
+    color: '#6b8db5'
+  },
+  'guibiao': {
+    title: '圭表',
+    type: '仪器 · 测影工具',
+    desc: '最古老的天文仪器。垂直的"表"与水平的"圭"组成，通过测量正午日影长度确定节气与回归年长度。郭守敬建造的四丈高表将测影精度提高到了前所未有的水平。',
+    color: '#6b8db5'
+  },
+  'clepsydra': {
+    title: '漏刻',
+    type: '仪器 · 计时工具',
+    desc: '中国古代主要的计时仪器。利用水的均匀流速计量时间。汉代已有多级补偿漏壶，沈括改进的浮漏精度极高。漏刻与天文观测紧密结合，是天文学不可或缺的工具。',
+    color: '#6b8db5'
+  },
+  'huntian_theory': {
+    title: '浑天说',
+    type: '理论 · 球形宇宙论',
+    desc: '中国三大宇宙论中最接近现代天文认知的理论。主张"浑天如鸡子，天体圆如弹丸，地如鸡子中黄"。张衡在《灵宪》中给出定量化描述。自汉代起成为官方主流宇宙学说。',
+    color: '#8b6baf'
+  },
+  'gaitian_theory': {
+    title: '盖天说',
+    type: '理论 · 天圆地方',
+    desc: '最古老的中国宇宙论，认为"天圆如张盖，地方如棋局"。后演化为《周髀算经》中的"天似盖笠，地法覆槃"，即天地均为弧形。虽有局限，但蕴含了定量化天球模型的早期尝试。',
+    color: '#8b6baf'
+  },
+  'xuanye_theory': {
+    title: '宣夜说',
+    type: '理论 · 无限虚空说',
+    desc: '主张"天了无质，仰而瞻之，高远无极"，天体自由浮于无限虚空中，由"气"推动运动。郄萌记述了这一学说。其无限宇宙观在哲学上极为超前，但未发展出定量模型。',
+    color: '#8b6baf'
+  },
+  'precession': {
+    title: '岁差',
+    type: '理论 · 天体运动',
+    desc: '地球自转轴的长期进动导致春分点西移。东晋虞喜独立发现岁差，定每50年西移1度。祖冲之首次将岁差引入历法。这一发现对精确历法至关重要。',
+    color: '#8b6baf'
+  },
+  'shiji': {
+    title: '史记·天官书',
+    type: '文献 · 西汉 · ～前90年',
+    desc: '司马迁《史记》第二十七卷。中国第一篇系统天文学专论。分五宫记录91星官500余星，涵盖日月五星运行、异常天象及其占卜含义。开创了正史天文志的体例。',
+    color: '#c8a882'
+  },
+  'gan_shi': {
+    title: '甘石星经',
+    type: '文献 · 战国 · ～前4世纪',
+    desc: '甘德与石申天文著作的合称，原有八卷各八篇。记录800余颗恒星，其中石申测定的121星坐标是世界最古老的星表。原书已佚，内容散见于《开元占经》等后世著作中。',
+    color: '#c8a882'
+  },
+  'hanshu': {
+    title: '汉书·天文志',
+    type: '文献 · 东汉 · 班固',
+    desc: '班固《汉书》的天文志，继承《天官书》体例并加以扩展。详细记录了西汉一代的天象，包括太阳黑子、彗星、行星运行等重要天文数据。',
+    color: '#c8a882'
+  },
+  'xin_yixiang': {
+    title: '新仪象法要',
+    type: '文献 · 北宋 · 苏颂',
+    desc: '苏颂所著的水运仪象台技术说明书。图文并茂地记述了仪象台的总体结构、零件尺寸和制作方法。包含世界最早的机械钟设计图纸，是宝贵的科技史文献。',
+    color: '#c8a882'
+  },
+  'chongzhen': {
+    title: '崇祯历书',
+    type: '文献 · 明 · 1634年',
+    desc: '徐光启主持编纂的大型历法丛书，137卷。系统引入第谷天文学体系与欧洲数学方法。虽因明亡未颁行，但成为清代历法基础，标志着中国天文学近代转型的开始。',
+    color: '#c8a882'
+  }
+};
+
+function showInfo(id) {
+  const info = nodeInfo[id];
+  if (!info) return;
+  const panel = document.getElementById('infoPanel');
+  document.getElementById('infoTitle').textContent = info.title;
+  document.getElementById('infoTitle').style.color = info.color;
+  document.getElementById('infoType').textContent = info.type;
+  document.getElementById('infoType').style.color = info.color;
+  document.getElementById('infoDesc').textContent = info.desc;
+  panel.classList.add('active');
+}
+
+function closeInfo() {
+  document.getElementById('infoPanel').classList.remove('active');
+}
+
+// Close panel on clicking background
+document.querySelector('.graph-container').addEventListener('click', function(e) {
+  if (e.target === this || e.target.tagName === 'svg' || e.target.tagName === 'circle' && !e.target.closest('.node-group')) {
+    // Don't close on svg/circle clicks that might be background
+  }
+});
+
+// Keyboard shortcut
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeInfo();
+});
+</script>
+
+</body>
+</html>

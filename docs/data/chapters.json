@@ -1,0 +1,189 @@
+[
+  {
+    "id": "01",
+    "book": "史记",
+    "chapter": "天官书第五",
+    "dynasty": "西汉",
+    "author": "司马迁",
+    "year": "约前91年",
+    "volumes": 1,
+    "description": "中国现存最早的系统性天文学著作。将全天星官分为五宫（中东南西北），记录约90多个星官、500余颗恒星，叙述五星运行规律。",
+    "url": "chapters/01_史记_天官书第五.html"
+  },
+  {
+    "id": "02",
+    "book": "汉书",
+    "chapter": "天文志",
+    "dynasty": "东汉",
+    "author": "班固",
+    "year": "82年",
+    "volumes": 1,
+    "description": "沿用史记天官书体系，补充汉代天象记录，含太阳黑子早期观测、分野学说。",
+    "url": "chapters/02_汉书_天文志.html"
+  },
+  {
+    "id": "03",
+    "book": "后汉书",
+    "chapter": "天文志",
+    "dynasty": "南朝宋",
+    "author": "范晔/司马彪",
+    "year": "445年",
+    "volumes": 3,
+    "description": "司马彪续汉书八志之一。记载东汉天象，含著名的公元185年超新星记录（SN 185）。",
+    "url": "chapters/03_后汉书_天文志.html"
+  },
+  {
+    "id": "04",
+    "book": "晋书",
+    "chapter": "天文志",
+    "dynasty": "唐",
+    "author": "房玄龄等/李淳风",
+    "year": "648年",
+    "volumes": 3,
+    "description": "李淳风撰写，体系完整。介绍盖天说、浑天说、宣夜说，详述浑天仪，载283官1464星。",
+    "url": "chapters/04_晋书_天文志.html"
+  },
+  {
+    "id": "05",
+    "book": "宋书",
+    "chapter": "天文志",
+    "dynasty": "南朝梁",
+    "author": "沈约",
+    "year": "488年",
+    "volumes": 4,
+    "description": "记录南朝刘宋天象，追述三国西晋天象以补前史之缺。",
+    "url": "chapters/05_宋书_天文志.html"
+  },
+  {
+    "id": "06",
+    "book": "南齐书",
+    "chapter": "天文志",
+    "dynasty": "南朝梁",
+    "author": "萧子显",
+    "year": "537年",
+    "volumes": 2,
+    "description": "记录南齐（479-502年）天象，含日食、星变、分野占验。",
+    "url": "chapters/06_南齐书_天文志.html"
+  },
+  {
+    "id": "07",
+    "book": "魏书",
+    "chapter": "天象志",
+    "dynasty": "北齐",
+    "author": "魏收",
+    "year": "554年",
+    "volumes": 4,
+    "description": "记录北魏时期（386-550年）天象，含日食、月食、五星、彗星、流星，按年月日排序。",
+    "url": "chapters/07_魏书_天象志.html"
+  },
+  {
+    "id": "08",
+    "book": "隋书",
+    "chapter": "天文志",
+    "dynasty": "唐",
+    "author": "魏徵等/李淳风",
+    "year": "636年",
+    "volumes": 3,
+    "description": "李淳风续作。天文学理论和仪器部分极为详尽，记载浑天仪、浑象、漏刻，三分法宇宙理论。",
+    "url": "chapters/08_隋书_天文志.html"
+  },
+  {
+    "id": "09",
+    "book": "旧唐书",
+    "chapter": "天文志",
+    "dynasty": "后晋",
+    "author": "刘昫等",
+    "year": "945年",
+    "volumes": 2,
+    "description": "记录唐代天象，含僧一行的天文学贡献、浑天仪、黄道游仪等仪器。",
+    "url": "chapters/09_旧唐书_天文志.html"
+  },
+  {
+    "id": "10",
+    "book": "新唐书",
+    "chapter": "天文志",
+    "dynasty": "宋",
+    "author": "欧阳修、宋祁等",
+    "year": "1060年",
+    "volumes": 3,
+    "description": "与旧唐书互补，更重天文学理论。记录一行的大地测量工作，详载天文仪器和历法。",
+    "url": "chapters/10_新唐书_天文志.html"
+  },
+  {
+    "id": "11",
+    "book": "旧五代史",
+    "chapter": "天文志",
+    "dynasty": "宋",
+    "author": "薛居正等",
+    "year": "974年",
+    "volumes": 1,
+    "description": "记录五代时期（907-960年）天象，以日食、彗星、星变为主要内容。",
+    "url": "chapters/11_旧五代史_天文志.html"
+  },
+  {
+    "id": "12",
+    "book": "新五代史",
+    "chapter": "司天考",
+    "dynasty": "宋",
+    "author": "欧阳修",
+    "year": "1053年",
+    "volumes": 2,
+    "description": "偏重天文学理论探讨，讨论天人关系、灾异学说，记录五代天象。",
+    "url": "chapters/12_新五代史_司天考.html"
+  },
+  {
+    "id": "13",
+    "book": "宋史",
+    "chapter": "天文志",
+    "dynasty": "元",
+    "author": "脱脱等",
+    "year": "1345年",
+    "volumes": 13,
+    "description": "二十四史中篇幅最大的天文志（13卷）。记录北宋南宋320年天象，含1054年超新星（蟹状星云），记载苏颂水运仪象台。",
+    "url": "chapters/13_宋史_天文志.html"
+  },
+  {
+    "id": "14",
+    "book": "辽史",
+    "chapter": "历象志",
+    "dynasty": "元",
+    "author": "脱脱等",
+    "year": "1344年",
+    "volumes": 3,
+    "description": "记录辽代（907-1125年）天文历法，含日食等天象。",
+    "url": "chapters/14_辽史_历象志.html"
+  },
+  {
+    "id": "15",
+    "book": "金史",
+    "chapter": "天文志",
+    "dynasty": "元",
+    "author": "脱脱等",
+    "year": "1345年",
+    "volumes": 1,
+    "description": "记录金代（1115-1234年）天象，含日食、月食、星变等。",
+    "url": "chapters/15_金史_天文志.html"
+  },
+  {
+    "id": "16",
+    "book": "元史",
+    "chapter": "天文志",
+    "dynasty": "明",
+    "author": "宋濂等",
+    "year": "1370年",
+    "volumes": 2,
+    "description": "记载郭守敬的天文仪器（简仪、仰仪等），介绍西域天文学传入，记载札马鲁丁的西域天文仪器。",
+    "url": "chapters/16_元史_天文志.html"
+  },
+  {
+    "id": "17",
+    "book": "明史",
+    "chapter": "天文志",
+    "dynasty": "清",
+    "author": "张廷玉等",
+    "year": "1739年",
+    "volumes": 3,
+    "description": "二十四史最后一部天文志。介绍利玛窦带来的西方天文学，记载徐光启与崇祯历书，反映中西天文学融合。",
+    "url": "chapters/17_明史_天文志.html"
+  }
+]
