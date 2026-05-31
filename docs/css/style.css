@@ -349,20 +349,6 @@ p {
 }
 
 /* ============================================================
-   ASTRO-ENTITY (Inline Star/Constellation Highlights)
-   ============================================================ */
-.astro-entity {
-    cursor: help;
-    font-weight: 500;
-    transition: filter 0.2s ease, text-shadow 0.2s ease;
-}
-
-.astro-entity:hover {
-    filter: brightness(1.25);
-    text-shadow: 0 0 8px currentColor;
-}
-
-/* ============================================================
    ANNOTATION LABELS (索隱 / 正義 / 集解)
    ============================================================ */
 .annotation-label {
@@ -685,7 +671,7 @@ footer p {
    ============================================================ */
 
 /* Smooth transitions (global where useful) */
-a, button, .chapter-card, .astro-entity, .top-nav, .search-result-item {
+a, button, .chapter-card, .top-nav, .search-result-item {
     transition: all 0.2s ease;
 }
 

@@ -1,7 +1,7 @@
 /**
  * chapter.js — Client-side interactivity for tianwen-kb chapter pages
  * Dark astronomy theme · Pure vanilla JavaScript
- * Features: TOC generation, anchor links, back-to-top, astro-entity tooltips, keyboard shortcuts
+ * Features: TOC generation, anchor links, back-to-top, keyboard shortcuts
  */
 (function () {
   'use strict';
@@ -21,7 +21,6 @@
     accentWarm: '#d4a574',
     border:     '#2a3045',
     borderLight:'#3a4058',
-    starRed:    '#F49B8A',
   };
 
   /* =============================================================
@@ -224,110 +223,7 @@
   }
 
   /* =============================================================
-   * 4. ENHANCED TOOLTIPS ON .astro-entity SPANS
-   * ============================================================= */
-  function initEntityTooltips() {
-    var tooltip = null;
-    var currentTarget = null;
-
-    function createTooltip() {
-      var el = document.createElement('div');
-      el.className = 'astro-tooltip';
-      el.setAttribute('role', 'tooltip');
-      document.body.appendChild(el);
-      return el;
-    }
-
-    function positionTooltip(tip, target) {
-      var rect = target.getBoundingClientRect();
-      var tipH = tip.offsetHeight;
-      var tipW = tip.offsetWidth;
-
-      var left = rect.left + rect.width / 2 - tipW / 2;
-      var top = rect.top - tipH - 8;
-
-      // Keep within viewport
-      if (left < 8) left = 8;
-      if (left + tipW > window.innerWidth - 8) left = window.innerWidth - tipW - 8;
-      if (top < 8) top = rect.bottom + 8;
-
-      tip.style.left = left + 'px';
-      tip.style.top = top + 'px';
-    }
-
-    function showTooltip(target) {
-      if (!tooltip) tooltip = createTooltip();
-      currentTarget = target;
-
-      // Extract name from title attribute (set during HTML generation)
-      var name = target.getAttribute('title') || target.textContent.trim();
-      // Also get the color from inline style
-      var color = '';
-      var style = target.getAttribute('style') || '';
-      var colorMatch = style.match(/color:\s*([^;]+)/);
-      if (colorMatch) color = colorMatch[1].trim();
-
-      // Build tooltip content
-      var colorDot = color ? '<span class="tooltip-dot" style="background:' + color + '"></span>' : '';
-      tooltip.innerHTML = colorDot + '<span class="tooltip-name">' + escapeHTML(name) + '</span>';
-
-      positionTooltip(tooltip, target);
-      tooltip.classList.add('visible');
-    }
-
-    function hideTooltip() {
-      if (tooltip) {
-        tooltip.classList.remove('visible');
-        currentTarget = null;
-      }
-    }
-
-    function escapeHTML(str) {
-      var div = document.createElement('div');
-      div.appendChild(document.createTextNode(str));
-      return div.innerHTML;
-    }
-
-    // Delegate events on document.body for efficiency
-    document.body.addEventListener('mouseover', function (e) {
-      var entity = e.target.closest('.astro-entity');
-      if (!entity) {
-        // Check if we moved from entity to something else
-        if (currentTarget && !currentTarget.contains(e.relatedTarget)) {
-          hideTooltip();
-        }
-        return;
-      }
-      if (entity !== currentTarget) {
-        showTooltip(entity);
-      }
-    });
-
-    document.body.addEventListener('mouseout', function (e) {
-      var entity = e.target.closest('.astro-entity');
-      if (entity && !entity.contains(e.relatedTarget)) {
-        hideTooltip();
-      }
-    });
-
-    // Touch support: show on tap, hide on scroll or outside tap
-    document.body.addEventListener('touchstart', function (e) {
-      var entity = e.target.closest('.astro-entity');
-      if (entity) {
-        e.preventDefault();
-        showTooltip(entity);
-      } else if (!e.target.closest('.astro-tooltip')) {
-        hideTooltip();
-      }
-    }, { passive: false });
-
-    window.addEventListener('scroll', function () {
-      if (currentTarget) hideTooltip();
-    }, { passive: true });
-  }
-
-  /* =============================================================
-   * 5. KEYBOARD SHORTCUTS
+   * 4. KEYBOARD SHORTCUTS
    * ============================================================= */
   function initKeyboardShortcuts() {
     var tocNav = null;
@@ -499,44 +395,6 @@
         'border-color:' + COLORS.accentGold + ';',
       '}',
 
-      /* ---- Astro Tooltip ---- */
-      '.astro-tooltip {',
-        'position:fixed;',
-        'z-index:1000;',
-        'pointer-events:none;',
-        'padding:8px 14px;',
-        'background:' + COLORS.bgCard + ';',
-        'border:1px solid ' + COLORS.borderLight + ';',
-        'border-radius:6px;',
-        'font-family:var(--font-sans);',
-        'font-size:0.92rem;',
-        'color:' + COLORS.textHeading + ';',
-        'white-space:nowrap;',
-        'opacity:0;',
-        'transform:translateY(6px);',
-        'transition:opacity 0.2s ease, transform 0.2s ease;',
-        'box-shadow:0 4px 16px rgba(0,0,0,0.5);',
-        'display:flex;',
-        'align-items:center;',
-        'gap:8px;',
-      '}',
-      '.astro-tooltip.visible {',
-        'opacity:1;',
-        'transform:translateY(0);',
-      '}',
-      '.tooltip-dot {',
-        'display:inline-block;',
-        'width:10px;',
-        'height:10px;',
-        'border-radius:50%;',
-        'flex-shrink:0;',
-        'box-shadow:0 0 6px currentColor;',
-      '}',
-      '.tooltip-name {',
-        'font-weight:500;',
-        'letter-spacing:0.03em;',
-      '}',
-
       /* ---- Toast ---- */
       '.chapter-toast {',
         'position:fixed;',
@@ -576,7 +434,6 @@
     buildTOC();
     addAnchorLinks();
     initBackToTop();
-    initEntityTooltips();
     initKeyboardShortcuts();
   }
 
