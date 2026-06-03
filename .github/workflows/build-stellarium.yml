@@ -28,14 +28,14 @@ jobs:
       - name: Patch & build assets
         working-directory: /tmp/s
         run: |
-          # Remove -Werror block from SConstruct
+          # Remove -Werror block (2 lines: if + append)
           sed -i "/if env\['werror'\]:/,+1d" SConstruct
-          # Remove the broken path check in make-assets.py
-          sed -i '/Should be run from root directory/d' tools/make-assets.py
-          sed -i '/sys.exit(-1)/d' tools/make-assets.py
+          # Remove the root-dir check block from make-assets.py (3 lines: if + print + exit)
+          sed -i '/if os.path.dirname/,+2d' tools/make-assets.py
           # Generate embedded assets (star catalog, textures, fonts)
           python3 tools/make-assets.py
-          echo "Assets generated OK"
+          echo "=== Assets generated ==="
+          ls src/assets/ 2>/dev/null | head -10
 
       - name: Build
         working-directory: /tmp/s
