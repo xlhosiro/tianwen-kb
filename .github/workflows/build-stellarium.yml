@@ -25,20 +25,6 @@ jobs:
       - name: Clone Stellarium
         run: git clone --depth 1 https://github.com/Stellarium/stellarium-web-engine.git /tmp/s
 
-      - name: Debug env
-        run: |
-          EMSDK_ENV=$(find / -name "emsdk_env.sh" -type f 2>/dev/null | head -1)
-          source "$EMSDK_ENV"
-          echo "EMSDK=$EMSDK"
-          echo "=== emscons ==="
-          which emscons || echo "NOT FOUND"
-          echo "=== tools dir ==="
-          ls "$EMSDK/upstream/emscripten/tools/" 2>/dev/null || echo "no tools/"
-          ls "$EMSDK/upstream/emscripten/tools/scons/" 2>/dev/null || echo "no tools/scons/"
-          # Try to find the emscripten scons tool
-          find "$EMSDK/upstream/emscripten" -name "emscripten" -type d 2>/dev/null | head -5
-          find "$EMSDK/upstream/emscripten" -name "site_tools" -type d 2>/dev/null | head -5
-
       - name: Build
         working-directory: /tmp/s
         run: |
@@ -46,13 +32,9 @@ jobs:
           EMSDK_ENV=$(find / -name "emsdk_env.sh" -type f 2>/dev/null | head -1)
           source "$EMSDK_ENV"
 
-          # Find the scons tool directory
-          SITE_TOOLS=$(find "$EMSDK/upstream/emscripten" -name "site_tools" -type d 2>/dev/null | head -1)
-          if [ -n "$SITE_TOOLS" ]; then
-            export EMSCRIPTEN_TOOL_PATH="$SITE_TOOLS"
-          else
-            export EMSCRIPTEN_TOOL_PATH="$EMSDK/upstream/emscripten/tools"
-          fi
+          # Correct tool path for emsdk 2.0.34
+          # The emscripten scons tool lives at: tools/scons/site_scons/site_tools/
+          export EMSCRIPTEN_TOOL_PATH="$EMSDK/upstream/emscripten/tools/scons/site_scons/site_tools"
           echo "EMSCRIPTEN_TOOL_PATH=$EMSCRIPTEN_TOOL_PATH"
 
           echo "Build start: $(date)"
