@@ -9,7 +9,7 @@
     --bg: #06080f;
     --text: #c8c0a8;
     --gold: #c4a35a;
-    --surface: rgba(13, 17, 23, 0.85);
+    --surface: rgba(13, 17, 23, 0.6);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -21,18 +21,16 @@
     width: 100vw;
   }
 
-  #stel-frame {
+  #stel-canvas {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    border: none;
     z-index: 1;
   }
 
-  /* Home button — top right, compact, semi-transparent */
   .home-btn {
     position: fixed;
-    top: 12px;
+    top: 48px;
     right: 12px;
     z-index: 20;
     text-decoration: none;
@@ -52,19 +50,131 @@
     border-color: rgba(196, 163, 90, 0.35);
     color: #c4a35a;
   }
+
+  /* Loading overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s;
+  }
+  .overlay.done { opacity: 0; pointer-events: none; }
+
+  .load-title { color: var(--gold); font-size: 1.2rem; letter-spacing: 4px; margin-bottom: 16px; }
+  .load-dots { display: flex; gap: 8px; margin-bottom: 24px; }
+  .load-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+    animation: pulse 1.2s infinite;
+  }
+  .load-dot:nth-child(2) { animation-delay: 0.2s; }
+  .load-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse {
+    0%,100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.5); }
+  }
+
+  .err-box {
+    display: none; text-align: center; max-width: 420px; padding: 32px;
+    border: 1px solid rgba(196,107,90,0.3); border-radius: 12px;
+    background: rgba(196,107,90,0.05);
+  }
+  .err-box.show { display: block; }
+  .err-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .err-title { color: #c46b5a; font-size: 1.1rem; margin-bottom: 8px; }
+  .err-detail { color: #8a8070; font-size: 0.85rem; line-height: 1.6; }
 </style>
 <script src="../js/anti-copy.js"></script>
 </head>
 <body>
 
-<iframe
-  id="stel-frame"
-  src="https://stellarium-web.org/"
-  allow="geolocation"
-  allowfullscreen>
-</iframe>
+<div class="overlay" id="overlay">
+  <div id="loadState">
+    <div class="load-title">加载星图引擎</div>
+    <div class="load-dots"><div class="load-dot"></div><div class="load-dot"></div><div class="load-dot"></div></div>
+  </div>
+  <div class="err-box" id="errState">
+    <div class="err-icon">⚠️</div>
+    <div class="err-title" id="errTitle">引擎加载失败</div>
+    <div class="err-detail" id="errDetail"></div>
+  </div>
+</div>
 
+<canvas id="stel-canvas"></canvas>
 <a href="../index.html" class="home-btn">← 返回首页</a>
+
+<script src="stellarium/stellarium-web-engine.js"></script>
+<script>
+(function(){
+  var overlay = document.getElementById('overlay');
+  var loadState = document.getElementById('loadState');
+  var errState = document.getElementById('errState');
+  var errTitle = document.getElementById('errTitle');
+  var errDetail = document.getElementById('errDetail');
+  var canvas = document.getElementById('stel-canvas');
+
+  function showErr(title, detail) {
+    loadState.style.display = 'none';
+    errState.classList.add('show');
+    errTitle.textContent = title;
+    errDetail.innerHTML = detail;
+  }
+
+  if (typeof StelWebEngine === 'undefined') {
+    showErr('引擎文件缺失',
+      'Stellarium Web Engine 尚未构建。<br><br>' +
+      '请在 <a href="https://github.com/xlhosiro/tianwen-kb/actions" style="color:#4a9b8e">GitHub Actions</a> ' +
+      '中运行 Build Stellarium Web Engine 工作流。');
+    return;
+  }
+
+  var timeout = setTimeout(function(){
+    showErr('引擎初始化超时', 'WASM 加载超过 60 秒，请检查网络后刷新重试。');
+  }, 60000);
+
+  try {
+    StelWebEngine({
+      wasmFile: 'stellarium/stellarium-web-engine.wasm',
+      canvasElement: canvas,
+      onReady: function(engine) {
+        clearTimeout(timeout);
+        overlay.classList.add('done');
+        setTimeout(function(){ overlay.remove(); }, 600);
+
+        // === 中国星空文化配置 ===
+        // Set observer to Beijing
+        if (engine.observer && engine.observer.setLatLong) {
+          engine.observer.setLatLong(39.9, 116.4);
+        }
+
+        // Set Chinese sky culture (三垣二十八宿)
+        if (engine.core && engine.core.setSkyCulture) {
+          engine.core.setSkyCulture('chinese');
+        }
+
+        // Show constellation lines & labels
+        if (engine.core && engine.core.constellations) {
+          engine.core.constellations.lines_visible = true;
+        }
+
+        // Turn off Western-only features
+        if (engine.core && engine.core.atmosphere) {
+          engine.core.atmosphere.visible = false;
+        }
+
+        console.log('Stellarium Web Engine ready — Chinese sky culture');
+      }
+    });
+  } catch(e) {
+    clearTimeout(timeout);
+    showErr('初始化异常', '<code>' + e.message + '</code>');
+  }
+})();
+</script>
 
 </body>
 </html>

@@ -9,69 +9,56 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: emscripten/emsdk:3.1.45
     steps:
       - name: Checkout tianwen-kb
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Install system deps
         run: |
-          apt-get update -qq && apt-get install -y -qq python3-pip git
-          pip3 install scons
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq python3-pip git
+
+      - name: Setup Emscripten SDK
+        run: |
+          cd /tmp
+          git clone --depth 1 https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install 3.1.45
+          ./emsdk activate 3.1.45
+          echo "EMSDK=/tmp/emsdk" >> $GITHUB_ENV
+          echo "/tmp/emsdk" >> $GITHUB_PATH
+          echo "/tmp/emsdk/upstream/emscripten" >> $GITHUB_PATH
+
+      - name: Install scons
+        run: pip3 install scons
 
       - name: Clone Stellarium Web Engine
         run: |
           git clone --depth 1 https://github.com/Stellarium/stellarium-web-engine.git /tmp/stellarium
 
-      - name: Debug environment
-        run: |
-          echo "=== EMSDK ==="
-          echo "EMSDK=${EMSDK:-NOT SET}"
-          echo "EMSCRIPTEN_TOOL_PATH=${EMSCRIPTEN_TOOL_PATH:-NOT SET}"
-          echo "=== Tools ==="
-          which emscons || echo "emscons not in PATH"
-          which emcc || echo "emcc not in PATH"
-          which scons || echo "scons not in PATH"
-
       - name: Build Stellarium Web Engine
         working-directory: /tmp/stellarium
         run: |
           set -e
+          source /tmp/emsdk/emsdk_env.sh
+          echo "EMSCRIPTEN_TOOL_PATH=$EMSCRIPTEN_TOOL_PATH"
           echo "Build started at $(date)"
-
-          # If emscons not available, source env and run scons directly
-          if command -v emscons &>/dev/null; then
-            echo "Using emscons..."
-            make js 2>&1 | tee /tmp/build.log
-          else
-            echo "emscons not found, running scons with emscripten tool directly..."
-            # The emscripten/emsdk container should have EMSCRIPTEN_TOOL_PATH set
-            if [ -z "$EMSCRIPTEN_TOOL_PATH" ] && [ -n "$EMSDK" ]; then
-              export EMSCRIPTEN_TOOL_PATH="$EMSDK/upstream/emscripten/tools"
-            fi
-            echo "EMSCRIPTEN_TOOL_PATH=$EMSCRIPTEN_TOOL_PATH"
-            scons -j$(nproc) mode=release 2>&1 | tee /tmp/build.log
-          fi
-
+          make js 2>&1 | tee /tmp/build.log
           echo "Build finished at $(date)"
 
-      - name: Verify build output
+      - name: Verify output
         run: |
-          echo "=== Build artifacts ==="
-          ls -lh /tmp/stellarium/build/stellarium-web-engine.* 2>/dev/null || {
-            echo "BUILD OUTPUT NOT FOUND!"
-            echo "=== Build log (last 80 lines) ==="
-            tail -80 /tmp/build.log 2>/dev/null || echo "No log found"
+          ls -lh /tmp/stellarium/build/stellarium-web-engine.* || {
+            echo "=== Build failed, last 80 lines ==="
+            tail -80 /tmp/build.log
             exit 1
           }
 
-      - name: Copy artifacts to repo
+      - name: Copy to repo
         run: |
           mkdir -p docs/kg/stellarium
           cp /tmp/stellarium/build/stellarium-web-engine.js docs/kg/stellarium/
           cp /tmp/stellarium/build/stellarium-web-engine.wasm docs/kg/stellarium/
-          echo "=== Copied ==="
           ls -lh docs/kg/stellarium/
 
       - name: Commit and push
@@ -80,9 +67,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/kg/stellarium/
           if git diff --cached --quiet; then
-            echo "No changes to commit"
+            echo "No changes"
           else
-            git commit -m "chore: update Stellarium Web Engine build artifacts"
+            git commit -m "chore: update Stellarium Web Engine artifacts"
             git push
-            echo "=== Pushed ==="
           fi
