@@ -26,8 +26,6 @@ jobs:
           ./emsdk install 3.1.45
           ./emsdk activate 3.1.45
           echo "EMSDK=/tmp/emsdk" >> $GITHUB_ENV
-          echo "/tmp/emsdk" >> $GITHUB_PATH
-          echo "/tmp/emsdk/upstream/emscripten" >> $GITHUB_PATH
 
       - name: Install scons
         run: pip3 install scons
@@ -41,7 +39,25 @@ jobs:
         run: |
           set -e
           source /tmp/emsdk/emsdk_env.sh
+
+          # EMSCRIPTEN_TOOL_PATH is required by SConstruct but not always set
+          if [ -z "$EMSCRIPTEN_TOOL_PATH" ]; then
+            TOOLS_DIR="$EMSDK/upstream/emscripten/tools"
+            if [ -d "$TOOLS_DIR" ]; then
+              export EMSCRIPTEN_TOOL_PATH="$TOOLS_DIR"
+            else
+              # Fallback: search for the scons tool directory
+              TOOLS_DIR=$(find "$EMSDK/upstream/emscripten" -name "site_scons" -type d 2>/dev/null | head -1)
+              if [ -n "$TOOLS_DIR" ]; then
+                export EMSCRIPTEN_TOOL_PATH=$(dirname "$TOOLS_DIR")
+              else
+                echo "Cannot find emscripten tools directory"
+                exit 1
+              fi
+            fi
+          fi
           echo "EMSCRIPTEN_TOOL_PATH=$EMSCRIPTEN_TOOL_PATH"
+
           echo "Build started at $(date)"
           make js 2>&1 | tee /tmp/build.log
           echo "Build finished at $(date)"
@@ -49,7 +65,7 @@ jobs:
       - name: Verify output
         run: |
           ls -lh /tmp/stellarium/build/stellarium-web-engine.* || {
-            echo "=== Build failed, last 80 lines ==="
+            echo "=== Build failed ==="
             tail -80 /tmp/build.log
             exit 1
           }
