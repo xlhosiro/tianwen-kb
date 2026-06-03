@@ -28,9 +28,8 @@ jobs:
       - name: Patch SConstruct for newer emcc
         working-directory: /tmp/s
         run: |
-          # Newer emcc warns about linker flags during compilation.
-          # With -Werror this becomes fatal. Remove the -Werror line entirely.
-          sed -i "/env.Append(CCFLAGS='-Werror')/d" SConstruct
+          # Remove the werror block entirely (both lines)
+          sed -i "/if env\['werror'\]:/,+1d" SConstruct
 
       - name: Build
         working-directory: /tmp/s
