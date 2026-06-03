@@ -31,43 +31,34 @@
   var canvas = document.getElementById('stel-canvas');
 
   if (typeof StelWebEngine === 'undefined') {
-    document.body.innerHTML = '<div style="color:#c4a35a;text-align:center;padding-top:40vh;font-family:serif">引擎未构建，请等待 CI 完成</div>';
+    document.body.innerHTML = '<div style="color:#c4a35a;text-align:center;padding-top:40vh;font-family:serif">引擎未构建</div>';
     return;
   }
 
   StelWebEngine({
     wasmFile: 'stellarium/stellarium-web-engine.wasm',
     canvasElement: canvas,
-    // Route data files to correct directory
-    locateFile: function(path) {
-      if (path.endsWith('.wasm')) return 'stellarium/' + path;
-      // Data files (star catalogs) and sky cultures
-      return 'stellarium/' + path;
+    locateFile: function(path, prefix) {
+      // Route data and skyculture files to stellarium/ subdir
+      if (path.startsWith('data/') || path.startsWith('skycultures/')) {
+        return 'stellarium/' + path;
+      }
+      // Default: let engine handle WASM and internal files
+      return prefix + path;
     },
     onReady: function(stel) {
       console.log('Stellarium ready');
-      console.log('core:', !!stel.core);
 
-      // Start render
       function loop(ts) {
         if (stel.core && stel.core.render) stel.core.render(ts / 1000);
         requestAnimationFrame(loop);
       }
       requestAnimationFrame(loop);
 
-      // Enable constellation lines
-      if (stel.core && stel.core.constellations) {
-        stel.core.constellations.lines_visible = true;
-      }
-      if (stel.core && stel.core.atmosphere) {
-        stel.core.atmosphere.visible = false;
-      }
+      if (stel.core && stel.core.constellations) stel.core.constellations.lines_visible = true;
+      if (stel.core && stel.core.atmosphere) stel.core.atmosphere.visible = false;
 
-      // Try to set Chinese sky culture if API available
-      if (stel.core && typeof stel.core.setSkyCulture === 'function') {
-        stel.core.setSkyCulture('chinese');
-        console.log('Sky culture set to chinese');
-      }
+      console.log('Engine initialized');
     }
   });
 })();

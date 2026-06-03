@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <title>星庐·占星学探原与哲学思想研究 - 古天文知识库</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap">
+<style>
+.img-ref { color: var(--accent-gold); cursor: pointer; border-bottom: 1px dotted var(--accent-gold); transition: font-size 0.25s ease, color 0.25s ease; margin: 0 4px; display: block; text-align: center; padding: 8px 0; }
+.img-ref:hover { font-size: 1.15em; color: var(--accent-warm); }
+.img-popup { position: fixed; z-index: 9999; right: 20px; top: 80px; max-width: 480px; max-height: 75vh; background: #fdfaf3; border: 1px solid var(--accent-gold); border-radius: 8px; box-shadow: 0 8px 32px rgba(0,0,0,0.7); padding: 10px; opacity: 0; pointer-events: none; visibility: hidden; transition: opacity 0.2s ease, visibility 0.2s ease; }
+.img-popup.show { opacity: 1; visibility: visible; pointer-events: auto; }
+.img-popup img { max-width: 100%; max-height: 70vh; display: block; border-radius: 4px; }
+.img-popup .img-label { text-align: center; color: #5a4a3a; font-size: 0.8rem; margin-top: 6px; }
+</style>
+<style>
+.toc-nav{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:32px}
+.toc-title{font-family:var(--font-serif);font-size:1.15rem;font-weight:700;color:var(--accent-gold);padding-bottom:12px;margin-bottom:8px;border-bottom:1px solid var(--border);letter-spacing:0.15em;text-align:center}
+.toc-list{list-style:none;padding:0;margin:0}
+.toc-item{line-height:1.6}
+.toc-item a{color:var(--text-body);text-decoration:none;display:block;padding:4px 0;font-size:0.95rem}
+.toc-item a:hover{color:var(--accent-gold)}
+.toc-h3 a{padding-left:20px;font-size:0.88rem;color:var(--text-muted)}
+.toc-h3 a::before{content:"└ ";color:var(--border-light)}
+</style>
+<script src="../js/anti-copy.js?v=5"></script>
+</head>
+<body style="background:var(--bg-deepest)">
+    <nav class="top-nav">
+        <div class="nav-inner">
+            <a href="../index.html" class="nav-logo">&#9737; 古天文知识库</a>
+            <div class="nav-links">
+                <a href="../index.html">首页</a>
+                <a href="../search.html">搜索</a>
+                <a href="../kg/timeline.html">时间线</a>
+                <a href="../kg/starmap.html">古星图</a>
+                <a href="../kg/network.html">关系网络</a>
+                <a href="https://github.com" target="_blank" class="nav-gh">GitHub</a> <span class="nav-theme" style="color:var(--text-muted);margin-left:2px"><a id="theme-day" href="javascript:_switchTheme('light')" style="color:var(--text-muted);text-decoration:none" title="日间模式">昼</a>/<a id="theme-night" href="javascript:_switchTheme('dark')" style="color:var(--accent-gold);text-decoration:none;font-weight:700" title="夜间模式">夜</a></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="chapter-container">
+        <aside class="chapter-sidebar">
+            <h3>古天文典籍</h3>
+            <ul class="chapter-list">
+<li><a href="01_史记_天官书第五.html"><span class="ch-num">01</span><span class="ch-book">史记</span><span class="ch-name">天官书</span></a></li>
+<li><a href="02_汉书_天文志.html"><span class="ch-num">02</span><span class="ch-book">汉书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="03_后汉书_天文志.html"><span class="ch-num">03</span><span class="ch-book">后汉书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="04_晋书_天文志.html"><span class="ch-num">04</span><span class="ch-book">晋书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="05_宋书_天文志.html"><span class="ch-num">05</span><span class="ch-book">宋书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="06_南齐书_天文志.html"><span class="ch-num">06</span><span class="ch-book">南齐书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="07_魏书_天象志.html"><span class="ch-num">07</span><span class="ch-book">魏书</span><span class="ch-name">天象志</span></a></li>
+<li><a href="08_隋书_天文志.html"><span class="ch-num">08</span><span class="ch-book">隋书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="09_旧唐书_天文志.html"><span class="ch-num">09</span><span class="ch-book">旧唐书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="10_新唐书_天文志.html"><span class="ch-num">10</span><span class="ch-book">新唐书</span><span class="ch-name">天文志</span></a></li>
+<li><a href="11_旧五代史_天文志.html"><span class="ch-num">11</span><span class="ch-book">旧五代史</span><span class="ch-name">天文志</span></a></li>
+<li><a href="12_新五代史_司天考.html"><span class="ch-num">12</span><span class="ch-book">新五代史</span><span class="ch-name">司天考</span></a></li>
+<li><a href="13_宋史_天文志.html"><span class="ch-num">13</span><span class="ch-book">宋史</span><span class="ch-name">天文志</span></a></li>
+<li><a href="14_辽史_历象志.html"><span class="ch-num">14</span><span class="ch-book">辽史</span><span class="ch-name">历象志</span></a></li>
+<li><a href="15_金史_天文志.html"><span class="ch-num">15</span><span class="ch-book">金史</span><span class="ch-name">天文志</span></a></li>
+<li><a href="16_元史_天文志.html"><span class="ch-num">16</span><span class="ch-book">元史</span><span class="ch-name">天文志</span></a></li>
+<li><a href="17_明史_天文志.html"><span class="ch-num">17</span><span class="ch-book">明史</span><span class="ch-name">天文志</span></a></li>
+<li><a href="23_马王堆帛书_五星占.html"><span class="ch-num">18</span><span class="ch-book">马王堆帛书</span><span class="ch-name">五星占</span></a></li>
+<li><a href="22_淮南子_天文训.html"><span class="ch-num">19</span><span class="ch-book">淮南子</span><span class="ch-name">天文训</span></a></li>
+<li><a href="19_乙巳占.html"><span class="ch-num">20</span><span class="ch-book">乙巳占</span></a></li>
+<li><a href="21_开元占经.html"><span class="ch-num">21</span><span class="ch-book">开元占经</span></a></li>
+<li><a href="18_步天歌.html"><span class="ch-num">22</span><span class="ch-book">步天歌</span></a></li>
+<li><a href="20_星庐中国古天文学概论.html"><span class="ch-num">23</span><span class="ch-book">星庐概论</span></a></li>
+<li class="active"><a href="24_星庐_占星回廊.html"><span class="ch-num">24</span><span class="ch-book">占星回廊</span></a></li>
+            </ul>
+        </aside>
+
+        <main class="chapter-content">
+            <div class="chapter-header">
+                <span class="chapter-dynasty">当代</span>
+                <h1>星庐·占星学探原与哲学思想研究</h1>
+                <div class="chapter-meta">
+                    <span>作者：桐安大司空（星庐）</span>
+                    <span>成书：2025年</span>
+                    <span>卷数：7章</span>
+                </div>
+                <p class="chapter-desc">世界上首部以中国古天文学为核心的占星研究著作。</p>
+            </div>
+
+            <div class="chapter-body">
+<nav class="toc-nav">
+<div class="toc-title">目 录</div>
+<ol class="toc-list">
+<li class="toc-item toc-h2"><a href="#sec0">引 言——术法星宗</a></li>
+<li class="toc-item toc-h2"><a href="#sec1">星学源流</a></li>
+<li class="toc-item toc-h3"><a href="#sec2">星命之章——苍龙之心，牡羊之角</a></li>
+<li class="toc-item toc-h3"><a href="#sec3">星骨之章——龙战于野，其血玄黄</a></li>
+<li class="toc-item toc-h3"><a href="#sec4">星神之章——日月殿驾，五星庙堂</a></li>
+<li class="toc-item toc-h2"><a href="#sec5">星庐观象</a></li>
+<li class="toc-item toc-h2"><a href="#sec6">参考文献</a></li>
+</ol>
+</nav>
+<p>
+<span class="para" id="para-0001"><strong>甲辰登星庐观星怀古</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0002">独登星庐望北辰，斗转星移系乾坤</span>
+</p>
+
+<p>
+<span class="para" id="para-0003">遥瞻步天歌中韵，浩渺星河万古存</span>
+</p>
+
+<p>
+<span class="para" id="para-0004">苍穹映盏凝星露，恍若仙醪醉梦深</span>
+</p>
+
+<p>
+<span class="para" id="para-0005">纵览千秋皆过客，唯有星斗悬天魂</span>
+</p>
+
+<h2 id="sec0">引 言——术法星宗</h2>
+<p>
+<span class="para" id="para-0006">据传唐初时天文学家王希明（号丹元子），参考巫咸、石申、甘德、司马迁等历代星家著作，以七言诗歌的形式将漫天星辰之名及所在方位予以记录，名曰《步天歌》，诗歌朗朗上口流行于世，也让各星官之名被世人传颂至今。几乎同一时期，来自天竺的善无畏与金刚智大师，将《宿曜经》传入大唐，它是一部佛教的占星术典籍，其内容包括七曜（日、月、火、水、木、金、土）和十二宫（十二星座）等诸多占星学概念，从那时起西方十二星座的形象与含义也逐渐被国人所熟知，到宋朝时占星术已成为了家喻户晓的显学。如北宋文豪苏轼在《东坡志林·命分》中写道：</span>
+</p>
+
+<p>
+<span class="para" id="para-0007">退之诗云：我生之辰，月宿南斗。乃知退之磨蝎为身宫，而仆乃以磨蝎为命，平生多得谤誉，殆是同病也！</span>
+</p>
+
+<p>
+<span class="para" id="para-0008">星官与星座，是东西方两大文明在对星空漫长的探索中，凝练而成的智慧瑰宝。于科学而言，古人凭借对星官与星座的研究，完成了天文坐标系的建立，方才让具有预测功能的历法体系得以问世。同时天文学中出现的星与星之间的复杂角度、距离与运行周期等一系列问题，推动着数学与几何学的蓬勃发展，帮助人类打开理性认知世界的大门。于人文而言，古人又凭借对星空的想象，发展出了神话、宗教、玄学等学术体系，以及众多的艺术作品，极大地丰富了人们的精神世界。</span>
+</p>
+
+<p>
+<span class="para" id="para-0009">诸天星宿是四季时空更迭的坐标，指引着人类文明与时同行，生生不息!</span>
+</p>
+
+<p>
+<span class="para" id="para-0010">从目前的考古证据可知，世界上最早的以十二种神话形象模拟“时空-星座”的文物，就是来自于我国湖南长沙子弹库墓出土的楚帛画，是大约公元前300年左右的文物（左图）。在西方类似的文物有来自于古埃及的浮雕画，分别是建于公元前54年的‌丹德拉神庙中的壁画浮雕（中图）；以及公元100年左右的伊斯纳神庙中的壁画浮雕（右图）。</span>
+</p>
+
+<p>
+<span class="para" id="para-0011"><span class="img-ref" data-img="images/图1.png">[图1]</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0012">在东西方的文化中，以上的十二种神话形象虽然各异，但它们均代表着一年中的十二个时空单位，在我国它们被称为十二月将或十二月建，在式盘上则以十二地支的形式体现；在西方则被称为星座（Sign），即星盘中的黄道十二宫（Zodiac）。<span class="img-ref" data-img="images/图2.png">[图2]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">大六壬式盘与西方中世纪占星盘</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0013">它们也逐渐成为了人类精神的灵性寄托——满天神佛、林苑仙葩时为过客、时为常客从此出入，以应天机。</span>
+</p>
+
+<p>
+<span class="para" id="para-0014"><span class="img-ref" data-img="images/图3.png">[图3]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">东西方整合星空坐标</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0015">综上，十二地支与十二星座，虽名象相异，却同溯一理。它们皆是古人仰天观相、度量时空的标尺 —— 在理性的刻度上，星辰丈量着寒暑的轮回，标定着方位的经纬，让农耕依节令而作，舟船循星轨而行；在灵性的视野中，星空化作神祇的寓言，承载着生民对天地的敬畏、对未来的祈望，让迷茫时有仰望的慰藉，困顿处得精神的锚点。</span>
+</p>
+
+<p>
+<span class="para" id="para-0016">在科学与玄学的交界、在求知与未知的边缘，人类始终做着双轨并行的探索：一面以数学为矩，测算星移斗转的几何轨迹.；一面以神话为梭，编织宇宙洪荒的传说。一阴一阳，这两种力量的交织，凿刻出人类文明的阶梯，让无数先哲的思想穿越万年，最终汇聚成那幅永恒流转的时空图景。</span>
+</p>
+
+<p>
+<span class="para" id="para-0017">有物混成，先天地生</span>
+</p>
+
+<p>
+<span class="para" id="para-0018">寂兮寥兮，独立不改</span>
+</p>
+
+<p>
+<span class="para" id="para-0019">周行而不殆，可以为天下母</span>
+</p>
+
+<p>
+<span class="para" id="para-0020">吾不知其名，字之曰道，强为之名曰大</span>
+</p>
+
+<p>
+<span class="para" id="para-0021">苍穹如镜，映照着人间万象的更迭；星辰似笔，书写着人类理解自身与宇宙的最初篇章。后世万千术数的玄机，莫不由此观天察地之初心肇始，循此万象循环之道，编织着人间万般。吾不才，有幸得先贤之伏藏，终寻得星学之源法，现将这已失传2000余年的星学奥秘传于诸君！</span>
+</p>
+
+<h2 id="sec1">星学源流</h2>
+<h3 id="sec2">星命之章——苍龙之心，牡羊之角</h3>
+<p>
+<span class="para" id="para-0022">卯时是我国占星术中的安命之时，选择地支卯安命不仅在于其为太阳升起的时刻，可映射个体的诞生。还在于辰次卯中的大火星（心宿二）与北斗具有高度的同一性，即大火所在亦为北斗所指「1」。大火星古称天王、太辰，是一颗非常重要的代表着希望的授时星体，在大约5500年前我国古贤发现每逢春分的黄昏，大火星必从东方升起，每逢秋分的破晓，大火星亦必从东方升起，古人将丰收与希望寄托在这颗 苍龙之心 上，因此其所在的宫位亦被赋予了太一的宏观性与集体的愿景。</span>
+</p>
+
+<p>
+<span class="para" id="para-0023">而一天中的太阳日出，与一年中的大火星东升，两者又分别代表着不同的时空属性，它们一方是源自十二时辰组成的日盘，代表着地球自转；一方源自十二月将（辰次）组成的年盘，代表着地球公转，两者的整合也让微观与宏观、个体与天地自然的融合，得以具象化。因此卯宫亦成为了我国占星术元旦盘的命宫所在。</span>
+</p>
+
+<p>
+<span class="para" id="para-0024"><span class="img-ref" data-img="images/图4.png">[图4]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">我国占星术命宫——卯</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0025">据传大约公元前200年，西方古天文学家们发现每逢春分的破晓，白羊座会随太阳晨出东方，此时地平线到天球的投影与白羊之角相会，至此这只牡羊之角犹如苍龙之心一样，给人们带来了春的希望，因此白羊宫（戌）即被西方古贤定义为第一宫，也就是西方占星术中元旦盘的命宫所在。</span>
+</p>
+
+<p>
+<span class="para" id="para-0026">提示：西方的十二星座与我国的十二月将（地支）两者都代表着一年中相同的时间段，比如3月21日春分代表着太阳位于白羊座0度，同时也代表着太阳位于地支戌宫0度。那么以白羊对应戌，依次顺时针对应下去即可完成两者的匹配，如图5所示：</span>
+</p>
+
+<p>
+<span class="para" id="para-0027"><span class="img-ref" data-img="images/图5.png">[图5]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">西方占星术命宫——白羊</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0028">然而关于命宫的起源可能并不仅限于此，如果我们将东西方的元旦盘整合在一起之后，会发现一些更为让人震惊的事情，关于其起源的历史之谜也将由此找到答案！</span>
+</p>
+
+<p>
+<span class="para" id="para-0029">现按我国占星术的安命方式，以时加月将，以卯加戌（白羊），即可得出先天元旦盘，如图6所示：</span>
+</p>
+
+<p>
+<span class="para" id="para-0030"><span class="img-ref" data-img="images/图6.png">[图6]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">占星先天元旦盘</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0031">其中命宫以天地盘的形式整体呈现，即卯加戌，两者所包含的征象含义分别如下：</span>
+</p>
+
+<p>
+<span class="para" id="para-0032">天盘卯：五行属木，阴性地支，日出之地、太辰所在、时辰卯代表个体、微观与日常、与地支戌六合成火，克地支戌（火库），卦象为震。</span>
+</p>
+
+<p>
+<span class="para" id="para-0033">地盘戌：五行属土，阳性地支，五行火之库，春分时节的日在宫位，月将戌：代表集体、宏观与社会伦理，与地支卯六合成火，被地支卯克，卦象为乾。</span>
+</p>
+
+<p>
+<span class="para" id="para-0034">综上可见，两者整合后的命宫所演绎的意象，无不体现着人类生命的内驱力（生命之火），以及与天地争寿的先天宿命。个体之“卯”对世界之“戌”的“克”，并非制约与破坏，而是生命本能所驱动的必要抗争——是人类与生俱来对“资源”的渴求（生存需求），对“空间”的拓展（发展需求），对“不公”的反抗（解放需求）。每一次自我突破，皆是是攫取“他山之石”以完成对自身成长的火种采集。而卯戌合火则代表着，个体成长后也将融入集体，最终与世界达成“和解”，推动文明的发展与社会的进步，改变自己、改变世界、与世界相互成就！</span>
+</p>
+
+<p>
+<span class="para" id="para-0035">命宫-上卯下戌，雷天大壮，然而真正的“大壮”，并非个体的力量与欲望的无限膨胀，而是每一个生命都能以其独特的震动频率，确认自身于天地之中不可或缺的价值与光芒，如同划破夜空的雷霆，它不仅是向世界宣告“我存在”的强音，更是在为世界法则中注入全新的活力与定义，这便是人类存在的意义与使命。</span>
+</p>
+
+<p>
+<span class="para" id="para-0037"><span class="img-ref" data-img="images/图6.1.png">[图6.1]</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0036">然而以上的【占星先天元旦盘】真的是东西方古贤的智慧结晶吗？随着一件文物的回归，这个观点很可能要被改写，它就是被美军间谍骗走大半个世纪，我国刚刚从美国追讨回国的——楚帛书《五行令-月名图》。</span>
+</p>
+
+<p>
+<span class="para" id="para-0038"><span class="img-ref" data-img="images/图7.png">[图7]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">楚帛书《五行令》月名图</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0039">我们从楚帛书的复原图中不难发现，其与占星先天元旦盘的排布完全一致，显然这并不是巧合。因为这种天地盘的式盘构建原理，放眼世界只有我国拥有，在古时我国对南北两向星空分别创造了两套天文坐标，一套是北向星空的十二岁阴坐标，一套是南向星空的十二星次坐标，两者整合后在特定的时间点即可得到此盘！</span>
+</p>
+
+<p>
+<span class="para" id="para-0040">这就是我国真正的古天文观星思想——失传2000余年的  太乙观星法  ！图8为用星空软件复原的【五行令】的实际星图。</span>
+</p>
+
+<p>
+<span class="para" id="para-0041"><span class="img-ref" data-img="images/图8.png">[图8]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">《五行令》月名图对应的实际星图（图中为北向星空视角）</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0042">### 小结：</span>
+</p>
+
+<p>
+<span class="para" id="para-0043">诸君方知于长沙子弹库墓出土的楚帛书是公元前300年左右的文物（这是我们文物的断代下限），而西方出现拥有明确的占星命宫的星盘，据传是公元2世纪托勒密在《四书》中所记载的（西方占星术断代的上限），但目前尚无同时期的文物出土，西方现存最早的占星星盘实物多为中世纪伊斯兰和欧洲制品。在不考虑西方伪史论观点的情况下，我国星占文物仍比西方早了400-500年，因此我国《五行令-月名图》的回归意义重大，它改写了人类探索星空的历史！</span>
+</p>
+
+<h3 id="sec3">星骨之章——龙战于野，其血玄黄</h3>
+<p>
+<span class="para" id="para-0044">星盘的1、4、7、10，这四宫被称为星盘的骨骼，它们分别开启了星盘的四个象限，后世的诸多学说都试图探索与解读其背后的内在原理。</span>
+</p>
+
+<p>
+<span class="para" id="para-0045"><span class="img-ref" data-img="images/图9.png">[图9]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">占星四象限（图片引用自网络）</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0046">简单概述：</span>
+</p>
+
+<p>
+<span class="para" id="para-0047">象限 I（1-3宫）为自我发展（SELF-DEVELOPMENT）：1宫（上升点）代表 “自我形象与气质”，2宫（财产、资源与价值）关注 “内在安全感与物质基础”，3宫（沟通与短途连接）涉及 “早期学习与人际关系”。</span>
+</p>
+
+<p>
+<span class="para" id="para-0048">※核心是个体的 “初始” 成长：建立自我认知、探索个人资源与初步对外连接。</span>
+</p>
+
+<p>
+<span class="para" id="para-0049">象限 II（4-6宫）为自我表达（SELF-EXPRESSION）：4宫（家庭与根源）关联 “内在情感与成长环境”，5宫（创造力与恋爱）聚焦 “激情、创造与情感投射”， 6宫（工作与健康）涉及 “日常实践与身体表达”。</span>
+</p>
+
+<p>
+<span class="para" id="para-0050">※核心是将 “内在自我” 向外传递：通过家庭、创作、工作等方式，把内在感受与特质转化为具体表达。</span>
+</p>
+
+<p>
+<span class="para" id="para-0051">象限 III（7-9宫）为自我扩张（SELF-EXPANSION）：7宫（伴侣与合作）代表 “深度关系与镜像投射”，8宫（共享与转化）关注 “资源整合与转化”，9宫（高等学习与旅行）涉及 “广阔视野与哲学 / 文化探索”。</span>
+</p>
+
+<p>
+<span class="para" id="para-0052">※核心是通过 “外界互动与探索” 扩展自我：从一对一关系，到共享资源，再到超越日常的知识 / 精神探索，突破原有自我的边界。</span>
+</p>
+
+<p>
+<span class="para" id="para-0053">象限 IV（10-12宫）为 自我超越（SELF-TRANSCENDENCE）：10宫（事业与社会地位）关联 “社会角色与成就”，11宫（广泛社交与理想）聚焦 “集体愿景与友谊”，12宫（潜意识与灵性）涉及 “深层潜意识与超越性体验”。</span>
+</p>
+
+<p>
+<span class="para" id="para-0054">※核心是突破 “个人” 层面，追求更高维度的价值：从社会认可、集体理想，到灵性觉醒，实现 “超越自我” 的人生意义。</span>
+</p>
+
+<p>
+<span class="para" id="para-0055">亦可结合现代心理学家拉康的理论来论证1、4、7、10的哲学含义：</span>
+</p>
+
+<p>
+<span class="para" id="para-0056">1宫我，7宫他者，简言之，个体遭遇的一切人和事，都是自我的映射 ——“没有真正的对立，一切际遇都是自我创造的”，7 宫的 “他者” 本质是 1 宫未被察觉的 “自我另一面”。</span>
+</p>
+
+<p>
+<span class="para" id="para-0057">4 宫是 “大他者的内化之象”—— 承载着原生家庭、家族脉络这类 “他者” 之力，最终沉淀为个体内在的情感根基与身份认同；10 宫则是 “大他者的外化之形”—— 映照着社会规范、集体期待这类 “大他者” 意志，最终显化为个体外在的社会角色与成就坐标。</span>
+</p>
+
+<p>
+<span class="para" id="para-0058">10宫宰执1宫：天发杀机，移星易宿——自然规律与社会价值观(道德法制)规范个体发展；</span>
+</p>
+
+<p>
+<span class="para" id="para-0059">4宫宰执7宫：地发杀机，龙蛇起陆——原生家庭与成长环境限制个体的自由投射；</span>
+</p>
+
+<p>
+<span class="para" id="para-0060">1宫宰执4宫，7宫宰执10宫：人发杀机，天地反覆——我与我的愿景，结合5宫（我所创造）与11宫（7之5、众生托举）的三合之力，改变自己，改变世界，创造新天地！</span>
+</p>
+
+<p>
+<span class="para" id="para-0061">通过以上的哲学梳理不难发现，星骨（1、4、7、10 的四宫架构）与星命（命宫），两者对于命运的诠释，实则一脉相承、异曲同工。而我国西汉典籍《淮南子・天文训》中，恰好清晰地留存着星盘之骨的原始样貌！下面就请大家和我一起见证奇迹，时隔2000年《淮南子》天文训刑德式盘重现世间！</span>
+</p>
+
+<p>
+<span class="para" id="para-0062">《淮南子》天文训有载：</span>
+</p>
+
+<p>
+<span class="para" id="para-0063">阴阳刑德有七舍。何谓七舍？室、堂、庭、门、巷、术、野。十二月德居室三十日，先日至十五日，后日至十五日，而徙所居各三十日。德在室则刑在野，德在堂则刑在术，德在庭则刑在巷。阴阳相德则刑德合门。八月、二月，阴阳气均，日夜分平，故曰刑德合门。德南则生，刑南则杀，故曰二月会而万物生，八月会而草木死。</span>
+</p>
+
+<p>
+<span class="para" id="para-0064">现我将以上的式盘复原，如下图所示：</span>
+</p>
+
+<p>
+<span class="para" id="para-0065"><span class="img-ref" data-img="images/图10.png">[图10]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">星庐复原：西汉《淮南子》刑德式盘</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0066">从以上的刑德式盘中（时隔2000年史上首次复原）我们可以看出，式盘由两道阴阳升降之门所分割；</span>
+</p>
+
+<p>
+<span class="para" id="para-0067">式盘的上半部，由近及远依次为 “巷”“术”“野”，承载着不同层次的社会属性，有如从江湖之中至庙堂之上，它关联着个体在社会场域中的自我表达与身份标签的转换。最远端的 “野”，既映射着个人发展的广阔天地 —— 正如 “龙战于野” 的驰骋之志 —— 其根基却始终与个体的出身与原生家庭（血脉）紧密相连。</span>
+</p>
+
+<p>
+<span class="para" id="para-0068">个体的出身根基，则在式盘的下半部分得到具象化呈现：由外至内的 “庭”“堂”“室”，承载着家庭属性，关联着个体的内在世界与家族联结。而 “其血玄黄” 的喻义，正指向个体的根本 —— 家族血脉，这正是 “龙战于野” 的原点与基石。这条 “龙” 无论在世俗中创下何等成就，驰骋于世界何地，其血脉根基始终源于华夏的玄天太一。</span>
+</p>
+
+<p>
+<span class="para" id="para-0069">我们再来看位于卯酉的日月之门，其遵循着《易经》中阳升阴降的思想。</span>
+</p>
+
+<p>
+<span class="para" id="para-0070">居于卯宫的日门，恰与春季相应、与清晨契合 —— 春为阳气生发之始，晨是天光破晓之时，这扇 “门” 正对应着个体的命宫。它如初升之日，携勃勃生气开启个体生命的征程，是自我本真与先天禀赋的最初显象，恰似个体立于世间的 “第一印记”，承载着生命最初的阳气与张力。</span>
+</p>
+
+<p>
+<span class="para" id="para-0071">居于酉宫的月门，则与秋季相契、与黄昏相守 —— 秋是阴气渐盛之序，昏是光体的收敛之刻，这扇 “门” 便对应着个体的婚姻宫。它似西沉之月，载温润清辉收纳个体的情感归宿，是自我与他者建立深度联结、实现生命圆满的重要场域，象征着生命从 “独存” 走向 “共生” 的阴柔涵容之力。</span>
+</p>
+
+<p>
+<span class="para" id="para-0072">故我国的婚礼之名源于黄昏之礼，秦汉时及以前古人多在黄昏时行礼成婚，代表着于宅门之内的个体家庭的建立。反观古希腊与古中东地区大多在白天结婚，如图11所示，西方绘画中出现的古希腊与古中东地区的婚礼现场都是白天。同时古希腊语结婚（hymen）的词根是处女膜，完全没有黄昏这一星盘中所体现的时空概念。</span>
+</p>
+
+<p>
+<span class="para" id="para-0073"><span class="img-ref" data-img="images/图11.png">[图11]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">《丘比特与普赛克的婚礼》（左） 、《迦纳的婚礼》（右）</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0074">因此将婚姻宫设定在命宫的对宫，放眼世界只有我国拥有着这一模拟天时的传统与思想！</span>
+</p>
+
+<p>
+<span class="para" id="para-0075">至此，式盘中卯酉二宫相互呼应，日门与月门阴阳相济：日门的 “阳升” 是个体独立于世的根基，月门的 “阴降” 是个体安放情感的归宿；命宫的 “自我” 需借婚姻宫的 “他者” 完成圆满，婚姻宫的 “联结” 亦需以命宫的 “本真” 为内核。这组门径，实则是《易经》中“独阳不生，独阴不长” 的哲思在人生命局中的具象化 —— 从晨光里的自我发端，到暮色中的情感归依，恰好勾勒出个体从 “立命” 到 “安身” 的完整轨迹，也暗合了生命从张扬到沉淀、从个体到共生的自然节律。</span>
+</p>
+
+<p>
+<span class="para" id="para-0076">### 小结：</span>
+</p>
+
+<p>
+<span class="para" id="para-0077">通过本章论述，我们不难看出，刑德式盘中所体现的卯酉阴阳之门正是星盘中1宫与7宫的起源，式盘远端的 “野” 与内在的 “室” 则是星盘中 10 宫与 4 宫的哲学原点。因此星盘中最重要的基础结构（1、4、7、10宫）正是起源于我国真正的古天文学思想——太乙观星法与其衍生出的式盘体系！诸君方知《淮南子》成书于公元前139年，要比托勒密所写的《四书》早至少200-300年，很显然以上对于《淮南子》刑德式盘的复原，再一次改写了人类探索星空的历史！</span>
+</p>
+
+<h3 id="sec4">星神之章——日月殿驾，五星庙堂</h3>
+<p>
+<span class="para" id="para-0078">星盘中的宫主星，是占星术的论断核心，它们的 “吊起飞来” 与 “庙旺落陷”，可能决定着对应宫位能量的显化质量，也可能牵动着个体人生中某一领域的走势与底色。</span>
+</p>
+
+<p>
+<span class="para" id="para-0079">关于星神的要素有三：天时、地利、人和</span>
+</p>
+
+<p>
+<span class="para" id="para-0080">《星学大成》有载：</span>
+</p>
+
+<p>
+<span class="para" id="para-0081">人命推排十二宫，宫星为主实难通</span>
+</p>
+
+<p>
+<span class="para" id="para-0082">今人只论元来曜，谁把宫神主宿穷</span>
+</p>
+
+<p>
+<span class="para" id="para-0083">此宿从来为管库，主人祸福吉和凶</span>
+</p>
+
+<p>
+<span class="para" id="para-0084">精穷主星归何地，善恶推来得度中</span>
+</p>
+
+<p>
+<span class="para" id="para-0085">得时不论居防弱，失时何问在髙强</span>
+</p>
+
+<p>
+<span class="para" id="para-0086">伏逆顺留居段局，庙旺喜怒细推详</span>
+</p>
+
+<p>
+<span class="para" id="para-0087">逐宫推算从头始，着意躔教首尾终</span>
+</p>
+
+<p>
+<span class="para" id="para-0088">此説精防难説尽，心机彻处透天工</span>
+</p>
+
+<p>
+<strong>天时</strong>
+</p>
+
+<p>
+<span class="para" id="para-0089">先看天时，所谓得天时，即命主出生时间与星体的天时时间吻合！</span>
+</p>
+
+<p>
+<span class="para" id="para-0090">我国占星体系为时加月将盘，重年月（宏观、本命），因此星体与天时的关系按年月去取，即木星于春天得天时，火星于夏天得天时，金星于秋天得天时，水星于冬天得天时，土星于四季得天时。</span>
+</p>
+
+<p>
+<span class="para" id="para-0091">西方占星体现为月将加时盘，重日时（微观、运限），因此星体与天时的关系按日时去取，即木星于白天得天时，火星于夜晚得天时，金星于夜晚得天时，水星于黎明得天时，土星于白天得天时。</span>
+</p>
+
+<p>
+<span class="para" id="para-0092">同理一日中太阳于白天得天时，月亮于夜晚得天时；四季中太阳于春、夏得天时，月亮于秋、冬得天时，但夏日忌见火，冬月忌见水。</span>
+</p>
+
+<p>
+<span class="para" id="para-0093">星体得时的本质是人类对星体先验性的总结，得时时星体的先天本性（如木星之扩张、金星之和谐、水星之灵动）得以全然舒展，呈现出 “当权而不燥、充盈而有序” 的成长状态，没有上限。</span>
+</p>
+
+<p>
+<span class="para" id="para-0094">仿若演员置身契合其气质的舞台，能将自身特质发挥至极致。这种状态对命主而言，实为存在与环境的良性契合：先天吉星得时则更添吉庆，木星的机遇感知、金星的关系魅力会转化为具象的顺遂与资源；即便是先天带有限制性的土星、火星，得时也会减其凶势，转为务实的建构力与精准的行动力。命主因此能在星体所主的生命领域（思维、行动、关系等）中顺应节律、减少内耗，如同抓住了时代的红利般，精准承接星体的正面势能，让内在潜能与外在时机形成呼应，最终达成 “顺势而成” 的生命效能。</span>
+</p>
+
+<p>
+<span class="para" id="para-0095">反之失时的星体，代表着成长缓慢，星体的上限被限定，万物成长的本质是可以应时而变，成长缓慢也代表着这种改变的意愿与行动力是较弱的。比如工业革命让纺织业步入工业机械时代，一天的产量可能是一个手工纺织者一年的产量，那些固守手摇纺车、不愿尝试机械操作的纺织者，并非没有机会接触新工具，而是缺乏主动改变的意愿 —— 他们或许担心学习成本太高，或许执着于 “手工更精细” 的旧经验，又或许害怕改变后失去熟悉的生存节奏，最终只能在效率差距中看着机遇流逝，成长始终困在 “手工生产” 的旧框架里。这就像失时的木星，并非感知不到机遇的存在，而是面对新的机会时，习惯用旧有认知去判断，不愿突破舒适区尝试新路径，机遇便在 “再等等”“再看看” 中溜走；又如失时的金星，不是没有建立和谐关系的潜能，而是在人际互动模式需要调整时，固守自己的沟通习惯，不愿主动理解他人的新需求，关系的成长便始终停留在表面；即便是失时的土星，也不是无法构建务实的目标，而是在环境需要调整计划时，难以放下对 “完美规划” 的执念，不愿灵活适配，最终让成长在 “必须按原计划走” 的固执中变慢、停滞。这些失时的星体，本质上不是缺乏成长的可能，而是被 “不愿改变” 的惯性困住，让成长的节奏跟不上环境的变化，上限也随之被自己的行动力所限定。</span>
+</p>
+
+<p>
+<strong>地利</strong>
+</p>
+
+<p>
+<span class="para" id="para-0096">再看地利，即为星体所处星座的“庙旺落陷”状态。行星在特定星座如同回到自己的领土（入庙）或尊贵之所（擢升），力量通达畅顺，能量显化高效、纯粹，故曰得地；反之，若落入敌方（落陷）或被流放之地（失势），则能量表达困难、扭曲或不稳定，故曰失地。</span>
+</p>
+
+<p>
+<span class="para" id="para-0097">入庙 (Rulership/Domicile)： 行星在其主宰的星座，其力量可持久平稳有序的展开。</span>
+</p>
+
+<p>
+<span class="para" id="para-0098">太阳：狮子座 | 月亮：巨蟹座</span>
+</p>
+
+<p>
+<span class="para" id="para-0099">水星：双子座、处女座 | 金星：金牛座、天秤座</span>
+</p>
+
+<p>
+<span class="para" id="para-0100">火星：白羊座、天蝎座 | 木星：射手座、双鱼座</span>
+</p>
+
+<p>
+<span class="para" id="para-0101">土星：摩羯座、水瓶座</span>
+</p>
+
+<p>
+<span class="para" id="para-0102">擢升 (Exaltation)： 行星在擢升星座中感受到最强烈的支持与荣耀，力量能高效地发挥。</span>
+</p>
+
+<p>
+<span class="para" id="para-0103">太阳：白羊座 | 月亮：金牛座</span>
+</p>
+
+<p>
+<span class="para" id="para-0104">水星：处女座 | 金星：双鱼座</span>
+</p>
+
+<p>
+<span class="para" id="para-0105">火星：摩羯座 | 木星：巨蟹座</span>
+</p>
+
+<p>
+<span class="para" id="para-0106">土星：天秤座</span>
+</p>
+
+<p>
+<span class="para" id="para-0107">陷阵(Detriment)： 行星落入其入庙星座的对宫星座，如同身处敌营，力量被高度限制。</span>
+</p>
+
+<p>
+<span class="para" id="para-0108">太阳：水瓶座 | 月亮：摩羯座</span>
+</p>
+
+<p>
+<span class="para" id="para-0109">水星：射手座、双鱼座 | 金星：天蝎座、白羊座</span>
+</p>
+
+<p>
+<span class="para" id="para-0110">火星：天秤座、金牛座 | 木星：双子座、处女座</span>
+</p>
+
+<p>
+<span class="para" id="para-0111">土星：巨蟹座、狮子座</span>
+</p>
+
+<p>
+<span class="para" id="para-0112">落弱(Fall)： 行星落入其擢升星座的对宫星座，力量被贬低、削弱，难以顺畅表达其最优势的能量。</span>
+</p>
+
+<p>
+<span class="para" id="para-0113">太阳：天秤座 | 月亮：天蝎座</span>
+</p>
+
+<p>
+<span class="para" id="para-0114">水星：双鱼座 | 金星：处女座</span>
+</p>
+
+<p>
+<span class="para" id="para-0115">火星：巨蟹座 | 木星：摩羯座 | 土星：白羊座</span>
+</p>
+
+<p>
+<span class="para" id="para-0116"><span class="img-ref" data-img="images/图12.png">[图12]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">星体庙旺图</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0117">如图12所示，最外层为十二星座，中间层为宫主星，即星体的庙地，最内层为星体擢升之地。而以上星体庙旺落陷的原理正是源于我国的古天文学，也只有通过我国古天文学的重要思想——太乙观星法才可以发现地支六合与天干五合的实际天象！</span>
+</p>
+
+<p>
+<span class="para" id="para-0118"><strong>六合与宫主星</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0119"><span class="img-ref" data-img="images/图13.png">[图13]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">地支六合图</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0120">如《五行大义》有云：</span>
+</p>
+
+<p>
+<span class="para" id="para-0121">支合者，日月行次之所合也。正月，日月会于诹訾之次，诹訾，亥也，一名豕韦，斗建在寅，故寅与亥合。二月，日月会于降娄之次，降娄，戌也，斗建在卯，故卯与戌合。.......十二月，日月会于玄枵之次，玄枵，子也，一名天鼋，斗建在丑，故丑与子合。</span>
+</p>
+
+<p>
+<span class="para" id="para-0122">《五行大义》中所记录的六合天文现象，就是通过记录一年之中，南向天空中每次日月合朔所在的星次地支，以及与其对应的北向天空中北斗斗杓所指的岁阴地支，全部记录后则会出现十二组地支关系。这种六合关系的天文实际星象模拟如下所示：</span>
+</p>
+
+<p>
+<span class="para" id="para-0123"><span class="img-ref" data-img="images/图14.png">[图14]</span> 公元100年3月28日，农历三月初一，日月朔于降娄之次，即十二星次地支的戌宫，北斗指向单阏，即十二岁阴的卯宫，故卯戌六合。</span>
+</p>
+
+<p>
+<span class="para" id="para-0124"><span class="img-ref" data-img="images/图15.png">[图15]</span> 公元100年6月25日，农历五月初一，日月朔于鹑首之次，即十二星次地支的未宫，北斗指向敦牂，即十二岁阴的午宫，故午未六合。</span>
+</p>
+
+<p>
+<span class="para" id="para-0125"><span class="img-ref" data-img="images/图16.png">[图16]</span> 公元100年9月21日，农历八月初一，日月朔于寿星之次，即十二星次地支的辰宫，北斗指向作噩，即十二岁阴的酉宫，故酉辰六合。</span>
+</p>
+
+<p>
+<span class="para" id="para-0126"><span class="img-ref" data-img="images/图17.png">[图17]</span> 公元100年12月19日，农历十一月初一，日月朔于星纪之次，即十二星次地支的丑宫，北斗指向困敦，即十二岁阴的子宫，即子丑六合。</span>
+</p>
+
+<p>
+<span class="para" id="para-0127">古人在发现六合的星象之后，接下来的工作就是给六合配上五行，具体过程如下文所示：</span>
+</p>
+
+<p>
+<span class="para" id="para-0128">《星学大成》中的星盘或问章节有如下记载，书云：</span>
+</p>
+
+<p>
+<span class="para" id="para-0129">客问星盤十二宫既聞命矣，然何以午未屬天，子丑屬地，亥寅屬木，卯戌屬火，辰酉屬金，巳申屬水，與五行地支十二理不同又何說？答曰：五行以寅卯為木，巳午為火，申酉為金，亥子為水，辰戌丑未為土乃地支十二維也。午與未合居於上而屬乾，故以為天，子與丑合居於下而屬坤，故以為地，上天下地一定之體也，亥與寅合屬春故以為木，卯與戌合屬夏故以為火，辰與酉合屬秋故以為金，巳與申合屬冬故以為水，春夏秋冬四時之序也。日月麗天水金輔之故喜金水，土石麗地木火生之，故喜木火，此雖與地支十二維分布不同而其道理則相貫也。</span>
+</p>
+
+<p>
+<span class="para" id="para-0130">万公在书中的回答很形象，就好比一个人站在大地仰望天空，由下至上，贯看春风秋月，一年四季的轮回。至此每组地支六合都配上了五行，即子丑合土，寅亥合木，卯戌合火，辰酉合金，巳申合水，午未合日月。</span>
+</p>
+
+<p>
+<span class="para" id="para-0131"><span class="img-ref" data-img="images/图18.png">[图18]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">六合与四季时空</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0132">同时古人又通过对五大行星的观测，依次记录了各行星的公转周期，如秦帛书《五星占》就有如下记载，见表1：</span>
+</p>
+
+<p>
+<span class="para" id="para-0133"><span class="img-ref" data-img="images/表1.png">[表1]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">《五星占》天文记录</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0134">注：《五星占》是世界上已知的最早的对于五大行星成体系的天文记录，没有之一，就是牛逼！</span>
+</p>
+
+<p>
+<span class="para" id="para-0135">下面又到了见证奇迹的时刻了，如果将上图中的地支六合关系再与五大行星进行匹配，那么地支六合的五行排序就是五大行星在太阳系中从内到外的顺序，五星与五行至此也就一一对应上了，这就是五星五行之名的来历！亦是占星术中宫主星的来历！</span>
+</p>
+
+<p>
+<span class="para" id="para-0136"><span class="img-ref" data-img="images/图19.jpeg">[图19]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">五星与六合五行</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0137"><strong>五合与擢升</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0138"><strong>天乙贵人的天文原理</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0139">大六壬是我国古贤基于古天文学而创造的式占类术数，其中有一个重要的设定，那就是天乙贵人的排布规则，也只有在天乙确定之后大六壬的十二天将才能得以依次排布，这也是六壬术使用的前提。</span>
+</p>
+
+<p>
+<span class="para" id="para-0140">据考证，目前可知的天乙贵人早期记载有唐代李筌所著的《太白阴经》之章节，书云：</span>
+</p>
+
+<p>
+<span class="para" id="para-0141">问天乙者，贵人也。家在丑，甲戊之日，旦理大吉，暮理小吉。乙己之日，旦理神后，暮理传送。丙丁之日，旦理登明，暮理从魁。庚辛之日，旦理胜光，暮理功曹。壬癸之日，旦理太乙，暮理太冲。天乙在东方、西方，则南方为前，北方为後；在南方、北方，则东方为前，西方为後；常以星没为旦，星出为暮。</span>
+</p>
+
+<p>
+<span class="para" id="para-0142">因此从以上描述中，我们可以总结出天乙贵人最初的口诀，即为：</span>
+</p>
+
+<p>
+<span class="para" id="para-0143">甲戊兼牛羊，乙己鼠猴乡，</span>
+</p>
+
+<p>
+<span class="para" id="para-0144">丙丁猪鸡位，壬癸兔蛇藏，</span>
+</p>
+
+<p>
+<span class="para" id="para-0145">庚辛逢马虎，此是贵人方。</span>
+</p>
+
+<p>
+<span class="para" id="para-0146">而宋代的大六壬天乙贵人口诀（见下文）与唐代的遁甲天乙贵人口诀略有区别，因何原因造成此区别，本文不做展开讲解，感兴趣的朋友可以关注一下，待以后讲解。</span>
+</p>
+
+<p>
+<span class="para" id="para-0147">甲戊庚牛羊，乙己鼠猴乡，</span>
+</p>
+
+<p>
+<span class="para" id="para-0148">丙丁猪鸡位，壬癸兔蛇藏，</span>
+</p>
+
+<p>
+<span class="para" id="para-0149">六辛逢马虎，此是贵人方。</span>
+</p>
+
+<p>
+<span class="para" id="para-0150">而以上天乙贵人口诀的天文原理已失传了千年，近日有幸得先贤之伏藏，终于破解了此间奥秘，下面请大家跟我一起再次见证奇迹，时隔两千年，天乙贵人的天文原理重现世间。</span>
+</p>
+
+<p>
+<span class="para" id="para-0151">我随机选取公元200年左右作为观测时间，星图如下。</span>
+</p>
+
+<p>
+<span class="para" id="para-0152"><strong>1、甲午兼牛羊</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0153"><span class="img-ref" data-img="images/图20.png">[图20]</span> 甲戊兼牛羊</span>
+</p>
+
+<p>
+<span class="para" id="para-0154">公元200年12月24日，日月朔于斗牛宿（丑宫），北斗于辰巳之交时指未</span>
+</p>
+
+<p>
+<span class="para" id="para-0155">公元201年6月18日，日月朔于井鬼宿（未宫），北斗于辰巳之交时指丑</span>
+</p>
+
+<p>
+<span class="para" id="para-0156">故可见甲戊兼牛羊！</span>
+</p>
+
+<p>
+<span class="para" id="para-0157"><strong>2、乙己鼠猴乡</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0158"><span class="img-ref" data-img="images/图21.png">[图21]</span> 乙己鼠猴乡</span>
+</p>
+
+<p>
+<span class="para" id="para-0159">公元201年1月22日，日月朔于女虚宿（子宫），北斗于辰巳之交时指申</span>
+</p>
+
+<p>
+<span class="para" id="para-0160">公元201年5月20日，日月朔于觜参宿（申宫），北斗于辰巳之交时指子</span>
+</p>
+
+<p>
+<span class="para" id="para-0161">故可见乙己鼠猴乡！</span>
+</p>
+
+<p>
+<span class="para" id="para-0162"><strong>3、丙丁猪鸡位</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0163"><span class="img-ref" data-img="images/图22.png">[图22]</span> 丙丁猪鸡位</span>
+</p>
+
+<p>
+<span class="para" id="para-0164">公元201年2月21日，日月朔于室壁宿（亥宫），北斗于辰巳之交时指酉</span>
+</p>
+
+<p>
+<span class="para" id="para-0165">公元201年4月20日，日月朔于昴宿（酉宫），北斗于辰巳之交时指亥</span>
+</p>
+
+<p>
+<span class="para" id="para-0166">故可见丙丁猪鸡位！</span>
+</p>
+
+<p>
+<span class="para" id="para-0167"><strong>4、壬癸蛇兔藏</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0168"><span class="img-ref" data-img="images/图23.png">[图23]</span> 壬癸蛇兔藏</span>
+</p>
+
+<p>
+<span class="para" id="para-0169">公元201年8月16日，日月朔于翼宿（巳宫），北斗于辰巳之交时指卯</span>
+</p>
+
+<p>
+<span class="para" id="para-0170">公元201年4月20日，日月朔氐宿（卯宫），北斗于辰巳之交时指巳</span>
+</p>
+
+<p>
+<span class="para" id="para-0171">故可见壬癸蛇兔藏！</span>
+</p>
+
+<p>
+<span class="para" id="para-0172"><strong>5、庚辛逢马虎</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0173"><span class="img-ref" data-img="images/图24.png">[图24]</span> 庚辛逢马虎</span>
+</p>
+
+<p>
+<span class="para" id="para-0174">公元201年7月18日，日月朔于柳星宿（午宫），北斗于辰巳之交时指寅</span>
+</p>
+
+<p>
+<span class="para" id="para-0175">公元201年11月14日，日月朔尾箕宿（寅宫），北斗于辰巳之交时指午</span>
+</p>
+
+<p>
+<span class="para" id="para-0176">故可见庚辛逢马虎！</span>
+</p>
+
+<p>
+<span class="para" id="para-0177"><strong>以上就是天乙贵人的天文原理！</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0178"><strong>天干五合的天文原理</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0179">而通过以上的探索过程，我们可以发现十干贵人不入魁罡（戌辰），</span>
+</p>
+
+<p>
+<span class="para" id="para-0180"><span class="img-ref" data-img="images/图25.png">[图25]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">天乙贵人排布图</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0181">那么按此规则，我们从未宫起甲，依次排布全部十个天干，即可得到下图</span>
+</p>
+
+<p>
+<span class="para" id="para-0182"><span class="img-ref" data-img="images/图26.png">[图26]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">天干五合星图</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0183">这时有些朋友可能已经发现，按此种排布顺序即可得到天干五合，即</span>
+</p>
+
+<p>
+<span class="para" id="para-0184">甲己合化土，乙庚合化金，丙辛合化水，丁壬合化木，戊癸合化火</span>
+</p>
+
+<p>
+<span class="para" id="para-0185">那么再将此图与太阳系的五大行星的轨道图放在一起，我们便可以发现，其中天干五合五行的顺序与太阳系中从内到外的行星顺序亦完全一致！这正是天干五合真正的天文原理！</span>
+</p>
+
+<p>
+<span class="para" id="para-0186"><span class="img-ref" data-img="images/图27.jpeg">[图27]</span><span style="display:block;text-align:center;font-size:0.85em;margin-top:4px">天干五合与太阳系行星</span></span>
+</p>
+
+<p>
+<span class="para" id="para-0187"><strong>星体擢升的天文原理</strong></span>
+</p>
+
+<p>
+<span class="para" id="para-0188">而星体擢升的原理亦在其中，诸君请看，首先从图27中我们可以发现如果继续将太阳系的星体与地支匹配则太阳将对应戌，土星将对应辰，这正是太阳与土星擢升的宫位。同时日月为帝后应彼此相邻（同六合之位），故月亮擢升在酉。</span>
+</p>
+
+<p>
+<span class="para" id="para-0189">甲为木，甲贵在未，即木星擢升在巨蟹；壬为水，壬贵在巳，即水星擢升在处女；辛为金，辛贵在亥，即金星擢升在双鱼。丁为火，丁贵本应在卯擢升，但帝出于卯，卯为太阳出生地，故火星不可争辉，改居木之擢升对位丑宫以应冲照。</span>
+</p>
+
+<p>
+<span class="para" id="para-0190">故星体擢升的宫位中我们可以看到3+“1”组冲相位关系，即戌辰（日土）、未丑（木火）、亥巳（金水），以及（卯）酉（星月）。</span>
+</p>
+
+<p>
+<span class="para" id="para-0191">以上关于确定天乙贵人为何选用辰巳之交作为观测时间，以及十天干为何采用此种排布方式等核心问题，欢迎加入我的古天文社群，进行系统学习！</span>
+</p>
+
+<p>
+<strong>人和</strong>
+</p>
+
+<p>
+<span class="para" id="para-0192">在占星术中星体所在的后天宫位，可以揭示个体的人生舞台特质，而星体间的相位联系则如同命运的纺线，将机遇、挑战与因果交织成每一张独特的生命图景，其中有强有弱，有疏有密。</span>
+</p>
+
+<p>
+<span class="para" id="para-0193">如《星学大成》中有如下记载，经云：</span>
+</p>
+
+<p>
+<span class="para" id="para-0194">十二宫中有強弱，七強五弱例難窮。命宫官禄最高位，福德妻宫次强宗。近強男女并田宅，第九遷移合照宫。五弱疾宫并相貌，兄弟奴僕八宫中。強宫愛見吉星照，弱處星辰無福功。古人雖有推詳例，理致未為長久通。洞天宫法窮其妙，失地逢時廟旺中。不問強弱宿星地，只將好廟論窮通。得地不問居強弱，失時休誇強最雄。䧟處得時猶享福，強宫失位總成空。那堪高處重居廟，作福興財分外豐。倘還䧟弱加時失，一分凶作十分凶。</span>
+</p>
+
+<p>
+<span class="para" id="para-0195">【星辰之要貴在得時，懼在失時，得時則享福，失時則䧟害。休咎吉凶轉移甚易，官之強弱固不必執定】</span>
+</p>
+
+<p>
+注：
+</p>
+
+<p>
+<span class="para" id="para-0196">强宫：命宫、官禄、福德、夫妻、男女、田宅、迁移、财帛；</span>
+</p>
+
+<p>
+<span class="para" id="para-0197">弱宫：疾厄、相貌、兄弟、奴仆。</span>
+</p>
+
+<p>
+<span class="para" id="para-0198">以上财宫和迁移宫在定强弱时尚有争议，总体来讲财帛宫和迁移宫在后天人事上应偏向于强宫。二宫为养命之源，九宫则三合命宫。</span>
+</p>
+
+<p>
+<span class="para" id="para-0199">关于星体的相位关系西占主要有三合、刑、冲、会等相位关系，而七政中则有经络贯串等十余种，感兴趣的朋友可以看我的《七政四余入门精解》「2」在此不做赘述。</span>
+</p>
+
+<p>
+<span class="para" id="para-0200">西占中有接纳、互溶、七政中亦有互垣、叠元等技法，这些都属于星体的初阶格局，是星盘中重点论断的方向。</span>
+</p>
+
+<p>
+<span class="para" id="para-0201">### 小结：</span>
+</p>
+
+<p>
+<span class="para" id="para-0202">通过本章论述，我们不难看出星盘中星体 “庙旺落陷” 的核心体系，其根源正是我国古天文的根本思想 —— 太乙观星法；这一思想所衍生的地支六合与天干五合的天文原理，恰是支撑庙旺规则的天文内核。在这一领域，我国不仅有实物佐证（如大六壬式盘），更有存世典籍（如秦帛书《五星占》），其年代均比西方相关的占星遗存早 200 至 300 年。由此可见，这番研究不仅印证了中华古天文对星占体系的奠基意义，也再一次厘清了人类探索星空的文明脉络！</span>
+</p>
+
+<h2 id="sec5">星庐观象</h2>
+<p>
+<span class="para" id="para-0203">通过这场跨越三千年的 “观星溯源”，人类探索星空的文明脉络已然清晰，占星术体系的三大核心基石，皆根植于我国古天文学的核心思想 —— 太乙观星法。这一思想于战国至西汉年间沿丝绸之路西传，开启 “东学西渐” 的文明对话。由此可见，当下世人所称的西方占星学、阿拉伯占星学、印度占星学等，实则的学术名称应界定为 “中华式占占星术之古希腊学派”“中华式占占星术之阿拉伯学派” 与 “中华式占占星术之印度学派”，其本源皆可追溯至太乙观星法的核心逻辑。</span>
+</p>
+
+<p>
+<span class="para" id="para-0204">时至盛唐，九天阊阖开宫殿，万国衣冠拜冕旒。曾几何时在西方多地演化发展上百年的中华占星学分支，又沿原路返回中土。我国古贤兼容并蓄，在融合回流成果的基础上创新突破，最终缔造出以七政四余（果老星宗）为代表的本土占星体系，形成 “中华式占占星术之本土学派”。从根基奠定到西传演化，再到回流创新，太乙观星法始终是贯穿占星术发展的文明主线，也正是这一脉络，印证了中华古天文思想对世界占星文化的深远滋养。</span>
+</p>
+
+<p>
+<span class="para" id="para-0205">至此我们可以不必再执着于 “先后” 的论辩，因为星空本是人类共有的文明镜像。东方以 “十二地支” 为锚，西方以 “十二星座” 为舟，看似路径相异，实则都是对 “时空秩序” 的追问、对 “生命意义” 的探索 —— 正如楚帛书与埃及壁画同载 “十二星神传说”，《淮南子》刑德式盘与四象限共释 “自我成长轨迹”，这种 “跨越时空的文明交流”，恰是人类文明对星空最深情的呼应。</span>
+</p>
+
+<p>
+<span class="para" id="para-0206">如今，楚帛书从海外归乡，刑德式盘的复原重现，失传的太乙观星法再次闪耀 —— 这不仅是 “改写历史” 的发现，更是文明根脉的唤醒。当我们再望北辰，看见的不只是斗转星移的变迁，更是华夏先哲 “周行而不殆” 的探索精神：以星为笔，书写的是人类理解宇宙的永恒篇章；以心为庐，承载的是文明与星空共生的不朽初心。这颗 “苍龙之心” 从未熄灭，这份 “观星智慧” 终将继续指引我们，在科学与人文的交汇处，在已知与未知的边界上，续写属于人类的星空传奇。</span>
+</p>
+
+<h2 id="sec6">参考文献</h2>
+<p>
+<span class="para" id="para-0207">「1」《星庐·中国古天文学指津》——本文将颠覆所有人对我国古天文学的认知</span>
+</p>
+
+<p>
+<span class="para" id="para-0208">「2」七政四余占星术入门精解综述</span>
+</p>
+
+            </div></div>
+        </main>
+    </div>
+
+    <footer>
+        <p>古天文知识库 (tianwen-kb) — 基于古天文典籍古籍原文构建</p>
+    </footer>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/qr-popup.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+var popup=null,cur=null,timer=null;
+function show(ref,src){
+if(!popup){popup=document.createElement('div');popup.className='img-popup';document.body.appendChild(popup);
+popup.addEventListener('mouseenter',function(){clearTimeout(timer);});
+popup.addEventListener('mouseleave',function(){popup.classList.remove('show');});}
+clearTimeout(timer);cur=ref;
+var label=ref.textContent.trim();
+popup.innerHTML='<img src="'+src+'" alt="'+label+'"><div class="img-label">'+label+'</div>';
+popup.classList.add('show');
+}
+function hide(){timer=setTimeout(function(){if(popup)popup.classList.remove('show');},300);}
+document.querySelectorAll('.img-ref').forEach(function(ref){
+ref.addEventListener('mouseenter',function(){show(this,this.getAttribute('data-img'));});
+ref.addEventListener('mouseleave',hide);
+});
+});
+</script>
+<script src="../js/paralink.js"></script>
+</body>
+</html>

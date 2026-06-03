@@ -1,383 +1,662 @@
-1|<!DOCTYPE html>
-2|<html lang="zh-CN">
-3|<head>
-4|    <meta charset="UTF-8">
-5|    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-6|    <title>搜索 — 星庐·中国古天文学知识库</title>
-7|    <meta name="description" content="全文搜索十七部天文志/天官书，跨越西汉至清代的天象记录。">
-8|    <link rel="stylesheet" href="css/style.css">
-9|    <style>
-10|        /* ============================================================
-11|           SEARCH PAGE: ADDITIONAL STYLES
-12|           ============================================================ */
-13|        .search-page-title {
-14|            text-align: center;
-15|            font-family: var(--font-serif);
-16|            font-size: 2rem;
-17|            color: var(--accent-gold);
-18|            margin-bottom: 8px;
-19|            letter-spacing: 0.06em;
-20|        }
-21|
-22|        .search-page-subtitle {
-23|            text-align: center;
-24|            font-family: var(--font-sans);
-25|            font-size: 0.9rem;
-26|            color: var(--text-dim);
-27|            margin-bottom: 36px;
-28|        }
-29|
-30|        .search-form {
-31|            display: flex;
-32|            gap: 8px;
-33|            margin-bottom: 36px;
-34|        }
-35|
-36|        .search-form input {
-37|            flex: 1;
-38|            padding: 14px 20px;
-39|            background: var(--bg-card);
-40|            border: 1px solid var(--border);
-41|            border-radius: var(--radius-lg);
-42|            color: var(--text-body);
-43|            font-family: var(--font-sans);
-44|            font-size: 1rem;
-45|            outline: none;
-46|            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-47|        }
-48|
-49|        .search-form input:focus {
-50|            border-color: var(--accent-gold);
-51|            box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1);
-52|        }
-53|
-54|        .search-form input::placeholder {
-55|            color: var(--text-dim);
-56|        }
-57|
-58|        .search-form button {
-59|            background: var(--accent-gold);
-60|            color: var(--bg-deepest);
-61|            border: none;
-62|            font-family: var(--font-sans);
-63|            font-size: 0.95rem;
-64|            font-weight: 600;
-65|            padding: 14px 32px;
-66|            border-radius: var(--radius-lg);
-67|            cursor: pointer;
-68|            transition: background 0.2s ease;
-69|            white-space: nowrap;
-70|        }
-71|
-72|        .search-form button:hover {
-73|            background: var(--accent-warm);
-74|        }
-75|
-76|        .search-form button:disabled {
-77|            opacity: 0.5;
-78|            cursor: not-allowed;
-79|        }
-80|
-81|        /* --- Search Info Bar --- */
-82|        .search-info {
-83|            display: flex;
-84|            align-items: center;
-85|            justify-content: space-between;
-86|            margin-bottom: 16px;
-87|            font-family: var(--font-sans);
-88|            font-size: 0.85rem;
-89|            color: var(--text-dim);
-90|        }
-91|
-92|        .search-info .hit-count {
-93|            color: var(--accent-gold);
-94|        }
-95|
-96|        .search-info .search-time {
-97|            font-size: 0.8rem;
-98|            opacity: 0.7;
-99|        }
-100|
-101|        /* --- Dynasty Badge (in search results) --- */
-102|        .result-dynasty {
-103|            display: inline-block;
-104|            font-family: var(--font-sans);
-105|            font-size: 0.72rem;
-106|            font-weight: 600;
-107|            color: var(--accent-warm);
-108|            background: rgba(212, 165, 116, 0.1);
-109|            border: 1px solid rgba(212, 165, 116, 0.2);
-110|            padding: 2px 10px;
-111|            border-radius: 14px;
-112|            margin-left: 8px;
-113|            vertical-align: middle;
-114|            letter-spacing: 0.05em;
-115|        }
-116|
-117|        /* --- Result Link --- */
-118|        .result-link {
-119|            display: block;
-120|            text-decoration: none;
-121|            color: inherit;
-122|            padding: 20px;
-123|            background: var(--bg-card);
-124|            border: 1px solid var(--border);
-125|            border-radius: var(--radius);
-126|            margin-bottom: 12px;
-127|            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-128|        }
-129|
-130|        .result-link:hover {
-131|            border-color: var(--accent-gold);
-132|            box-shadow: 0 4px 20px rgba(201, 169, 110, 0.08);
-133|            color: inherit;
-134|        }
-135|
-136|        .result-link .result-title {
-137|            font-family: var(--font-serif);
-138|            font-size: 1.05rem;
-139|            color: var(--accent-gold);
-140|            margin-bottom: 4px;
-141|        }
-142|
-143|        .result-link .result-title:hover {
-144|            color: var(--accent-warm);
-145|        }
-146|
-147|        .result-link .result-chapter {
-148|            font-family: var(--font-sans);
-149|            font-size: 0.8rem;
-150|            color: var(--text-dim);
-151|            margin-bottom: 6px;
-152|        }
-153|
-154|        .result-link .result-snippet {
-155|            font-size: 0.9rem;
-156|            color: var(--text-muted);
-157|            line-height: 1.6;
-158|        }
-159|
-160|        .result-link .result-snippet mark {
-161|            background: rgba(201, 169, 110, 0.25);
-162|            color: var(--accent-gold);
-163|            padding: 0 2px;
-164|            border-radius: 2px;
-165|        }
-166|
-167|        /* --- Initial / Empty / Error States --- */
-168|        .search-placeholder,
-169|        .search-empty,
-170|        .search-error {
-171|            text-align: center;
-172|            padding: 64px 0;
-173|            font-family: var(--font-sans);
-174|            color: var(--text-dim);
-175|        }
-176|
-177|        .search-placeholder .placeholder-icon,
-178|        .search-empty .empty-icon {
-179|            font-size: 3rem;
-180|            margin-bottom: 16px;
-181|            opacity: 0.4;
-182|        }
-183|
-184|        .search-placeholder p {
-185|            font-size: 1.05rem;
-186|            margin-bottom: 8px;
-187|            color: var(--text-muted);
-188|        }
-189|
-190|        .search-placeholder .hint {
-191|            font-size: 0.85rem;
-192|            color: var(--text-dim);
-193|        }
-194|
-195|        .search-empty p {
-196|            font-size: 1.02rem;
-197|            color: var(--text-muted);
-198|        }
-199|
-200|        .search-error p {
-201|            font-size: 0.95rem;
-202|            color: #d4756e;
-203|        }
-204|
-205|        /* --- Loading Spinner --- */
-206|        .search-loading {
-207|            text-align: center;
-208|            padding: 48px 0;
-209|            color: var(--text-dim);
-210|            font-family: var(--font-sans);
-211|        }
-212|
-213|        .search-loading .spinner {
-214|            display: inline-block;
-215|            width: 32px;
-216|            height: 32px;
-217|            border: 3px solid var(--border);
-218|            border-top-color: var(--accent-gold);
-219|            border-radius: 50%;
-220|            animation: spin 0.8s linear infinite;
-221|            margin-bottom: 12px;
-222|        }
-223|
-224|        @keyframes spin {
-225|            to { transform: rotate(360deg); }
-226|        }
-227|
-228|        /* --- Responsive --- */
-229|        @media (max-width: 768px) {
-230|            .search-page-title {
-231|                font-size: 1.5rem;
-232|            }
-233|
-234|            .search-form {
-235|                flex-direction: column;
-236|            }
-237|
-238|            .search-form button {
-239|                width: 100%;
-240|                padding: 12px;
-241|            }
-242|
-243|            .result-link {
-244|                padding: 16px;
-245|            }
-246|        }
-247|    </style>
-248|</head>
-249|<body>
-250|
-251|    <!-- ============================================================
-252|         TOP NAVIGATION
-253|         ============================================================ -->
-254|    <nav class="top-nav" aria-label="主导航">
-255|        <div class="nav-inner">
-256|            <a href="index.html" class="nav-logo" aria-label="星庐·中国古天文学知识库首页">&#9737; 星庐·中国古天文学知识库</a>
-257|            <div class="nav-links">
-258|                <a href="index.html">首页</a>
-259|                <a href="search.html">搜索</a>
-260|            </div>
-261|        </div>
-262|    </nav>
-263|
-264|    <!-- ============================================================
-265|         SEARCH CONTAINER
-266|         ============================================================ -->
-267|    <div class="search-container">
-268|        <h1 class="search-page-title">全文搜索</h1>
-269|        <p class="search-page-subtitle">搜索书名、篇名、朝代、作者与内容描述 — 共 17 部史志</p>
-270|
-271|        <!-- Search Form -->
-272|        <form class="search-form" id="search-form" role="search" autocomplete="off">
-273|            <input
-274|                type="text"
-275|                id="search-input"
-276|                placeholder="输入关键词，如：超新星、浑天仪、分野、星官…"
-277|                aria-label="搜索天文知识"
-278|                autofocus
-279|            >
-280|            <button type="submit" id="search-button">&#128269; 搜索</button>
-281|        </form>
-282|
-283|        <!-- Search Info Bar (hidden initially) -->
-284|        <div class="search-info" id="search-info" style="display:none;">
-285|            <span>找到 <span class="hit-count" id="hit-count">0</span> 条结果</span>
-286|            <span class="search-time" id="search-time"></span>
-287|        </div>
-288|
-289|        <!-- Results Area -->
-290|        <div id="results-area">
-291|            <!-- Initial placeholder -->
-292|            <div class="search-placeholder" id="search-placeholder">
-293|                <div class="placeholder-icon">&#9737;</div>
-294|                <p>在上方输入关键词开始搜索</p>
-295|                <p class="hint">支持搜索：书名、篇名、朝代、作者、天文术语、星官名称等</p>
-296|            </div>
-297|        </div>
-298|    </div>
-299|
-300|    <!-- ============================================================
-301|         FOOTER
-302|         ============================================================ -->
-303|    <footer role="contentinfo">
-304|        <p>星庐·中国古天文学知识库 &copy; 2026 · 汇历代天文志，承千古观星学</p>
-305|    </footer>
-306|
-307|    <!-- ============================================================
-308|         LUNR.JS from CDN
-309|         ============================================================ -->
-310|    
-311|
-312|<script>
-313|(function(){
-314|var docs = [{"id": "01", "book": "史记", "chapter": "天官书", "dynasty": "西汉", "author": "司马迁", "year": "约前91年", "volumes": 1, "description": "中国现存最早的系统性天文学著作。将全天星官分为五宫（中东南西北），记录约90多个星官、500余颗恒星，叙述五星运行规律。", "url": "chapters/01_史记_天官书第五.html"}, {"id": "02", "book": "汉书", "chapter": "天文志", "dynasty": "东汉", "author": "班固", "year": "82年", "volumes": 1, "description": "沿用史记天官书体系，补充汉代天象记录，含太阳黑子早期观测、分野学说。", "url": "chapters/02_汉书_天文志.html"}, {"id": "03", "book": "后汉书", "chapter": "天文志", "dynasty": "南朝宋", "author": "范晔、司马彪", "year": "445年", "volumes": 3, "description": "司马彪续汉书八志之一。记载东汉天象，含著名的公元185年超新星记录（SN 185）。", "url": "chapters/03_后汉书_天文志.html"}, {"id": "04", "book": "晋书", "chapter": "天文志", "dynasty": "唐", "author": "房玄龄、李淳风等", "year": "648年", "volumes": 3, "description": "李淳风撰写，体系完整。介绍盖天说、浑天说、宣夜说，详述浑天仪，载283官1464星。", "url": "chapters/04_晋书_天文志.html"}, {"id": "05", "book": "宋书", "chapter": "天文志", "dynasty": "南朝梁", "author": "沈约", "year": "488年", "volumes": 4, "description": "记录南朝刘宋天象，追述三国西晋天象以补前史之缺。", "url": "chapters/05_宋书_天文志.html"}, {"id": "06", "book": "南齐书", "chapter": "天文志", "dynasty": "南朝梁", "author": "萧子显", "year": "537年", "volumes": 2, "description": "记录南齐（479-502年）天象，含日食、星变、分野占验。", "url": "chapters/06_南齐书_天文志.html"}, {"id": "07", "book": "魏书", "chapter": "天象志", "dynasty": "北齐", "author": "魏收", "year": "554年", "volumes": 4, "description": "记录北魏时期（386-550年）天象，含日食、月食、五星、彗星、流星，按年月日排序。", "url": "chapters/07_魏书_天象志.html"}, {"id": "08", "book": "隋书", "chapter": "天文志", "dynasty": "唐", "author": "魏徵、李淳风等", "year": "656年", "volumes": 3, "description": "李淳风续作。天文学理论和仪器部分极为详尽，记载浑天仪、浑象、漏刻，三分法宇宙理论。", "url": "chapters/08_隋书_天文志.html"}, {"id": "09", "book": "旧唐书", "chapter": "天文志", "dynasty": "后晋", "author": "刘昫等", "year": "945年", "volumes": 2, "description": "记录唐代天象，含僧一行的天文学贡献、浑天仪、黄道游仪等仪器。", "url": "chapters/09_旧唐书_天文志.html"}, {"id": "10", "book": "新唐书", "chapter": "天文志", "dynasty": "宋", "author": "欧阳修、宋祁等", "year": "1060年", "volumes": 3, "description": "与旧唐书互补，更重天文学理论。记录一行的大地测量工作，详载... [truncated]
-315|var sf = document.getElementById('search-form');
-316|var si = document.getElementById('search-input');
-317|var ra = document.getElementById('results-area');
-318|var sinfo = document.getElementById('search-info');
-319|var hc = document.getElementById('hit-count');
-320|var st = document.getElementById('search-time');
-321|
-322|function esc(s) {
-323|  var d = document.createElement('div');
-324|  d.appendChild(document.createTextNode(s));
-325|  return d.innerHTML;
-326|}
-327|
-328|function doSearch(q) {
-329|  q = q.trim();
-330|  if (!q) { sinfo.style.display = 'none'; ra.innerHTML = ''; return; }
-331|  si.value = q;
-332|  var t0 = performance.now();
-333|  var terms = q.split(/\s+/);
-334|  var results = [];
-335|  docs.forEach(function(doc) {
-336|    var score = 0;
-337|    var txt = doc.book + ' ' + doc.chapter + ' ' + doc.dynasty + ' ' + doc.author + ' ' + doc.description;
-338|    terms.forEach(function(t) {
-339|      if (txt.indexOf(t) !== -1) score++;
-340|      if (doc.book === t || doc.chapter === t) score += 5;
-341|    });
-342|    if (score > 0) results.push({doc: doc, score: score});
-343|  });
-344|  results.sort(function(a, b) { return b.score - a.score; });
-345|  var el = (performance.now() - t0).toFixed(0);
-346|  sinfo.style.display = 'flex';
-347|  hc.textContent = results.length;
-348|  st.textContent = el + ' ms';
-349|  if (results.length === 0) {
-350|    ra.innerHTML = '<div class="search-empty"><div class="empty-icon">&#9789;</div><p>未找到匹配「<strong>' + esc(q) + '</strong>」的结果</p><p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim);">请尝试其他关键词，如：超新星、分野、浑天仪、星官、日食</p></div>';
-351|    return;
-352|  }
-353|  var h = '';
-354|  results.forEach(function(r) {
-355|    var d = r.doc;
-356|    var sn = d.description.length > 120 ? d.description.substring(0, 120) + '\u2026' : d.description;
-357|    h += '<a href="' + esc(d.url) + '" class="result-link">' +
-358|      '<div class="result-title">' + esc(d.book) + ' \u00b7 ' + esc(d.chapter) +
-359|      '<span class="result-dynasty">' + esc(d.dynasty) + '</span></div>' +
-360|      '<div class="result-meta">' + esc(d.author) + ' \u00b7 ' + esc(d.year) + '</div>' +
-361|      '<p class="result-snippet">' + esc(sn) + '</p></a>';
-362|  });
-363|  ra.innerHTML = h;
-364|}
-365|
-366|sf.addEventListener('submit', function(e) { e.preventDefault(); doSearch(si.value); });
-367|var tt = null;
-368|si.addEventListener('input', function() { clearTimeout(tt); tt = setTimeout(function() { doSearch(si.value); }, 300); });
-369|
-370|function getQ() {
-371|  var m = window.location.search.match(/[?&]q=([^&]*)/);
-372|  return m ? decodeURIComponent(m[1]) : '';
-373|}
-374|var q = getQ();
-375|if (q) { si.value = q; doSearch(q); }
-376|})();
-377|</script>
-378|<script src="js/qr-popup.js"></script>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索 — 星庐·中国古天文学知识库</title>
+    <meta name="description" content="全文搜索二十部天文古籍，跨越西汉至清代的天象记录。支持拼音搜索、模糊匹配、搜索建议。">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .search-page-title {
+            text-align: center;
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            letter-spacing: 0.06em;
+        }
+        .search-page-subtitle {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 28px;
+        }
 
+        /* --- Scope Filter --- */
+        .search-scope {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .search-scope button {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: var(--font-sans);
+            transition: all 0.2s;
+        }
+        .search-scope button:hover {
+            border-color: var(--accent-gold);
+            color: var(--text-body);
+        }
+        .search-scope button.active {
+            background: rgba(201,169,110,0.15);
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            font-weight: 600;
+        }
+
+        /* --- Search Input with Autocomplete --- */
+        .search-input-wrap {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-input-wrap input {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-body);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-input-wrap input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
+        }
+        .search-input-wrap input::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Suggestions dropdown */
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .suggestions-dropdown.show {
+            display: block;
+        }
+        .suggestions-dropdown .sug-item {
+            padding: 9px 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-body);
+            border-bottom: 1px solid rgba(42,48,69,0.5);
+            transition: background 0.15s;
+        }
+        .suggestions-dropdown .sug-item:last-child {
+            border-bottom: none;
+        }
+        .suggestions-dropdown .sug-item:hover,
+        .suggestions-dropdown .sug-item.active {
+            background: var(--bg-hover);
+            color: var(--accent-gold);
+        }
+        .suggestions-dropdown .sug-item .sug-pinyin {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            margin-left: 8px;
+        }
+
+        /* --- Search Info Bar --- */
+        .search-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .search-info .hit-count { color: var(--accent-gold); }
+        .search-info .search-time { font-size: 0.8rem; opacity: 0.7; }
+
+        /* --- Results --- */
+        .result-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .result-link:hover {
+            border-color: var(--accent-gold);
+            box-shadow: 0 4px 20px rgba(201,169,110,0.08);
+        }
+        .result-link .result-title {
+            font-family: var(--font-serif);
+            font-size: 1.05rem;
+            color: var(--accent-gold);
+            margin-bottom: 4px;
+        }
+        .result-link .result-dynasty {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--accent-warm);
+            background: rgba(212,165,116,0.1);
+            border: 1px solid rgba(212,165,116,0.2);
+            padding: 2px 10px;
+            border-radius: 14px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .result-link .result-meta {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+        .result-link .result-snippet {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+        .result-link .result-snippet mark {
+            background: rgba(201,169,110,0.25);
+            color: var(--accent-gold);
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+        .result-link .result-heading {
+            font-size: 0.78rem;
+            color: var(--accent-jade);
+            margin-bottom: 4px;
+        }
+
+        /* --- Loading --- */
+        .search-loading {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--text-dim);
+        }
+        .search-loading .spinner {
+            display: inline-block;
+            width: 32px; height: 32px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent-gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Empty / Error --- */
+        .search-empty, .search-error {
+            text-align: center;
+            padding: 64px 0;
+            color: var(--text-dim);
+        }
+        .search-empty .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+        .search-error p { color: #d4756e; }
+
+        @media (max-width: 768px) {
+            .search-page-title { font-size: 1.5rem; }
+            .search-scope button { padding: 5px 12px; font-size: 0.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="top-nav" aria-label="主导航">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="星庐·中国古天文学知识库首页">&#9737; 星庐·中国古天文学知识库</a>
+        <div class="nav-links">
+            <a href="index.html">首页</a>
+            <a href="search.html">搜索</a>
+            <a href="kg/timeline.html">天象事件</a>
+            <a href="kg/starmap.html">古星图</a>
+            <a href="kg/network.html">知识图谱</a>
+            <a href="https://github.com/xlhosiro/tianwen-kb" target="_blank" class="nav-gh">GitHub</a>
+            <span class="nav-theme" style="color:var(--text-muted);margin-left:2px">
+                <a id="theme-day" href="javascript:_switchTheme('light')" style="color:var(--text-muted);text-decoration:none" title="日间模式">昼</a>/<a id="theme-night" href="javascript:_switchTheme('dark')" style="color:var(--accent-gold);text-decoration:none;font-weight:700" title="夜间模式">夜</a>
+            </span>
+        </div>
+    </div>
+</nav>
+
+<div class="search-container">
+    <h1 class="search-page-title">全文搜索</h1>
+    <p class="search-page-subtitle">搜索二十部天文古籍正文 — 支持拼音、模糊匹配、搜索建议</p>
+
+    <!-- Scope Filter -->
+    <div class="search-scope" id="scope-bar">
+        <button data-scope="all" class="active">全部</button>
+        <button data-scope="title">标题</button>
+        <button data-scope="body">正文</button>
+        <button data-scope="star">星官名</button>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="输入关键词，如太白、青龙、xinxiu等" aria-label="搜索天文知识" autocomplete="off" autofocus>
+        <div class="suggestions-dropdown" id="suggestions"></div>
+    </div>
+
+    <!-- Search Info -->
+    <div class="search-info" id="search-info" style="display:none">
+        <span>找到 <span class="hit-count" id="hit-count">0</span> 条结果</span>
+        <span class="search-time" id="search-time"></span>
+    </div>
+
+    <!-- Results -->
+    <div id="results-area">
+        <div class="search-loading" id="search-loading">
+            <div class="spinner"></div>
+            <p>正在加载搜索索引…</p>
+        </div>
+    </div>
+</div>
+
+<footer role="contentinfo">
+    <p>星庐·中国古天文学知识库 &copy; 2026 · 汇历代天文志，承千古观星学</p>
+</footer>
+
+<script src="js/minisearch.js"></script>
+<script src="data/search-index.js?v=5"></script>
 <script src="js/theme.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // --- DOM refs ---
+    var si = document.getElementById('search-input');
+    var ra = document.getElementById('results-area');
+    var sinfo = document.getElementById('search-info');
+    var hc = document.getElementById('hit-count');
+    var st = document.getElementById('search-time');
+    var sug = document.getElementById('suggestions');
+    var loading = document.getElementById('search-loading');
+    var scopeBar = document.getElementById('scope-bar');
+
+    // --- State ---
+    var miniSearch = null;
+    var allDocs = [];
+    var allSuggestions = [];
+    var currentScope = 'all';
+    var sugIndex = -1;
+    var searchTimeout = null;
+
+    // --- Scope filter buttons ---
+    scopeBar.addEventListener('click', function(e) {
+        var btn = e.target.closest('button');
+        if (!btn) return;
+        currentScope = btn.getAttribute('data-scope');
+        scopeBar.querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        if (si.value.trim()) doSearch(si.value.trim());
+    });
+
+    // --- Init: build search engine from preloaded data ---
+    function initSearch(data) {
+        allDocs = data.documents;
+        allSuggestions = data.suggestions;
+
+        miniSearch = new MiniSearch({
+            fields: ['text', 'pinyin', 'book', 'chapter', 'dynasty'],
+            storeFields: ['book', 'chapter', 'dynasty', 'url', 'type', 'text', 'heading'],
+            searchOptions: {
+                prefix: true,
+                fuzzy: 0.2,
+                boost: { book: 4, chapter: 3, text: 1, pinyin: 3 }
+            }
+        });
+        miniSearch.addAll(allDocs);
+
+        loading.style.display = 'none';
+        ra.innerHTML = '<div class="search-empty"><div class="empty-icon">&#9737;</div><p>在上方输入关键词开始搜索</p><p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim)">支持拼音搜索与模糊搜索</p></div>';
+
+        var q = getQueryParam('q');
+        if (q) { si.value = q; doSearch(q); }
+    }
+
+    if (window.SEARCH_INDEX) {
+        initSearch(window.SEARCH_INDEX);
+    } else {
+        loading.innerHTML = '<p style="color:#d4756e">搜索索引加载失败，请刷新页面重试。</p>';
+    }
+
+    // --- Input events ---
+    si.addEventListener('input', function() {
+        var val = si.value.trim();
+        // Update suggestions
+        updateSuggestions(val);
+        // Debounced search
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function() {
+            if (val) doSearch(val);
+            else clearResults();
+        }, 250);
+    });
+
+    si.addEventListener('keydown', function(e) {
+        var items = sug.querySelectorAll('.sug-item');
+        if (!sug.classList.contains('show') || items.length === 0) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (si.value.trim()) doSearch(si.value.trim());
+            }
+            return;
+        }
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            sugIndex = Math.min(sugIndex + 1, items.length - 1);
+            updateSugActive(items);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            sugIndex = Math.max(sugIndex - 1, -1);
+            updateSugActive(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (sugIndex >= 0 && items[sugIndex]) {
+                si.value = items[sugIndex].getAttribute('data-text');
+                sug.classList.remove('show');
+                sugIndex = -1;
+                doSearch(si.value);
+            } else {
+                sug.classList.remove('show');
+                sugIndex = -1;
+                if (si.value.trim()) doSearch(si.value.trim());
+            }
+        } else if (e.key === 'Escape') {
+            sug.classList.remove('show');
+            sugIndex = -1;
+        }
+    });
+
+    // Click outside suggestions
+    document.addEventListener('click', function(e) {
+        if (!sug.contains(e.target) && e.target !== si) {
+            sug.classList.remove('show');
+            sugIndex = -1;
+        }
+    });
+
+    // --- Suggestions ---
+    sug.addEventListener('click', function(e) {
+        var item = e.target.closest('.sug-item');
+        if (!item) return;
+        si.value = item.getAttribute('data-text');
+        sug.classList.remove('show');
+        sugIndex = -1;
+        doSearch(si.value);
+    });
+
+    function updateSugActive(items) {
+        items.forEach(function(item, i) {
+            item.classList.toggle('active', i === sugIndex);
+        });
+    }
+
+    function updateSuggestions(query) {
+        sugIndex = -1;
+        if (!query || query.length < 1) {
+            sug.classList.remove('show');
+            return;
+        }
+
+        var qLower = query.toLowerCase();
+        var matches = [];
+
+        // Match suggestions by text prefix or pinyin prefix
+        for (var i = 0; i < allSuggestions.length; i++) {
+            var s = allSuggestions[i];
+            if (matches.length >= 8) break;
+            if (s.text.indexOf(query) === 0 || s.pinyin.indexOf(qLower) === 0) {
+                matches.push(s);
+            }
+        }
+
+        // If not enough, try contains match
+        if (matches.length < 5) {
+            for (var j = 0; j < allSuggestions.length; j++) {
+                var s = allSuggestions[j];
+                if (matches.length >= 8) break;
+                var already = false;
+                for (var k = 0; k < matches.length; k++) {
+                    if (matches[k].text === s.text) { already = true; break; }
+                }
+                if (already) continue;
+                if (s.text.indexOf(query) !== -1 || s.pinyin.indexOf(qLower) !== -1) {
+                    matches.push(s);
+                }
+            }
+        }
+
+        if (matches.length === 0) {
+            sug.classList.remove('show');
+            return;
+        }
+
+        var html = '';
+        for (var m = 0; m < matches.length; m++) {
+            var s = matches[m];
+            html += '<div class="sug-item" data-text="' + escAttr(s.text) + '">'
+                 + escHtml(s.text)
+                 + '<span class="sug-pinyin">' + escHtml(s.pinyin) + '</span>'
+                 + '</div>';
+        }
+        sug.innerHTML = html;
+        sug.classList.add('show');
+    }
+
+    // --- Search ---
+    function doSearch(query) {
+        if (!miniSearch) return;
+        sugIndex = -1;
+
+        var t0 = performance.now();
+
+        // If query looks like pinyin without spaces, try to split into syllables
+        var isPinyin = /^[a-zA-Z\s]+$/.test(query);
+        var pinyinTokens = query;
+        if (isPinyin && query.indexOf(' ') === -1) {
+            // Insert spaces between pinyin syllables (before consonants)
+            pinyinTokens = query.replace(/([aeiouv])([bpmfdtnlgkhjqxzcsryw])/gi, '$1 $2');
+        }
+
+        // MiniSearch query
+        var results;
+        var searchTerms = isPinyin ? pinyinTokens : query;
+        try {
+            results = miniSearch.search(searchTerms, {
+                prefix: true,
+                fuzzy: function(term) { return term.length <= 3 ? 0.5 : 0.2; },
+                combineWith: 'AND',
+                boost: { book: 4, chapter: 3, text: 1, pinyin: 3 }
+            });
+        } catch(e) {
+            results = [];
+        }
+
+        // Fallback: also search with OR if AND yields too few results
+        if (results.length < 3 && isPinyin) {
+            try {
+                var orResults = miniSearch.search(searchTerms, {
+                    prefix: true,
+                    fuzzy: function(term) { return term.length <= 3 ? 0.5 : 0.2; },
+                    combineWith: 'OR',
+                    fields: ['pinyin', 'text'],
+                    boost: { pinyin: 3, text: 1 }
+                });
+                // Merge, dedupe
+                var seen = {};
+                var merged = [];
+                results.forEach(function(r) { seen[r.id] = true; merged.push(r); });
+                orResults.forEach(function(r) {
+                    if (!seen[r.id]) { seen[r.id] = true; merged.push(r); }
+                });
+                results = merged;
+                results.sort(function(a, b) { return b.score - a.score; });
+            } catch(e) {}
+        }
+
+        // Filter by scope
+        if (currentScope !== 'all') {
+            results = results.filter(function(r) {
+                return r.type === currentScope || 
+                       (currentScope === 'star' && (r.text.indexOf('星官') !== -1 || r.type === 'star'));
+            });
+        }
+
+        var elapsed = (performance.now() - t0).toFixed(0);
+
+        // Render
+        sinfo.style.display = 'flex';
+        hc.textContent = results.length;
+        st.textContent = elapsed + ' ms';
+
+        if (results.length === 0) {
+            ra.innerHTML = '<div class="search-empty"><div class="empty-icon">&#9789;</div><p>未找到匹配「<strong>' + escHtml(query) + '</strong>」的结果</p><p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim)">试试拼音？输入 yinghuo 代替「荧惑」<br>试试模糊搜索？输入「荧或」也能匹配</p></div>';
+            return;
+        }
+
+        // Limit results
+        var maxResults = 50;
+        var shown = results.slice(0, maxResults);
+
+        var terms = query.split(/\s+/).filter(function(t) { return t.length > 0; });
+
+        var html = '';
+        shown.forEach(function(r) {
+            var text = r.text || '';
+            var snippet = makeSnippet(text, terms, 120);
+            var url = r.url || '#';
+            // Build paragraph anchor if body type
+            // href → chapters/01_xxx.html#para-0001 (matches id="para-0001" in chapter pages)
+            if (r.type === 'body' && r.id) {
+                var parts = r.id.split('_');
+                if (parts.length >= 2) {
+                    var paraNum = parts[1].replace(/^p/, '');
+                    var baseUrl = r.url.split('#')[0];
+                    url = baseUrl + '#para-' + paraNum;
+                }
+            }
+
+            html += '<a href="' + escAttr(url) + '" class="result-link">'
+                 + '<div class="result-title">' + escHtml(r.book) + ' · ' + escHtml(r.chapter)
+                 + '<span class="result-dynasty">' + escHtml(r.dynasty) + '</span></div>';
+            if (r.heading) {
+                html += '<div class="result-heading">' + escHtml(r.heading) + '</div>';
+            }
+            html += '<div class="result-meta">' + (r.author ? escHtml(r.author) + ' · ' : '') + (r.type === 'title' ? '书目信息' : '正文段落') + '</div>';
+            if (snippet) {
+                html += '<p class="result-snippet">' + snippet + '</p>';
+            }
+            html += '</a>';
+        });
+
+        ra.innerHTML = html;
+    }
+
+    function clearResults() {
+        sinfo.style.display = 'none';
+        if (miniSearch) {
+            ra.innerHTML = '<div class="search-empty"><div class="empty-icon">&#9737;</div><p>在上方输入关键词开始搜索</p><p style="margin-top:8px;font-size:0.85rem;color:var(--text-dim)">支持拼音、模糊搜索、搜索建议</p></div>';
+        }
+    }
+
+    // --- Snippet generation ---
+    function makeSnippet(text, terms, contextLen) {
+        if (!text || terms.length === 0) return escHtml(text.substring(0, contextLen * 2)) + '…';
+
+        // Find match positions
+        var lower = text.toLowerCase();
+        var positions = [];
+        terms.forEach(function(term) {
+            var tLower = term.toLowerCase();
+            var pos = 0;
+            while (pos < lower.length) {
+                var idx = lower.indexOf(tLower, pos);
+                if (idx === -1) break;
+                positions.push(idx);
+                pos = idx + 1;
+            }
+        });
+
+        if (positions.length === 0) {
+            return escHtml(text.substring(0, contextLen)) + '…';
+        }
+
+        // Sort positions and pick best window
+        positions.sort(function(a, b) { return a - b; });
+
+        // Take first match window
+        var center = positions[0] + Math.floor(terms[0].length / 2);
+        var start = Math.max(0, center - contextLen);
+        var end = Math.min(text.length, center + contextLen);
+
+        // Adjust to word boundary
+        while (start > 0 && !isCJKBreak(text[start])) start--;
+        while (end < text.length && !isCJKBreak(text[end])) end++;
+
+        var prefix = start > 0 ? '…' : '';
+        var suffix = end < text.length ? '…' : '';
+
+        var excerpt = text.substring(start, end);
+
+        // Highlight all terms
+        var highlighted = escHtml(excerpt);
+        terms.forEach(function(term) {
+            var escaped = escHtml(term);
+            var regex = new RegExp('(' + escapeRegex(escaped) + ')', 'gi');
+            highlighted = highlighted.replace(regex, '<mark>$1</mark>');
+        });
+
+        return prefix + highlighted + suffix;
+    }
+
+    function isCJKBreak(ch) {
+        // Break at Chinese punctuation or whitespace-like chars
+        return /[\u3000-\u303F\uFF00-\uFFEF\s，。；：！？、]/.test(ch);
+    }
+
+    // --- Helpers ---
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.appendChild(document.createTextNode(s));
+        return d.innerHTML;
+    }
+
+    function escAttr(s) {
+        return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function escapeRegex(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function getQueryParam(name) {
+        var m = window.location.search.match(new RegExp('[?&]' + name + '=([^&]*)'));
+        return m ? decodeURIComponent(m[1]) : '';
+    }
+
+})();
+</script>
 </body>
-379|</html>
-380|
+</html>

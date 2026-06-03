@@ -43,10 +43,12 @@
            HOMEPAGE: DYNASTY TIMELINE STRIP
            ============================================================ */
         .hero-timeline {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px 24px 0;
             position: relative;
+            overflow: hidden;
         }
 
         .timeline-strip {
@@ -54,8 +56,11 @@
             align-items: flex-start;
             justify-content: space-between;
             overflow-x: auto;
+            overflow-y: hidden;
             padding: 16px 0 24px;
             gap: 4px;
+            max-width: 100%;
+            overscroll-behavior-x: contain;
             scrollbar-width: thin;
             scrollbar-color: var(--border-light) transparent;
         }
@@ -132,6 +137,11 @@
                 gap: 28px;
             }
 
+            .hero-timeline {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
             .stat-number {
                 font-size: 1.8rem;
             }
@@ -156,6 +166,11 @@
         @media (max-width: 480px) {
             .hero-stats {
                 gap: 20px;
+            }
+
+            /* 手机端保留时间轴内部滚动，不再撑开整个页面背景。 */
+            .timeline-strip {
+                justify-content: flex-start;
             }
 
             .stat-number {
@@ -183,6 +198,7 @@
             top: 0;
             left: 0;
             width: 100%;
+            max-width: 100%;
             height: 100%;
             pointer-events: none;
             z-index: 0;
@@ -208,7 +224,7 @@
             z-index: 1;
         }
     </style>
-<script src="js/anti-copy.js"></script>
+<script src="js/anti-copy.js?v=5"></script>
 </head>
 <body>
 
@@ -222,10 +238,11 @@
                 <a href="index.html">首页</a>
                 <a href="search.html">搜索</a>
                 <a href="kg/timeline.html">天象事件</a>
-                <a href="kg/stellarium-sky.html">星图</a>
+                <a href="kg/starmap.html">古星图</a>
                 <a href="kg/network.html">知识图谱</a>
                 <a href="https://github.com" target="_blank" class="nav-gh">GitHub</a> <span class="nav-theme" style="color:var(--text-muted);margin-left:2px"><a id="theme-day" href="javascript:_switchTheme('light')" style="color:var(--text-muted);text-decoration:none" title="日间模式">昼</a>/<a id="theme-night" href="javascript:_switchTheme('dark')" style="color:var(--accent-gold);text-decoration:none;font-weight:700" title="夜间模式">夜</a></span>
-            </div>
+            
+
         </div>
     </nav>
 
@@ -252,16 +269,16 @@
         <!-- Stats Row -->
         <div class="hero-stats">
             <div class="stat-item">
-                <span class="stat-number">19</span>
-                                <span class="stat-label">部天文古籍</span>
+                <span class="stat-number">24</span>
+                                                <span class="stat-label">部天文古籍与论文</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">62</span>
+                <span class="stat-number">184</span>
                 <span class="stat-label">卷</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number">1800+</span>
-                <span class="stat-label">年记录</span>
+                <span class="stat-number">2000+</span>
+                <span class="stat-label">年天象记录</span>
             </div>
         </div>
     </section>
@@ -472,6 +489,37 @@
         </a>
 
         <!-- 18 - 步天歌 -->
+        <a href="chapters/23_马王堆帛书_五星占.html" class="chapter-card">
+            <span class="card-dynasty">西汉</span>
+            <h3>马王堆帛书 · 五星占</h3>
+            <div class="card-meta">佚名 · 约前170年 · 1卷</div>
+            <p class="card-desc">1973年长沙马王堆汉墓出土帛书。详述五星运行及占验，附秦始皇元年至汉初行度表，世界现存最早的行星星历表。</p>
+        </a>
+
+        <!-- 19 - 乙巳占 -->
+        <a href="chapters/22_淮南子_天文训.html" class="chapter-card">
+            <span class="card-dynasty">西汉</span>
+            <h3>淮南子 · 天文训</h3>
+            <div class="card-meta">刘安及门客 · 约前139年 · 1卷</div>
+            <p class="card-desc">《淮南子》第三卷。阐述天地生成说、五星运行、二十四节气等核心天文学理论。</p>
+        </a>
+        <!-- 20 - 星庐中国古天文学概论 -->
+        <a href="chapters/19_乙巳占.html" class="chapter-card">
+            <span class="card-dynasty">唐</span>
+            <h3>乙巳占</h3>
+            <div class="card-meta">李淳风 · 约645年 · 10卷</div>
+            <p class="card-desc">唐代李淳风所著天文星占学集大成之作。全书十卷一百节，涵盖天占、日占、月占、五星占、流星占、彗星占、云气占、风占等，系统总结了唐以前的天文占验理论。</p>
+        </a>
+        <!-- 24 - 星庐·占星回廊 -->
+        <a href="chapters/21_开元占经.html" class="chapter-card">
+            <span class="card-dynasty">唐</span>
+            <h3>开元占经</h3>
+            <div class="card-meta">瞿昙悉达 · 约718年 · 120卷</div>
+            <p class="card-desc">唐代瞿昙悉达奉敕编撰，征引大量已佚古籍，保存《麟德历》《九执历》等珍贵历法资料。</p>
+        </a>
+
+
+        <!-- 23 - 马王堆帛书·五星占 -->
         <a href="chapters/18_步天歌.html" class="chapter-card">
             <span class="card-dynasty">唐</span>
             <h3>步天歌</h3>
@@ -479,20 +527,24 @@
             <p class="card-desc">唐代天文学诗歌，以七言诗形式描述全天星官。涵盖三垣（紫微垣、太微垣、天市垣）及二十八宿，是古代学习认星的入门读物，也是世界天文学史上独一无二的诗歌体裁星图。</p>
         </a>
 
-        <!-- 19 - 乙巳占 -->
-        <a href="chapters/19_乙巳占.html" class="chapter-card">
-            <span class="card-dynasty">唐</span>
-            <h3>乙巳占</h3>
-            <div class="card-meta">李淳风 · 约645年 · 10卷</div>
-            <p class="card-desc">唐代李淳风所著天文星占学集大成之作。全书十卷一百节，涵盖天占、日占、月占、五星占、流星占、彗星占、云气占、风占等，系统总结了唐以前的天文占验理论。</p>
-        </a>
-        <!-- 20 - 星庐中国古天文学概论 -->
+
+        <!-- 21 - 开元占经 -->
         <a href="chapters/20_星庐中国古天文学概论.html" class="chapter-card">
             <span class="card-dynasty">当代</span>
             <h3>星庐・中国古天文学概论</h3>
             <div class="card-meta">桐安大司空（星庐） · 2025年 · 7章</div>
                         <p class="card-desc">时隔2000年，我国真正的古天文思想——太乙观星法，重现世间！</p>
         </a>
+
+        <!-- 22 - 淮南子·天文训 -->
+        <a href="chapters/24_星庐_占星回廊.html" class="chapter-card">
+            <span class="card-dynasty">当代</span>
+            <h3>星庐·占星学探原与哲学思想研究</h3>
+                        <div class="card-meta">桐安大司空（星庐） · 2025年 · 7章</div>
+                        <p class="card-desc">世界上首部以中国古天文学为核心的占星研究著作。</p>
+        </a>
+
+
     </div>
 
     <!-- ============================================================

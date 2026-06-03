@@ -14,7 +14,8 @@ h1{color:var(--accent-gold);font-family:var(--font-serif);text-align:center;marg
 .f button{padding:5px 12px;border:1px solid var(--border);border-radius:14px;background:var(--bg-card);color:var(--text-body);cursor:pointer;font-size:0.78rem}
 .f button.on,.f button:hover{background:var(--accent-gold);color:#0a0e1a}
 .tl{column-width:380px;column-gap:10px}
-.ev{break-inside:avoid;display:inline-block;width:100%;margin-bottom:6px;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:5px}
+.ev{break-inside:avoid;display:inline-block;width:100%;margin-bottom:6px;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:5px;cursor:pointer;transition:border-color 0.2s,background 0.2s}
+.ev:hover{border-color:var(--accent-gold);background:var(--bg-hover)}
 .yr{font-weight:700;font-size:0.82rem;color:var(--accent-gold);margin-bottom:3px}
 .bd{display:inline-block;padding:1px 7px;border-radius:8px;font-size:0.68rem;color:#fff;margin-right:6px}
 .bs{background:#B33A3A}.bl{background:#5B3A7A}.bc{background:#3A6B5A}.bm{background:#7A5B3A}.bg{background:#3A5B7A}
@@ -40,6 +41,7 @@ var T={"solar_eclipse":"日食","lunar_eclipse":"月食","comet":"彗星","meteo
 var BC={"solar_eclipse":"bs","lunar_eclipse":"bl","comet":"bc","meteor":"bm","guest_star":"bg","encroach":"be","guard":"bu","occult":"bo","entry":"bi","conjunction":"bj","clustering":"bp","day_visible":"bdv"};
 var OD=["solar_eclipse", "lunar_eclipse", "comet", "meteor", "guest_star", "encroach", "guard", "occult", "entry", "conjunction", "clustering", "day_visible"];
 var F;
+var BU={"史记·天官书":"../chapters/01_史记_天官书第五.html","汉书·天文志":"../chapters/02_汉书_天文志.html","后汉书·天文志":"../chapters/03_后汉书_天文志.html","晋书·天文志":"../chapters/04_晋书_天文志.html","宋书·天文志":"../chapters/05_宋书_天文志.html","南齐书·天文志":"../chapters/06_南齐书_天文志.html","魏书·天象志":"../chapters/07_魏书_天象志.html","隋书·天文志":"../chapters/08_隋书_天文志.html","旧唐书·天文志":"../chapters/09_旧唐书_天文志.html","新唐书·天文志":"../chapters/10_新唐书_天文志.html","旧五代史·天文志":"../chapters/11_旧五代史_天文志.html","新五代史·司天考":"../chapters/12_新五代史_司天考.html","宋史·天文志":"../chapters/13_宋史_天文志.html","辽史·历象志":"../chapters/14_辽史_历象志.html","金史·天文志":"../chapters/15_金史_天文志.html","元史·天文志":"../chapters/16_元史_天文志.html","明史·天文志":"../chapters/17_明史_天文志.html"};
 
 function init(){
  document.getElementById('sub').textContent='共 '+D.length+' 条天象记录，时间范围：'+(D[0][0]<0?'前'+(-D[0][0]):'公元'+D[0][0])+' 至 '+(D[D.length-1][0]<0?'前'+(-D[D.length-1][0]):'公元'+D[D.length-1][0]);
@@ -60,16 +62,30 @@ function init(){
  F=D;rn();
 }
 function rn(){
- var h='';F.forEach(function(e){
+ var h='';F.forEach(function(e,i){
   var y=e[0]<0?'前'+(-e[0]):'公元'+e[0];
-  var om=e[6]?'<div class="om">'+e2s(e[6])+'</div>':'';h+='<div class="ev"><div class="yr">'+y+' <span class="bd '+BC[e[1]]+'">'+T[e[1]]+'</span></div><div class="tx">'+e2s(e[4])+'</div>'+om+'<div class="src">'+e[5]+' | '+e[2]+' '+e[3]+'</div></div>';
+  var om=e[6]?'<div class="om">'+e2s(e[6])+'</div>':'';
+  var url=BU[e[5]]||'';
+  var key=e[0]+'|'+e[4].substring(0,30);
+  var pid=(window.EVENT_PARAS||{})[key]||'';
+  if(pid)url+='#'+pid;
+  h+='<div class="ev" data-url="'+url+'" data-idx="'+i+'"><div class="yr">'+y+' <span class="bd '+BC[e[1]]+'">'+T[e[1]]+'</span></div><div class="tx">'+e2s(e[4])+'</div>'+om+'<div class="src">'+e[5]+' | '+e[2]+' '+e[3]+'</div></div>';
  });
  document.getElementById('tl').innerHTML=h;
 }
 function e2s(x){var d=document.createElement('div');d.textContent=x;return d.innerHTML;}
-document.addEventListener('DOMContentLoaded',init);
+document.addEventListener('DOMContentLoaded',function(){
+ init();
+ document.getElementById('tl').addEventListener('click',function(e){
+  var ev=e.target.closest('.ev');
+  if(!ev)return;
+  var url=ev.getAttribute('data-url');
+  if(url)window.open(url,'_blank');
+ });
+});
 </script>
 <script src="../js/qr-popup.js"></script>
+<script src="event_paras.js"></script>
 
 <script src="../js/theme.js"></script>
 </body>

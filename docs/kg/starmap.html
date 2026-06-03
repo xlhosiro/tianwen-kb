@@ -3,49 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>三垣二十八宿 · 古星图</title>
+<title>苏州石刻天文图 · 古星图</title>
 <style>
   :root {
     --bg: #06080f;
     --surface: #0d1117;
     --text: #c8c0a8;
     --gold: #c4a35a;
-    --jade: #4a9b8e;
-    --steel: #6b8db5;
-    --coral: #c46b5a;
-    --purple: #8b6baf;
-    --star-glow: #e8dcc8;
   }
   [data-theme="light"] {
     --bg: #f5f0e3;
     --surface: #fdfaf3;
     --text: #3d3226;
     --gold: #b8860b;
-    --jade: #2d8a7e;
-    --steel: #5b7fa0;
-    --coral: #c46b5a;
-    --purple: #7b5baf;
-    --star-glow: #b0a395;
-  }
-  [data-theme="light"] body {
-    background-image: none;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     background: var(--bg);
-    background-image:
-      radial-gradient(ellipse at 50% 50%, #0d1520 0%, #06080f 70%),
-      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15), transparent),
-      radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.1), transparent),
-      radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.12), transparent),
-      radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.08), transparent);
     color: var(--text);
     font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', 'KaiTi', serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 20px;
+    padding: 60px 20px 40px;
   }
   .home-btn {
     position: fixed;
@@ -55,7 +36,6 @@
     text-decoration: none;
     color: var(--gold);
     font-size: 1.2rem;
-    font-family: 'Noto Serif SC', serif;
     padding: 8px 16px;
     border: 1px solid rgba(196, 163, 90, 0.3);
     border-radius: 6px;
@@ -76,7 +56,6 @@
     text-decoration: none;
     color: #4a9b8e;
     font-size: 1.1rem;
-    font-family: 'Noto Serif SC', serif;
     padding: 8px 16px;
     border: 1px solid rgba(74, 155, 142, 0.3);
     border-radius: 6px;
@@ -89,592 +68,70 @@
     border-color: #4a9b8e;
     text-shadow: 0 0 12px rgba(74, 155, 142, 0.5);
   }
-  .star-map-wrapper {
-    position: relative;
-    max-width: 900px;
-    width: 100%;
-    aspect-ratio: 1;
+  .title-area {
+    text-align: center;
+    margin-bottom: 24px;
   }
-  svg {
+  .title-area h1 {
+    font-size: 1.8rem;
+    color: var(--gold);
+    letter-spacing: 6px;
+    font-weight: 400;
+  }
+  .title-area .subtitle {
+    font-size: 0.85rem;
+    color: #6a6050;
+    margin-top: 6px;
+    letter-spacing: 2px;
+  }
+  .image-container {
+    max-width: 1000px;
     width: 100%;
-    height: 100%;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 0 60px rgba(100,130,160,0.08);
+  }
+  .image-container img {
     display: block;
-    filter: drop-shadow(0 0 30px rgba(100,130,160,0.15));
+    width: 100%;
+    height: auto;
   }
-
-  /* Mansion label styles */
-  .mansion-label {
-    font-size: 13px;
-    fill: currentColor;
-    text-anchor: middle;
-    dominant-baseline: central;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    paint-order: stroke;
-    stroke: var(--bg);
-    stroke-width: 1.5px;
+  .caption {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: #6a6050;
+    letter-spacing: 1px;
   }
-  .mansion-label:hover {
-    font-size: 16px;
-    filter: drop-shadow(0 0 8px currentColor);
-    stroke-width: 3px;
+  .caption a {
+    color: var(--gold);
+    text-decoration: none;
   }
-
-  /* Group colors */
-  .group-dragon { color: #4a9b8e; }
-  .group-tortoise { color: #6b8db5; }
-  .group-tiger { color: #c4a35a; }
-  .group-vermilion { color: #c46b5a; }
-
-  /* Star styles */
-  .star-dot {
-    transition: all 0.4s ease;
-    cursor: pointer;
-  }
-  .star-dot:hover {
-    r: attr(data-r-hover);
-    filter: url(#starGlowBright);
-  }
-
-  /* Enclosure labels */
-  .enclosure-label {
-    font-size: 18px;
-    fill: #d4c8a0;
-    text-anchor: middle;
-    dominant-baseline: central;
-    pointer-events: none;
-    paint-order: stroke;
-    stroke: #06080f;
-    stroke-width: 3px;
-    letter-spacing: 4px;
-  }
-  .enclosure-sub {
-    font-size: 11px;
-    fill: #8a8070;
-    text-anchor: middle;
-    pointer-events: none;
-    paint-order: stroke;
-    stroke: #06080f;
-    stroke-width: 2px;
-  }
-
-  /* Tooltip */
-  .tooltip-group {
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.25s ease;
-  }
-  g:hover > .tooltip-group {
-    opacity: 1;
-  }
-
-  /* Legend */
-  .legend {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 18px;
-    font-size: 12px;
-    color: #8a8070;
-    background: rgba(6,8,15,0.85);
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-  .legend-dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 4px;
-    vertical-align: middle;
-  }
-  .legend-dot.dragon { background: #4a9b8e; box-shadow: 0 0 4px #4a9b8e; }
-  .legend-dot.tortoise { background: #6b8db5; box-shadow: 0 0 4px #6b8db5; }
-  .legend-dot.tiger { background: #c4a35a; box-shadow: 0 0 4px #c4a35a; }
-  .legend-dot.vermilion { background: #c46b5a; box-shadow: 0 0 4px #c46b5a; }
-
-  @keyframes twinkle {
-    0%, 100% { opacity: 0.6; }
-    50% { opacity: 1; }
-  }
-  .twinkle-slow { animation: twinkle 4s ease-in-out infinite; }
-  .twinkle-med  { animation: twinkle 3s ease-in-out infinite; }
-  .twinkle-fast { animation: twinkle 2s ease-in-out infinite; }
 </style>
-<script src="../js/anti-copy.js"></script>
+<script src="../js/anti-copy.js?v=5"></script>
 </head>
 <body>
 
 <a href="../index.html" class="home-btn">&#9737; 返回首页</a>
 <a href="stellarium-sky.html" class="stel-btn" title="Stellarium 3D 交互星图">🌐 交互星图</a>
 
-<div class="star-map-wrapper">
-  <svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg" id="starMap">
-
-    <!-- ===== DEFS ===== -->
-    <defs>
-      <!-- Star glow filters -->
-      <filter id="starGlow" x="-200%" y="-200%" width="500%" height="500%">
-        <feGaussianBlur stdDeviation="2.5" result="blur"/>
-        <feMerge>
-          <feMergeNode in="blur"/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-      <filter id="starGlowBright" x="-300%" y="-300%" width="700%" height="700%">
-        <feGaussianBlur stdDeviation="4" result="blur"/>
-        <feMerge>
-          <feMergeNode in="blur"/>
-          <feMergeNode in="blur"/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-      <filter id="starGlowSmall" x="-200%" y="-200%" width="500%" height="500%">
-        <feGaussianBlur stdDeviation="1.2" result="blur"/>
-        <feMerge>
-          <feMergeNode in="blur"/>
-          <feMergeNode in="SourceGraphic"/>
-        </feMerge>
-      </filter>
-
-      <!-- Radial gradient for celestial sphere -->
-      <radialGradient id="sphereGrad" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#0f1a28" stop-opacity="0.9"/>
-        <stop offset="60%" stop-color="#0a111d" stop-opacity="0.95"/>
-        <stop offset="100%" stop-color="#060c16" stop-opacity="1"/>
-      </radialGradient>
-
-      <!-- Enclosure fills -->
-      <radialGradient id="ziweiFill" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#6b4fa0" stop-opacity="0.08"/>
-        <stop offset="100%" stop-color="#6b4fa0" stop-opacity="0.02"/>
-      </radialGradient>
-      <radialGradient id="taiweiFill" cx="50%" cy="40%" r="55%">
-        <stop offset="0%" stop-color="#8b7040" stop-opacity="0.06"/>
-        <stop offset="100%" stop-color="#8b7040" stop-opacity="0.01"/>
-      </radialGradient>
-      <radialGradient id="tianshiFill" cx="50%" cy="50%" r="50%">
-        <stop offset="0%" stop-color="#4a7060" stop-opacity="0.06"/>
-        <stop offset="100%" stop-color="#4a7060" stop-opacity="0.01"/>
-      </radialGradient>
-
-      <!-- Constellation line dash array -->
-      <style>
-        .enclosure-boundary { fill: none; stroke-width: 0.8; stroke-dasharray: 6 4; opacity: 0.5; }
-        .ziwei-boundary { stroke: #8b6baf; }
-        .taiwei-boundary { stroke: #c4a35a; }
-        .tianshi-boundary { stroke: #4a9b8e; }
-        .grid-circle { fill: none; stroke: rgba(255,255,255,0.04); stroke-width: 0.5; }
-        .tick-line { stroke: rgba(255,255,255,0.15); stroke-width: 0.6; }
-        .mansion-hover-bg { fill: transparent; }
-        .mansion-group:hover .mansion-hover-bg { fill: rgba(255,255,255,0.03); stroke: currentColor; stroke-width: 1; stroke-dasharray: 3 2; }
-      </style>
-    </defs>
-
-    <!-- ===== CELESTIAL SPHERE BACKGROUND ===== -->
-    <!-- Outer glow ring -->
-    <circle cx="600" cy="600" r="450" fill="none" stroke="rgba(100,140,180,0.08)" stroke-width="20"/>
-    <circle cx="600" cy="600" r="460" fill="none" stroke="rgba(100,140,180,0.04)" stroke-width="1"/>
-
-    <!-- Main sphere -->
-    <circle cx="600" cy="600" r="420" fill="url(#sphereGrad)" stroke="rgba(140,160,190,0.15)" stroke-width="1.5"/>
-
-    <!-- Decorative inner rings -->
-    <circle cx="600" cy="600" r="380" class="grid-circle"/>
-    <circle cx="600" cy="600" r="280" class="grid-circle"/>
-    <circle cx="600" cy="600" r="160" class="grid-circle"/>
-
-    <!-- ===== THREE ENCLOSURES (三垣) ===== -->
-
-    <!-- 紫微垣 - Purple Forbidden Enclosure (center-north) -->
-    <g id="ziweiyuan">
-      <circle cx="600" cy="380" r="135" fill="url(#ziweiFill)" class="enclosure-boundary ziwei-boundary"/>
-      <circle cx="600" cy="380" r="145" fill="none" class="enclosure-boundary ziwei-boundary" stroke-dasharray="10 6" stroke-width="0.6" opacity="0.35"/>
-      <text x="600" y="365" class="enclosure-label" fill="#a080c8">紫微垣</text>
-      <text x="600" y="388" class="enclosure-sub">Purple Forbidden Enclosure</text>
-      <!-- Small decorative stars in 紫微垣 -->
-      <circle cx="570" cy="345" r="2.2" fill="#e8dcc8" filter="url(#starGlow)" opacity="0.9"/>
-      <circle cx="615" cy="355" r="1.8" fill="#e8dcc8" filter="url(#starGlow)" opacity="0.85"/>
-      <circle cx="590" cy="370" r="2.5" fill="#e8dcc8" filter="url(#starGlowBright)" opacity="0.95"/>
-      <circle cx="630" cy="375" r="1.5" fill="#e8dcc8" filter="url(#starGlowSmall)" opacity="0.7"/>
-      <circle cx="555" cy="380" r="1.6" fill="#e8dcc8" filter="url(#starGlowSmall)" opacity="0.75"/>
-      <circle cx="610" cy="395" r="1.3" fill="#e8dcc8" opacity="0.6"/>
-      <circle cx="580" cy="410" r="1.7" fill="#e8dcc8" filter="url(#starGlow)" opacity="0.8"/>
-      <circle cx="625" cy="410" r="1.2" fill="#e8dcc8" opacity="0.55"/>
-    </g>
-
-    <!-- 太微垣 - Supreme Palace Enclosure (south of 紫微垣) -->
-    <g id="taiweiyuan">
-      <ellipse cx="600" cy="610" rx="170" ry="110" fill="url(#taiweiFill)" class="enclosure-boundary taiwei-boundary"/>
-      <ellipse cx="600" cy="610" rx="180" ry="118" fill="none" class="enclosure-boundary taiwei-boundary" stroke-dasharray="8 5" stroke-width="0.6" opacity="0.35"/>
-      <text x="600" y="600" class="enclosure-label" fill="#c4a35a">太微垣</text>
-      <text x="600" y="622" class="enclosure-sub">Supreme Palace Enclosure</text>
-    </g>
-
-    <!-- 天市垣 - Heavenly Market Enclosure (left side) -->
-    <g id="tianshiyuan">
-      <ellipse cx="740" cy="540" rx="140" ry="115" fill="url(#tianshiFill)" class="enclosure-boundary tianshi-boundary"/>
-      <ellipse cx="740" cy="540" rx="148" ry="122" fill="none" class="enclosure-boundary tianshi-boundary" stroke-dasharray="7 5" stroke-width="0.6" opacity="0.35"/>
-      <text x="740" y="528" class="enclosure-label" fill="#4a9b8e">天市垣</text>
-      <text x="740" y="552" class="enclosure-sub">Heavenly Market Enclosure</text>
-    </g>
-
-    <!-- ===== CONSTELLATION LINES (representative lines connecting mansion areas) ===== -->
-    <!-- These are decorative curved lines suggesting constellation connections -->
-    <g opacity="0.12" fill="none" stroke="#8a8070" stroke-width="0.6">
-      <!-- East group curves -->
-      <path d="M 580 200 Q 700 180 830 250"/>
-      <path d="M 650 210 Q 780 200 880 310"/>
-      <!-- North group curves -->
-      <path d="M 980 380 Q 1020 500 1000 620"/>
-      <path d="M 960 420 Q 1020 560 980 680"/>
-      <!-- West group curves -->
-      <path d="M 950 780 Q 800 930 600 980"/>
-      <path d="M 880 820 Q 720 950 520 980"/>
-      <!-- South group curves -->
-      <path d="M 420 950 Q 250 880 200 750"/>
-      <path d="M 380 900 Q 200 820 200 680"/>
-    </g>
-
-    <!-- ===== 28 LUNAR MANSIONS (will be generated by JS) ===== -->
-    <g id="mansionLabels"></g>
-
-    <!-- ===== STARS (will be generated by JS) ===== -->
-    <g id="starField"></g>
-
-    <!-- ===== CENTRAL TITLE ===== -->
-    <g id="centralTitle">
-      <!-- Ornamental circle -->
-      <circle cx="600" cy="790" r="50" fill="none" stroke="rgba(196,163,90,0.2)" stroke-width="1"/>
-      <circle cx="600" cy="790" r="44" fill="none" stroke="rgba(196,163,90,0.1)" stroke-width="0.5"/>
-      <text x="600" y="778" text-anchor="middle" fill="#c4a35a" font-size="20" letter-spacing="6"
-            paint-order="stroke" stroke="#06080f" stroke-width="3px">
-        三垣二十八宿
-      </text>
-      <text x="600" y="800" text-anchor="middle" fill="#6a6050" font-size="12" letter-spacing="3"
-            paint-order="stroke" stroke="#06080f" stroke-width="2px">
-        古 星 图
-      </text>
-    </g>
-
-    <!-- ===== OUTER DECORATIVE RING MARKS ===== -->
-    <!-- Cardinal direction marks -->
-    <g font-size="14" fill="#4a4238" text-anchor="middle" paint-order="stroke" stroke="#06080f" stroke-width="3px">
-      <!-- Removed simple NSEW labels; using mansion labels is more appropriate -->
-    </g>
-
-    <!-- Eastern group arc label -->
-    <g>
-      <path id="eastArc" d="M 280 200 A 460 460 0 0 1 920 200" fill="none" stroke="none"/>
-      <text font-size="12" fill="#4a9b8e" opacity="0.7" letter-spacing="4" paint-order="stroke" stroke="#06080f" stroke-width="2px">
-        <textPath href="#eastArc" startOffset="50%" text-anchor="middle">东 方 青 龙</textPath>
-      </text>
-    </g>
-    <!-- Southern group arc label -->
-    <g>
-      <path id="southArc" d="M 180 320 A 460 460 0 0 1 180 880" fill="none" stroke="none"/>
-      <text font-size="12" fill="#c46b5a" opacity="0.7" letter-spacing="4" paint-order="stroke" stroke="#06080f" stroke-width="2px">
-        <textPath href="#southArc" startOffset="50%" text-anchor="middle">南 方 朱 雀</textPath>
-      </text>
-    </g>
-    <!-- Western group arc label -->
-    <g>
-      <path id="westArc" d="M 280 1000 A 460 460 0 0 1 920 1000" fill="none" stroke="none"/>
-      <text font-size="12" fill="#c4a35a" opacity="0.7" letter-spacing="4" paint-order="stroke" stroke="#06080f" stroke-width="2px">
-        <textPath href="#westArc" startOffset="50%" text-anchor="middle">西 方 白 虎</textPath>
-      </text>
-    </g>
-    <!-- Northern group arc label -->
-    <g>
-      <path id="northArc" d="M 1020 320 A 460 460 0 0 1 1020 880" fill="none" stroke="none"/>
-      <text font-size="12" fill="#6b8db5" opacity="0.7" letter-spacing="4" paint-order="stroke" stroke="#06080f" stroke-width="2px">
-        <textPath href="#northArc" startOffset="50%" text-anchor="middle">北 方 玄 武</textPath>
-      </text>
-    </g>
-
-  </svg>
+<div class="title-area">
+  <h1>苏州石刻天文图</h1>
+  <p class="subtitle">南宋 · 黄裳 绘 · 淳祐七年（1247年）刻石</p>
 </div>
 
-<!-- Legend -->
-<div class="legend">
-  <span><span class="legend-dot dragon"></span>东方青龙</span>
-  <span><span class="legend-dot tortoise"></span>北方玄武</span>
-  <span><span class="legend-dot tiger"></span>西方白虎</span>
-  <span><span class="legend-dot vermilion"></span>南方朱雀</span>
+<div class="image-container">
+  <img src="images/suzhou-star-chart.jpg" alt="苏州石刻天文图 · 龙谷大学藏本"
+       oncontextmenu="event.stopPropagation()" ondragstart="event.stopPropagation()"
+       title="右键可保存图片">
 </div>
 
-<script>
-(function() {
-  const svg = document.getElementById('starMap');
-  const cx = 600, cy = 600;
-  const circleR = 420;    // main circle radius
-  const tickInner = 410;  // tick mark inner
-  const tickOuter = 425;  // tick mark outer
-  const labelR = 440;     // text label radius
-  const tooltipR = 465;   // tooltip/pill radius
-
-  const groupColors = ['#4a9b8e', '#6b8db5', '#c4a35a', '#c46b5a'];
-  const groupNames = ['东方青龙', '北方玄武', '西方白虎', '南方朱雀'];
-  const groupCSS = ['group-dragon', 'group-tortoise', 'group-tiger', 'group-vermilion'];
-
-  const mansions = [
-    { name: '角', full: '角宿', group: 0, pinyin: 'Jiǎo', en: 'Horn' },
-    { name: '亢', full: '亢宿', group: 0, pinyin: 'Kàng', en: 'Neck' },
-    { name: '氐', full: '氐宿', group: 0, pinyin: 'Dī', en: 'Root' },
-    { name: '房', full: '房宿', group: 0, pinyin: 'Fáng', en: 'Room' },
-    { name: '心', full: '心宿', group: 0, pinyin: 'Xīn', en: 'Heart' },
-    { name: '尾', full: '尾宿', group: 0, pinyin: 'Wěi', en: 'Tail' },
-    { name: '箕', full: '箕宿', group: 0, pinyin: 'Jī', en: 'Winnowing Basket' },
-    { name: '斗', full: '斗宿', group: 1, pinyin: 'Dǒu', en: 'Dipper' },
-    { name: '牛', full: '牛宿', group: 1, pinyin: 'Niú', en: 'Ox' },
-    { name: '女', full: '女宿', group: 1, pinyin: 'Nǚ', en: 'Girl' },
-    { name: '虚', full: '虚宿', group: 1, pinyin: 'Xū', en: 'Emptiness' },
-    { name: '危', full: '危宿', group: 1, pinyin: 'Wēi', en: 'Rooftop' },
-    { name: '室', full: '室宿', group: 1, pinyin: 'Shì', en: 'Encampment' },
-    { name: '壁', full: '壁宿', group: 1, pinyin: 'Bì', en: 'Wall' },
-    { name: '奎', full: '奎宿', group: 2, pinyin: 'Kuí', en: 'Legs' },
-    { name: '娄', full: '娄宿', group: 2, pinyin: 'Lóu', en: 'Bond' },
-    { name: '胃', full: '胃宿', group: 2, pinyin: 'Wèi', en: 'Stomach' },
-    { name: '昴', full: '昴宿', group: 2, pinyin: 'Mǎo', en: 'Hairy Head' },
-    { name: '毕', full: '毕宿', group: 2, pinyin: 'Bì', en: 'Net' },
-    { name: '觜', full: '觜宿', group: 2, pinyin: 'Zī', en: 'Turtle Beak' },
-    { name: '参', full: '参宿', group: 2, pinyin: 'Shēn', en: 'Three Stars' },
-    { name: '井', full: '井宿', group: 3, pinyin: 'Jǐng', en: 'Well' },
-    { name: '鬼', full: '鬼宿', group: 3, pinyin: 'Guǐ', en: 'Ghost' },
-    { name: '柳', full: '柳宿', group: 3, pinyin: 'Liǔ', en: 'Willow' },
-    { name: '星', full: '星宿', group: 3, pinyin: 'Xīng', en: 'Star' },
-    { name: '张', full: '张宿', group: 3, pinyin: 'Zhāng', en: 'Extended Net' },
-    { name: '翼', full: '翼宿', group: 3, pinyin: 'Yì', en: 'Wings' },
-    { name: '轸', full: '轸宿', group: 3, pinyin: 'Zhěn', en: 'Chariot' },
-  ];
-
-  const mansionGroup = document.getElementById('mansionLabels');
-
-  // Generate tick marks and mansion labels
-  mansions.forEach((m, i) => {
-    // Angle: start from top (-90°) going clockwise
-    const angleDeg = -90 + i * (360 / 28);
-    const angleRad = angleDeg * Math.PI / 180;
-
-    const xTickInner = cx + tickInner * Math.cos(angleRad);
-    const yTickInner = cy + tickInner * Math.sin(angleRad);
-    const xTickOuter = cx + tickOuter * Math.cos(angleRad);
-    const yTickOuter = cy + tickOuter * Math.sin(angleRad);
-    const xLabel = cx + labelR * Math.cos(angleRad);
-    const yLabel = cy + labelR * Math.sin(angleRad);
-    const xTooltip = cx + tooltipR * Math.cos(angleRad);
-    const yTooltip = cy + tooltipR * Math.sin(angleRad);
-
-    const color = groupColors[m.group];
-    const cssClass = groupCSS[m.group];
-
-    // Determine text rotation for readability
-    let textRotation = angleDeg;
-    // If text would be upside down (on the bottom half), flip it
-    if (angleDeg > 90 && angleDeg < 270) {
-      textRotation += 180;
-    }
-
-    // Create group for each mansion
-    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    g.setAttribute('class', 'mansion-group');
-    g.setAttribute('data-mansion', m.full);
-    g.setAttribute('data-group', groupNames[m.group]);
-
-    // Tick mark
-    const tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    tick.setAttribute('x1', xTickInner);
-    tick.setAttribute('y1', yTickInner);
-    tick.setAttribute('x2', xTickOuter);
-    tick.setAttribute('y2', yTickOuter);
-    tick.setAttribute('class', 'tick-line');
-    tick.setAttribute('stroke', color);
-    tick.setAttribute('stroke-width', '1');
-    tick.setAttribute('opacity', '0.6');
-    g.appendChild(tick);
-
-    // Dot at tick inner
-    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    dot.setAttribute('cx', xTickInner);
-    dot.setAttribute('cy', yTickInner);
-    dot.setAttribute('r', '2.5');
-    dot.setAttribute('fill', color);
-    dot.setAttribute('opacity', '0.8');
-    g.appendChild(dot);
-
-    // Label
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', xLabel);
-    text.setAttribute('y', yLabel);
-    text.setAttribute('class', 'mansion-label ' + cssClass);
-    text.setAttribute('transform', `rotate(${textRotation}, ${xLabel}, ${yLabel})`);
-    text.textContent = m.name;
-    g.appendChild(text);
-
-    // Tooltip pill on hover (hidden by default)
-    const tooltipG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-    tooltipG.setAttribute('class', 'tooltip-group');
-
-    const pill = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    pill.setAttribute('x', xTooltip - 50);
-    pill.setAttribute('y', yTooltip - 14);
-    pill.setAttribute('width', '100');
-    pill.setAttribute('height', '28');
-    pill.setAttribute('rx', '14');
-    pill.setAttribute('fill', 'rgba(6,8,15,0.92)');
-    pill.setAttribute('stroke', color);
-    pill.setAttribute('stroke-width', '1');
-    tooltipG.appendChild(pill);
-
-    const tooltipText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    tooltipText.setAttribute('x', xTooltip);
-    tooltipText.setAttribute('y', yTooltip);
-    tooltipText.setAttribute('text-anchor', 'middle');
-    tooltipText.setAttribute('dominant-baseline', 'central');
-    tooltipText.setAttribute('fill', color);
-    tooltipText.setAttribute('font-size', '11');
-    tooltipText.textContent = m.full + ' ' + m.en;
-    tooltipG.appendChild(tooltipText);
-
-    g.appendChild(tooltipG);
-    mansionGroup.appendChild(g);
-  });
-
-  // ===== GENERATE STARS =====
-  const starField = document.getElementById('starField');
-  const maxR = 395; // stay inside the main circle
-
-  // Seeded pseudo-random for reproducibility
-  function seededRandom(seed) {
-    let s = seed;
-    return function() {
-      s = (s * 16807 + 0) % 2147483647;
-      return (s - 1) / 2147483646;
-    };
-  }
-
-  const rand = seededRandom(42);
-
-  // Generate stars with varied properties
-  const starCount = 180;
-
-  for (let i = 0; i < starCount; i++) {
-    // Uniform distribution within circle using sqrt
-    const angle = rand() * Math.PI * 2;
-    const radius = Math.sqrt(rand()) * maxR;
-
-    const sx = cx + radius * Math.cos(angle);
-    const sy = cy + radius * Math.sin(angle);
-
-    // Vary size: most stars small, a few larger
-    const sizeRoll = rand();
-    let starR, opacity, useGlow, filterId, animClass;
-
-    if (sizeRoll < 0.05) {
-      // Very bright star
-      starR = 2.0 + rand() * 1.5;
-      opacity = 0.85 + rand() * 0.15;
-      useGlow = true;
-      filterId = 'url(#starGlowBright)';
-      animClass = 'twinkle-slow';
-    } else if (sizeRoll < 0.18) {
-      // Bright star
-      starR = 1.2 + rand() * 0.8;
-      opacity = 0.7 + rand() * 0.2;
-      useGlow = true;
-      filterId = 'url(#starGlow)';
-      animClass = 'twinkle-med';
-    } else if (sizeRoll < 0.45) {
-      // Medium star
-      starR = 0.6 + rand() * 0.6;
-      opacity = 0.5 + rand() * 0.3;
-      useGlow = rand() > 0.5;
-      filterId = useGlow ? 'url(#starGlowSmall)' : null;
-      animClass = rand() > 0.7 ? 'twinkle-fast' : '';
-    } else {
-      // Dim star
-      starR = 0.3 + rand() * 0.4;
-      opacity = 0.25 + rand() * 0.35;
-      useGlow = false;
-      filterId = null;
-      animClass = '';
-    }
-
-    // Slightly vary color temperature
-    const temp = rand();
-    let starColor;
-    if (temp < 0.7) {
-      starColor = '#e8dcc8'; // warm white
-    } else if (temp < 0.85) {
-      starColor = '#d4e0f0'; // cool white
-    } else if (temp < 0.95) {
-      starColor = '#f0e0c0'; // warm gold tint
-    } else {
-      starColor = '#e0c8d0'; // slight pink tint
-    }
-
-    const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    star.setAttribute('cx', sx);
-    star.setAttribute('cy', sy);
-    star.setAttribute('r', starR);
-    star.setAttribute('fill', starColor);
-    star.setAttribute('opacity', opacity);
-    star.setAttribute('class', 'star-dot' + (animClass ? ' ' + animClass : ''));
-    star.setAttribute('data-r', starR);
-    if (filterId) {
-      star.setAttribute('filter', filterId);
-    }
-
-    starField.appendChild(star);
-  }
-
-  // ===== ADD SOME BRIGHTER CONSTELLATION-LIKE CLUSTERS =====
-  // Define a few notable asterisms with brighter stars
-  const clusters = [
-    // 北斗七星 (Big Dipper) - near 紫微垣
-    { stars: [
-      [530,320],[555,335],[580,350],[600,370],[620,380],[635,365],[650,345]
-    ], color: '#e8dcc8', r: 2.5 },
-    // Small cluster near 天市垣
-    { stars: [
-      [720,480],[735,500],[720,520],[750,510],[760,490]
-    ], color: '#e8dcc8', r: 1.8 },
-    // Cluster near 太微垣
-    { stars: [
-      [560,580],[580,600],[600,615],[620,605],[640,590],[610,570]
-    ], color: '#e8dcc8', r: 2.0 },
-  ];
-
-  clusters.forEach(cluster => {
-    cluster.stars.forEach(([sx, sy]) => {
-      const star = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      star.setAttribute('cx', sx);
-      star.setAttribute('cy', sy);
-      star.setAttribute('r', cluster.r);
-      star.setAttribute('fill', cluster.color);
-      star.setAttribute('opacity', '0.9');
-      star.setAttribute('class', 'star-dot twinkle-slow');
-      star.setAttribute('filter', 'url(#starGlow)');
-      starField.appendChild(star);
-    });
-  });
-
-  // Draw connecting lines for the Big Dipper
-  const dipperPath = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-  dipperPath.setAttribute('points', '530,320 555,335 580,350 600,370 620,380 635,365 650,345');
-  dipperPath.setAttribute('fill', 'none');
-  dipperPath.setAttribute('stroke', 'rgba(200,180,150,0.2)');
-  dipperPath.setAttribute('stroke-width', '0.8');
-  starField.appendChild(dipperPath);
-
-})();
-</script>
+<p class="caption">
+  龙谷大学藏本 · 世界上最古老的石刻全天星图之一，载星1434颗，绘有银河、黄道、赤道、二十八宿距度线
+</p>
 
 <script src="../js/qr-popup.js"></script>
-
 <script src="../js/theme.js"></script>
 </body>
 </html>

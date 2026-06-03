@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
 Rebuild entity_data.js from chapter HTML annotations.
-Extracts ALL entity spans, captures surrounding context, groups by entity name.
-Assigns sequential numbers, preserves book mapping.
+V2: Extract clean context by stripping HTML first, then finding entity positions.
 """
 import re, json, os, html as html_mod
 from collections import defaultdict
 from pathlib import Path
+from html import unescape as html_unescape
 
 CHAPTERS_DIR = Path(r"D:\24history\twz\tianwen-kb\docs\chapters")
 OUTPUT = Path(r"D:\24history\twz\tianwen-kb\docs\kg\entity_data.js")
 
-# Filename → display name mapping (derived from existing BOOK_URLS)
 FILENAME_TO_BOOK = {
     "01_史记_天官书第五.html": "史记·天官书",
     "02_汉书_天文志.html": "汉书·天文志",
@@ -33,6 +32,10 @@ FILENAME_TO_BOOK = {
     "18_步天歌.html": "步天歌",
     "19_乙巳占.html": "乙巳占",
     "20_星庐中国古天文学概论.html": "星庐·中国古天文学概论",
+    "21_开元占经.html": "开元占经",
+    "22_淮南子_天文训.html": "淮南子·天文训",
+    "23_马王堆帛书_五星占.html": "马王堆帛书·五星占",
+    "24_星庐_占星回廊.html": "占星回廊·天文占星学",
 }
 
 TYPE_MAP = {
@@ -40,37 +43,87 @@ TYPE_MAP = {
     "神": "神祇", "州": "州县", "岁": "纪年", "器": "仪器", "历": "历法"
 }
 
-CONTEXT_CHARS = 80  # chars before and after entity for context snippet
+CONTEXT_CHARS = 50  # chars before and after entity
+MAX_CONTEXTS_PER_ENTITY = 5  # max context excerpts per entity
+
 
 def strip_html(text):
-    """Remove HTML tags, keep text content."""
-    return re.sub(r'<[^>]+>', '', text)
-
-def extract_text_context(html_content, start_pos, end_pos):
-    """Extract text context around a position in HTML."""
-    # Take surrounding raw text, then strip tags
-    raw_before = html_content[max(0, start_pos - 500):start_pos]
-    raw_after = html_content[end_pos:end_pos + 500]
-    
-    # Get text-only versions
-    text_before = strip_html(raw_before)
-    text_after = strip_html(raw_after)
-    
-    # Take last CONTEXT_CHARS chars of before, first CONTEXT_CHARS of after
-    context_before = text_before[-CONTEXT_CHARS:] if len(text_before) > CONTEXT_CHARS else text_before
-    context_after = text_after[:CONTEXT_CHARS] if len(text_after) > CONTEXT_CHARS else text_after
-    
-    return (context_before + "…" + context_after).strip()
-
-def clean_context(text):
-    """Clean up context text."""
+    """Remove all HTML tags and decode entities."""
+    # Remove HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    # Decode HTML entities
+    text = html_unescape(text)
+    # Collapse whitespace
     text = re.sub(r'\s+', '', text)
-    text = html_mod.unescape(text)
     return text
+
+
+def extract_body_text(html_content):
+    """Extract and strip text from the chapter-body div only."""
+    m = re.search(r'<div class="chapter-body[^"]*">(.*?)</main>', html_content, re.DOTALL)
+    if not m:
+        # Try alternative: chapter-body until closing div (with nesting)
+        start = html_content.find('class="chapter-body')
+        if start == -1:
+            return strip_html(html_content)
+        # Find the div opening
+        div_start = html_content.rfind('<div', 0, start) if html_content.rfind('<div', 0, start) != -1 else start
+        # Count nesting to find matching </div>
+        depth = 1
+        pos = html_content.find('>', start) + 1
+        while depth > 0 and pos < len(html_content):
+            next_open = html_content.find('<div', pos)
+            next_close = html_content.find('</div>', pos)
+            if next_close == -1:
+                break
+            if next_open != -1 and next_open < next_close:
+                depth += 1
+                pos = next_open + 4
+            else:
+                depth -= 1
+                if depth == 0:
+                    body_html = html_content[div_start : next_close + 6]
+                    return strip_html(body_html)
+                pos = next_close + 6
+        return strip_html(html_content)
+    
+    body_html = m.group(1)
+    return strip_html(body_html)
+
+
+def find_entity_contexts(body_text, entity_name, max_contexts=None):
+    """Find all occurrences of entity_name in body_text and return contexts."""
+    contexts = []
+    pos = 0
+    name_len = len(entity_name)
+    
+    while True:
+        idx = body_text.find(entity_name, pos)
+        if idx == -1:
+            break
+        
+        start = max(0, idx - CONTEXT_CHARS)
+        end = min(len(body_text), idx + name_len + CONTEXT_CHARS)
+        snippet = body_text[start:end]
+        
+        # Add ellipsis if truncated
+        if start > 0:
+            snippet = '…' + snippet
+        if end < len(body_text):
+            snippet = snippet + '…'
+        
+        contexts.append(snippet)
+        pos = idx + name_len
+        
+        if max_contexts and len(contexts) >= max_contexts:
+            break
+    
+    return contexts
+
 
 # Parse all chapters
 print("Parsing chapter HTML files...")
-entity_contexts = defaultdict(list)  # entity_name -> list of context dicts
+entity_contexts = defaultdict(list)
 
 for html_file in sorted(CHAPTERS_DIR.glob("*.html")):
     fname = html_file.name
@@ -84,36 +137,62 @@ for html_file in sorted(CHAPTERS_DIR.glob("*.html")):
     with open(html_file, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Find all entity spans
-    # Pattern: <span class="ent ent-{type}" title="{type_cn}：{name}" style="..." onclick="...">text</span>
-    span_pattern = re.compile(
-        r'<span\s+class="ent\s+ent-([^"]+)"\s+title="([^：]+)：([^"]+)"[^>]*onclick="[^"]*name=([^&]+)&ref=([^"]+)"[^>]*>(.*?)</span>',
-        re.DOTALL
-    )
+    # Find chapter-body div
+    body_match = re.search(r'<div class="chapter-body[^"]*">(.*?)</main>', content, re.DOTALL)
+    if not body_match:
+        print(f"    WARNING: no chapter-body found")
+        continue
+    body_html = body_match.group(1)
     
-    for m in span_pattern.finditer(content):
-        ent_type_short = m.group(1)   # e.g., "神"
-        type_cn = m.group(2)           # e.g., "神祇"
-        ent_name = m.group(3)          # e.g., "天一"
-        url_name = m.group(4)          # e.g., "%E5%A4%A9%E4%B8%80"
-        ref_file = m.group(5)          # e.g., "01_史记_天官书第五.html"
-        display_text = m.group(6)      # text between span tags
+    # Split into paragraphs by <span class="para" id="para-NNNN">
+    para_blocks = re.split(r'(<span class="para" id="(para-\d+)"[^>]*>)', body_html)
+    
+    current_para_id = None
+    for i, block in enumerate(para_blocks):
+        # Check if this block is a para opening tag
+        m = re.match(r'<span class="para" id="(para-\d+)"', block)
+        if m:
+            current_para_id = m.group(1)
+            continue
         
-        # Decode URL-encoded name
-        from urllib.parse import unquote
-        decoded_name = unquote(url_name)
+        if not current_para_id or not block.strip():
+            continue
         
-        # Extract context
-        context_snippet = extract_text_context(content, m.start(), m.end())
-        context_snippet = clean_context(context_snippet)
-        
-        entity_contexts[decoded_name].append({
-            "book": book_name,
-            "type": ent_type_short,
-            "type_cn": type_cn,
-            "text": context_snippet,
-            "ref": ref_file,
-        })
+        # Find all entity spans in this paragraph block
+        ent_pattern = re.compile(
+            r'<span\s+class="ent\s+ent-([^"]+)"\s+title="([^：<]+)：([^"]+)"[^>]*?>(.*?)</span>',
+            re.DOTALL
+        )
+        for ent_m in ent_pattern.finditer(block):
+            ent_type_short = ent_m.group(1)
+            type_cn = ent_m.group(2)
+            ent_name = ent_m.group(3)
+            display_text = ent_m.group(4)
+            
+            # Extract surrounding text context from this paragraph
+            clean_text = strip_html(block)
+            name_pos = clean_text.find(ent_name)
+            if name_pos == -1:
+                # Entity name might be slightly different in clean text
+                # Try to find by the display text
+                clean_display = strip_html(display_text)
+                name_pos = clean_text.find(clean_display) if clean_display else -1
+            
+            context_start = max(0, name_pos - CONTEXT_CHARS)
+            context_end = min(len(clean_text), name_pos + len(ent_name) + CONTEXT_CHARS)
+            snippet = clean_text[context_start:context_end]
+            if context_start > 0:
+                snippet = '…' + snippet
+            if context_end < len(clean_text):
+                snippet = snippet + '…'
+            
+            entity_contexts[ent_name].append({
+                "book": book_name,
+                "type": ent_type_short,
+                "type_cn": type_cn,
+                "text": snippet,
+                "para_id": current_para_id,  # NEW: paragraph ID for jump-to
+            })
 
 print(f"\nTotal unique entities: {len(entity_contexts)}")
 total_occurrences = sum(len(v) for v in entity_contexts.values())
@@ -121,33 +200,33 @@ print(f"Total occurrences: {total_occurrences}")
 
 # Build entity data
 entities = []
-for name, contexts in sorted(entity_contexts.items()):
+for name, contexts_list in sorted(entity_contexts.items()):
     # Determine dominant type
     type_counts = defaultdict(int)
-    for c in contexts:
+    for c in contexts_list:
         type_counts[(c["type"], c["type_cn"])] += 1
     dominant_type, dominant_type_cn = max(type_counts, key=type_counts.get)
     
     # Count per book
     book_counts = defaultdict(int)
-    for c in contexts:
+    for c in contexts_list:
         book_counts[c["book"]] += 1
     
-    # Sort contexts: first by book, then preserve within-book order
-    # Assign sequential numbers
+    # Sort contexts: group by book, preserve order
     numbered_contexts = []
-    for i, c in enumerate(contexts, 1):
+    for i, c in enumerate(contexts_list, 1):
         numbered_contexts.append({
             "seq": i,
             "text": c["text"],
             "book": c["book"],
+            "para_id": c.get("para_id", ""),  # paragraph ID for jump-to
         })
     
     entities.append({
         "name": name,
         "type": dominant_type,
         "type_cn": dominant_type_cn,
-        "total": len(contexts),
+        "total": len(contexts_list),
         "books": dict(sorted(book_counts.items(), key=lambda x: -x[1])),
         "book_count": len(book_counts),
         "contexts": numbered_contexts,
@@ -162,9 +241,10 @@ for fname, book in FILENAME_TO_BOOK.items():
     book_urls[book] = f"../chapters/{fname}"
 
 # Generate JS output
-js_lines = []
-js_lines.append(f"window.ENTITIES={json.dumps(entities, ensure_ascii=False, separators=(',', ':'))};")
-js_lines.append(f"window.BOOK_URLS={json.dumps(book_urls, ensure_ascii=False, separators=(',', ':'))};")
+js_lines = [
+    f"window.ENTITIES={json.dumps(entities, ensure_ascii=False, separators=(',', ':'))};",
+    f"window.BOOK_URLS={json.dumps(book_urls, ensure_ascii=False, separators=(',', ':'))};"
+]
 
 with open(OUTPUT, 'w', encoding='utf-8') as f:
     f.write('\n'.join(js_lines))
@@ -173,7 +253,7 @@ print(f"\nWritten to: {OUTPUT}")
 print(f"Entities: {len(entities)}")
 print(f"Total contexts: {sum(e['total'] for e in entities)}")
 
-# Print summary
+# Summary
 print("\n=== Type Summary ===")
 type_summary = defaultdict(lambda: {"count": 0, "total": 0})
 for e in entities:
