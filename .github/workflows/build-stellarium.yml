@@ -25,19 +25,21 @@ jobs:
       - name: Clone Stellarium
         run: git clone --depth 1 https://github.com/Stellarium/stellarium-web-engine.git /tmp/s
 
+      - name: Patch for newer emcc
+        working-directory: /tmp/s
+        run: |
+          # Newer emcc warns about linker flags during compilation
+          # With -Werror this becomes a fatal error
+          sed -i "s/'-Werror'//" SConstruct
+
       - name: Build
         working-directory: /tmp/s
         run: |
           set -e
           EMSDK_ENV=$(find / -name "emsdk_env.sh" -type f 2>/dev/null | head -1)
           source "$EMSDK_ENV"
-
-          echo "=== Using emscons wrapper ==="
           echo "Build start: $(date)"
-
-          # Use emscons (confirmed available), pipe to log
           emscons scons -j4 mode=release 2>&1 | tee /tmp/build.log
-
           echo "Build done: $(date)"
 
       - name: Verify & Push
