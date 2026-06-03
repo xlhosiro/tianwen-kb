@@ -32,13 +32,12 @@ jobs:
           EMSDK_ENV=$(find / -name "emsdk_env.sh" -type f 2>/dev/null | head -1)
           source "$EMSDK_ENV"
 
-          # Correct tool path for emsdk 2.0.34
-          # The emscripten scons tool lives at: tools/scons/site_scons/site_tools/
-          export EMSCRIPTEN_TOOL_PATH="$EMSDK/upstream/emscripten/tools/scons/site_scons/site_tools"
-          echo "EMSCRIPTEN_TOOL_PATH=$EMSCRIPTEN_TOOL_PATH"
-
+          echo "=== Using emscons wrapper ==="
           echo "Build start: $(date)"
-          scons -j4 mode=release 2>&1 | tee /tmp/build.log
+
+          # Use emscons (confirmed available), pipe to log
+          emscons scons -j4 mode=release 2>&1 | tee /tmp/build.log
+
           echo "Build done: $(date)"
 
       - name: Verify & Push
