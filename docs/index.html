@@ -43,10 +43,12 @@
            HOMEPAGE: DYNASTY TIMELINE STRIP
            ============================================================ */
         .hero-timeline {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px 24px 0;
             position: relative;
+            overflow: hidden;
         }
 
         .timeline-strip {
@@ -54,8 +56,11 @@
             align-items: flex-start;
             justify-content: space-between;
             overflow-x: auto;
+            overflow-y: hidden;
             padding: 16px 0 24px;
             gap: 4px;
+            max-width: 100%;
+            overscroll-behavior-x: contain;
             scrollbar-width: thin;
             scrollbar-color: var(--border-light) transparent;
         }
@@ -132,6 +137,11 @@
                 gap: 28px;
             }
 
+            .hero-timeline {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
             .stat-number {
                 font-size: 1.8rem;
             }
@@ -156,6 +166,11 @@
         @media (max-width: 480px) {
             .hero-stats {
                 gap: 20px;
+            }
+
+            /* 手机端保留时间轴内部滚动，不再撑开整个页面背景。 */
+            .timeline-strip {
+                justify-content: flex-start;
             }
 
             .stat-number {
@@ -183,6 +198,7 @@
             top: 0;
             left: 0;
             width: 100%;
+            max-width: 100%;
             height: 100%;
             pointer-events: none;
             z-index: 0;

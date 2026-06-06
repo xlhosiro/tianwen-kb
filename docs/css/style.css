@@ -73,6 +73,7 @@ html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 body {
@@ -87,6 +88,7 @@ body {
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    overflow-x: hidden;
 }
 
 /* --- Links --- */
@@ -159,6 +161,8 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
 }
 
 .nav-logo {
@@ -168,6 +172,8 @@ p {
     color: var(--accent-gold);
     letter-spacing: 0.04em;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav-logo:hover {
@@ -178,6 +184,8 @@ p {
     display: flex;
     align-items: center;
     gap: 6px;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .nav-links a {
@@ -188,6 +196,8 @@ p {
     padding: 6px 14px;
     border-radius: var(--radius-sm);
     transition: color 0.2s ease, background 0.2s ease;
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -461,11 +471,12 @@ p {
    HOMEPAGE: CHAPTERS GRID
    ============================================================ */
 .chapters-grid {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
     padding: 48px 24px 64px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
     gap: 20px;
 }
 
@@ -482,6 +493,7 @@ p {
 
 /* --- Chapter Card --- */
 .chapter-card {
+    min-width: 0;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -735,6 +747,13 @@ a, button, .chapter-card, .top-nav, .search-result-item {
 /* ============================================================
    RESPONSIVE BREAKPOINTS
    ============================================================ */
+@media (max-width: 980px) {
+    /* 中等窄屏固定为两列，避免三列临界宽度时右侧卡片被裁切。 */
+    .chapters-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     :root {
         --sidebar-width: 240px;
@@ -748,15 +767,28 @@ a, button, .chapter-card, .top-nav, .search-result-item {
 
     .nav-logo {
         font-size: 1rem;
+        flex: 1 1 auto;
     }
 
     .nav-links {
         gap: 0;
+        flex: 0 1 auto;
+        max-width: 58vw;
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    /* 窄屏导航保持单行横向滚动，避免菜单换行撑高顶部栏。 */
+    .nav-links::-webkit-scrollbar {
+        display: none;
     }
 
     .nav-links a {
         font-size: 0.8rem;
         padding: 6px 8px;
+        flex: 0 0 auto;
     }
 
     /* --- Chapter Layout: stack sidebar above content --- */
@@ -847,6 +879,14 @@ a, button, .chapter-card, .top-nav, .search-result-item {
 
 /* Extra-small screens */
 @media (max-width: 480px) {
+    .nav-logo {
+        max-width: 42vw;
+    }
+
+    .nav-links {
+        max-width: 54vw;
+    }
+
     .nav-links a {
         font-size: 0.72rem;
         padding: 4px 6px;
